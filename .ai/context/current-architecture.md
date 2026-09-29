@@ -17,14 +17,23 @@ Laravel modular monolith.
 ## Completed Modules
 - Academic Foundation
 - Identity and Teacher Foundation
-- Families and Guardians (Phase 3, verified and pending commit)
+- Families and Guardians (Phase 3)
+- Students and Enrollments (Phase 4, verified and pending commit)
 
 ## Current Module
-- Phase 3: Families and Guardians is complete / pending commit.
+- Phase 4: Students and Enrollments is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
 - A Family has many Guardians; each Guardian belongs to exactly one Family.
 - Deleting a Family with registered Guardians is restricted by the database.
 - Combined billing defaults to enabled, without granting Guardians student visibility.
-- guardian_student and student relationships are deferred to a later phase.
+- Guardian access to Students is explicit through guardian_student.
+
+## Students and Enrollments
+- A Student belongs to one Family and may have many explicit Guardian links.
+- admission_no is globally unique; Student status defaults to pending_registration.
+- Grade and Section belong to an Enrollment, not to Student.
+- An Enrollment is unique per Student and Academic Year and records its current Grade and Section.
+- Enrollment::placeIn() updates current placement and appends placement history in one database transaction.
+- Composite foreign keys ensure a stored Section belongs to the stored Grade.

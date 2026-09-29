@@ -1,56 +1,39 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 3: Families & Guardians
+Phase 4: Students & Enrollments
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
 - Phase 2: Users, Roles & Teachers - complete
-- Phase 3: Families & Guardians - complete / pending commit
+- Phase 3: Families & Guardians - complete
+- Phase 4: Students & Enrollments - complete / pending commit
 
 ## Current Status
-Phase 3 implementation completed and verification passed.
-
-## Changed Files
- M AGENTS.md
-?? .ai/context/current-architecture.md
-?? .ai/context/open-business-decisions.md
-?? .ai/context/phase-history.md
-?? .ai/context/phase-status.md
-?? .ai/context/skooly-active-context.md
-?? .ai/context/verification-history.md
-?? .opencode/commands/skooly-checkpoint.md
-?? .opencode/skills/skooly-checkpoint/SKILL.md
-?? app/Models/Family.php
-?? app/Models/Guardian.php
-?? database/factories/FamilyFactory.php
-?? database/factories/GuardianFactory.php
-?? database/migrations/2026_09_29_180530_create_families_table.php
-?? database/migrations/2026_09_29_180530_create_guardians_table.php
-?? tests/Feature/FamilyGuardianTest.php
-
+Phase 4 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
-- families table created.
-- guardians table created.
-- families has family_code, address, home_contact_no, combined_billing_enabled, timestamps.
-- combined_billing_enabled defaults to true.
-- guardians belongs to families through family_id.
-- family deletion is restricted while guardians exist.
-- guardian contact fields are not unique because duplicate detection block-vs-warning is unresolved.
-- students and guardian_student are deferred to Phase 4.
+- students belongs to families and has required globally unique admission_no.
+- Student stores name, dob, required gender, nullable photo_path, and status defaulting to pending_registration.
+- guardian_student explicitly links Guardians to individual Students.
+- Guardian access is not inferred from family membership alone.
+- enrollments has one record per student and academic year.
+- Grade and Section are stored on Enrollment, not Student.
+- enrollment_placements preserves placement history.
+- Enrollment::placeIn() updates current placement and appends placement history inside a transaction.
+- Composite foreign keys prevent a Section from being paired with the wrong Grade.
 
 ## Verification Result
-Passed:
-- php artisan migrate:fresh
-- php artisan test
-- php vendor/bin/phpstan analyse
+Passed on 2026-09-30:
+- php artisan migrate:fresh --no-interaction
+- php artisan test --compact: 30 tests, 71 assertions
+- php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
-- composer audit
-- git diff --check
+- composer audit: no security vulnerability advisories
+- git diff --check passed with CRLF warning only
 
 ## Blockers
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 3.
+Review git status, then commit Phase 4.

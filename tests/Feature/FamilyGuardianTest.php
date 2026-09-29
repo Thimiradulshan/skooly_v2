@@ -2,6 +2,7 @@
 
 use App\Models\Family;
 use App\Models\Guardian;
+use App\Models\Student;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Schema;
@@ -37,10 +38,19 @@ it('restricts deleting a family with guardians', function () {
     $this->assertModelExists($family);
 });
 
-it('does not create the guardian student table in Phase 3', function () {
-    expect(Schema::hasTable('guardian_student'))->toBeFalse();
+it('creates the guardian student table', function () {
+    expect(Schema::hasTable('guardian_student'))->toBeTrue();
 });
 
-it('does not add a student relationship to guardians in Phase 3', function () {
-    expect(method_exists(Guardian::class, 'students'))->toBeFalse();
+it('links guardians to specific students', function () {
+    $family = Family::factory()->create();
+    $guardian = Guardian::factory()->for($family)->create();
+    $linkedStudent = Student::factory()->for($family)->create();
+    $unlinkedStudent = Student::factory()->for($family)->create();
+
+    $guardian->students()->attach($linkedStudent);
+
+    expect($guardian->students->sole()->is($linkedStudent))->toBeTrue();
+    expect($linkedStudent->guardians->sole()->is($guardian))->toBeTrue();
+    expect($unlinkedStudent->guardians)->toBeEmpty();
 });

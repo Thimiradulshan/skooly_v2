@@ -23,6 +23,14 @@ class Family extends Model
     }
 
     /**
+     * Get the students registered to the family.
+     */
+    public function students(): HasMany
+    {
+        return $this->hasMany(Student::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

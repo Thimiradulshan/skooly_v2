@@ -48,6 +48,14 @@ class AcademicYear extends Model
     }
 
     /**
+     * Get the student enrollments for the academic year.
+     */
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

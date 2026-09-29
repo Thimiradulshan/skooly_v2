@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable(['family_id', 'name', 'relationship', 'contact_no', 'email', 'nic'])]
 class Guardian extends Model
@@ -20,5 +21,13 @@ class Guardian extends Model
     public function family(): BelongsTo
     {
         return $this->belongsTo(Family::class);
+    }
+
+    /**
+     * Get the students this guardian may access.
+     */
+    public function students(): BelongsToMany
+    {
+        return $this->belongsToMany(Student::class);
     }
 }

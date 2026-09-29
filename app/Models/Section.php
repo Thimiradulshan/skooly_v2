@@ -40,6 +40,22 @@ class Section extends Model
     }
 
     /**
+     * Get the enrollments in the section.
+     */
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    /**
+     * Get the historical placements in the section.
+     */
+    public function enrollmentPlacements(): HasMany
+    {
+        return $this->hasMany(EnrollmentPlacement::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
