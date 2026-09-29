@@ -281,3 +281,28 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - After the feature tests pass, ask the user to run the complete suite with `php artisan test --compact`.
 
 </laravel-boost-guidelines>
+
+## Skooly Checkpoint / Compaction Safety
+
+Compaction is not the source of truth. Important state must be stored in project files.
+
+Before planning, implementing, verifying, or continuing after compaction, read:
+- .ai/guidelines/skooly-domain.md
+- .ai/context/phase-status.md
+- .ai/context/open-business-decisions.md
+- .ai/context/current-architecture.md
+- .ai/context/verification-history.md
+- .ai/context/phase-history.md
+
+Use the `skooly-checkpoint` skill before:
+- manual compaction
+- starting a new phase
+- finishing a phase
+- committing a phase
+- continuing after a long session
+
+Before compacting, run the `/skooly-checkpoint` command or manually update the checkpoint files.
+
+Do not compact until the user approves.
+Do not rely only on compacted chat memory.
+Do not invent missing SRS or business rules.
