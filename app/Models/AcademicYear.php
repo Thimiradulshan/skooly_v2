@@ -32,6 +32,22 @@ class AcademicYear extends Model
     }
 
     /**
+     * Get the teaching assignments for the academic year.
+     */
+    public function teacherAssignments(): HasMany
+    {
+        return $this->hasMany(TeacherAssignment::class);
+    }
+
+    /**
+     * Get the class teacher assignments for the academic year.
+     */
+    public function sectionYearAssignments(): HasMany
+    {
+        return $this->hasMany(SectionYearAssignment::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

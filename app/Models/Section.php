@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['grade_id', 'name', 'capacity'])]
 class Section extends Model
@@ -20,6 +21,22 @@ class Section extends Model
     public function grade(): BelongsTo
     {
         return $this->belongsTo(Grade::class);
+    }
+
+    /**
+     * Get the yearly subject teaching assignments for the section.
+     */
+    public function teacherAssignments(): HasMany
+    {
+        return $this->hasMany(TeacherAssignment::class);
+    }
+
+    /**
+     * Get the yearly class teacher assignments for the section.
+     */
+    public function yearAssignments(): HasMany
+    {
+        return $this->hasMany(SectionYearAssignment::class);
     }
 
     /**
