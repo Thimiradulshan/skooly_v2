@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Web\DueGenerationController;
+use App\Http\Controllers\Web\DuesDashboardController;
 use App\Http\Controllers\Web\FamilyController;
 use App\Http\Controllers\Web\FeeCategoryController;
 use App\Http\Controllers\Web\FeeStructureController;
@@ -52,4 +54,15 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('students.fee-subscriptions.create');
     Route::post('/students/{student}/fee-subscriptions', [StudentFeeSubscriptionController::class, 'store'])
         ->name('students.fee-subscriptions.store');
+
+    Route::get('/due-generation/recurring', [DueGenerationController::class, 'recurringCreate'])
+        ->name('due-generation.recurring.create');
+    Route::post('/due-generation/recurring', [DueGenerationController::class, 'recurringStore'])
+        ->name('due-generation.recurring.store');
+    Route::get('/due-generation/events', [DueGenerationController::class, 'eventCreate'])
+        ->name('due-generation.events.create');
+    Route::post('/due-generation/events', [DueGenerationController::class, 'eventStore'])
+        ->name('due-generation.events.store');
+
+    Route::get('/dues-dashboard', [DuesDashboardController::class, 'index'])->name('dues-dashboard.index');
 });

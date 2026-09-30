@@ -121,3 +121,10 @@ Do not invent answers for these.
 - Only opt-in fee categories may be subscribed, enforced by both the form request and the action.
 - Discounts are never applied retroactively to existing StudentDueItems.
 - No delete or destructive web route may be added without an explicit decision.
+
+## Phase 10B-4 Rules
+- Due generation stays a manual Admin web action. No scheduler or cron entry may be added without a decision.
+- The dashboard must reuse BuildDuesDashboardReport and must never recalculate money in Blade.
+- The dashboard must require academic_year_id whenever grade_id or section_id is supplied.
+- Event due generation may only target events that already exist. Event management UI stays deferred.
+- Payment recording, allocation, and receipt pages stay deferred.

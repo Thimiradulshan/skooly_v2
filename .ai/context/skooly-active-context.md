@@ -20,7 +20,8 @@ Use this file before broad project reinspection.
 - Phase 10A Backend Workflow Actions / Service Layer Completion: complete.
 - Phase 10B-1 Web Layer for Core Registration Workflows: complete.
 - Phase 10B-2 Web Auth & Route Protection: complete.
-- Phase 10B-3 Web Fee & Discount Management: complete and verified; pending commit.
+- Phase 10B-3 Web Fee & Discount Management: complete.
+- Phase 10B-4 Web Due Generation & Dashboard Pages: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -103,30 +104,35 @@ Use this file before broad project reinspection.
 - Fee structure web editing is deferred. Fee structures stay academic-year versioned.
 - No fee, discount, or subscription delete route exists.
 - Only opt-in fee categories can be subscribed, enforced in the form request and the action.
+- Admin web pages exist for recurring due generation, event due generation, and the dues dashboard.
+- Both generation flows call the existing actions and pass the Admin as the audit actor.
+- The dashboard reuses BuildDuesDashboardReport and never recalculates money in Blade.
+- Due generation is manual. No scheduler or cron entry is registered.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 10B-3 Deferred Work
-- Fee structure web editing (structures are academic-year versioned).
-- Audit entries for fee category and fee subscription workflows.
-- Accountant and Teacher web access to fee and discount pages.
+## Phase 10B-4 Deferred Work
+- Scheduler and cron setup for recurring generation.
+- Event management UI.
+- Payment recording, allocation, and receipt UI.
+- Promotion UI and reminder sending UI.
+- Accountant and Teacher web access.
 - API auth, API controllers, and mobile endpoints.
 - Advanced user management, password reset, and email verification.
 - Delete and destructive web routes.
-- Due generation UI, payments UI, promotion UI, reminders UI, and dashboard UI.
+- Fee structure web editing (structures are academic-year versioned).
+- Audit entries for fee category and fee subscription workflows.
 - Automatic sibling discount rule.
+- Automatic payment allocation strategy.
 - ActivateStudentAfterRegistrationPaid (registration dues are not identifiable).
 - Guardian login and a Guardian-to-User link.
 - Teacher section-scoped student access.
 - Accountant student visibility decision.
 - Promotion reversal (safety window unresolved).
-- Automatic payment allocation strategy.
 - DB-level CHECK constraint for non-negative balances.
 - CSV/PDF export.
-- Real notification channels.
-- Scheduled cron setup.
 - Audit UI and export.
 
 ## Verification Command Order
@@ -139,4 +145,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 236 tests / 803 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 254 tests / 856 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

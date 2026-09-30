@@ -32,10 +32,11 @@ Laravel modular monolith.
 - Backend Workflow Actions / Service Layer Completion (Phase 10A)
 - Web Layer for Core Registration Workflows (Phase 10B-1)
 - Web Auth & Route Protection (Phase 10B-2)
-- Web Fee & Discount Management (Phase 10B-3, verified and pending commit)
+- Web Fee & Discount Management (Phase 10B-3)
+- Web Due Generation & Dashboard Pages (Phase 10B-4, verified and pending commit)
 
 ## Current Module
-- Phase 10B-3: Web Fee & Discount Management is complete / pending commit.
+- Phase 10B-4: Web Due Generation & Dashboard Pages is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -164,3 +165,11 @@ Laravel modular monolith.
 - Discount application reuses ApplyStudentDiscount, so discount_applied auditing still works.
 - CreateFeeStructure and CreateStudentFeeSubscription never create or modify StudentDueItems.
 - No delete route exists for any fee, discount, or subscription resource.
+
+## Web Due Generation and Dashboard
+- DueGenerationController triggers GenerateRecurringDueItems and GenerateEventDueItems and nothing else.
+- Both generation flows pass the authenticated Admin as the audit actor.
+- Event generation only targets existing events. There is no event management UI.
+- DuesDashboardController renders BuildDuesDashboardReport output without recalculating any amount.
+- DuesDashboardFilterRequest mirrors the report rule that grade and section need an academic year.
+- Due generation is manual. No scheduled task or cron entry is registered.

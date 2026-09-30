@@ -27,6 +27,15 @@
             <button type="submit">Sign out</button>
         </form>
     </p>
+
+    <p>
+        <a href="{{ route('families.index') }}">Families</a> &middot;
+        <a href="{{ route('fee-categories.index') }}">Fee Categories</a> &middot;
+        <a href="{{ route('fee-structures.index') }}">Fee Structures</a> &middot;
+        <a href="{{ route('due-generation.recurring.create') }}">Recurring Due Generation</a> &middot;
+        <a href="{{ route('due-generation.events.create') }}">Event Due Generation</a> &middot;
+        <a href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
+    </p>
 @else
     <p><a href="{{ route('login') }}">Sign in</a></p>
 @endauth

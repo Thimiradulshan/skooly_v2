@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-3: Web Fee & Discount Management
+Phase 10B-4: Web Due Generation & Dashboard Pages
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -21,10 +21,11 @@ Phase 10B-3: Web Fee & Discount Management
 - Phase 10A: Backend Workflow Actions / Service Layer Completion - complete
 - Phase 10B-1: Web Layer for Core Registration Workflows - complete
 - Phase 10B-2: Web Auth & Route Protection - complete
-- Phase 10B-3: Web Fee & Discount Management - complete / pending commit
+- Phase 10B-3: Web Fee & Discount Management - complete
+- Phase 10B-4: Web Due Generation & Dashboard Pages - complete / pending commit
 
 ## Current Status
-Phase 10B-3 implementation and verification are complete. Pending review and commit.
+Phase 10B-4 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -126,11 +127,19 @@ Phase 10B-3 implementation and verification are complete. Pending review and com
 - Fee category and fee subscription workflows are unaudited because no audit constant exists for them.
 - No StudentDueItem is generated or rewritten by any of these web flows.
 - No delete or destructive route was added.
+- Admin web flow exists for recurring due generation through GenerateRecurringDueItems.
+- Admin web flow exists for triggering due generation for an existing event through GenerateEventDueItems.
+- Both generation flows pass the authenticated user as the audit actor.
+- Admin dues dashboard page exists and renders every BuildDuesDashboardReport section.
+- The dashboard mirrors report behavior by requiring academic_year_id with grade_id or section_id.
+- Dashboard money values are rendered exactly as returned by the report. No recalculation in Blade.
+- Layout navigation now links families, fee categories, fee structures, both due generators, and the dashboard.
+- No scheduler or cron entry was registered. Generation stays a manual Admin action.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 236 tests, 803 assertions
+- php artisan test --compact: 254 tests, 856 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -140,4 +149,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-3.
+Review git status, then commit Phase 10B-4.

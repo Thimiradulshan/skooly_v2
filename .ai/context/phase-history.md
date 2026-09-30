@@ -220,7 +220,7 @@ Implemented:
 - Phase 10B-2 feature tests covering guests, login, logout, Admin access, and 403 for Teacher, Accountant, and role-less users.
 
 ## Phase 10B-3: Web Fee & Discount Management
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - CreateFeeCategory, UpdateFeeCategory, and CreateStudentFeeSubscription actions.
@@ -232,6 +232,35 @@ Implemented:
 - Seven new Blade views for fee categories, fee structures, discounts, and subscriptions.
 - Discount and fee subscription links on the family show page.
 - Phase 10B-3 feature tests, 15 in total.
+
+## Phase 10B-4: Web Due Generation & Dashboard Pages
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- DueGenerationController for recurring and event due generation triggers.
+- DuesDashboardController rendering BuildDuesDashboardReport.
+- GenerateRecurringDuesRequest, GenerateEventDuesRequest, and DuesDashboardFilterRequest.
+- Recurring, event, and dashboard Blade views.
+- Layout navigation for the Admin area.
+- Phase 10B-4 feature tests, 18 in total.
+
+Deferred:
+- Scheduler and cron setup for recurring generation
+- Event management UI
+- Payment recording, allocation, and receipt UI
+- Promotion UI and reminder sending UI
+- Accountant and Teacher web access
+- API controllers, API resources, and mobile endpoints
+- Delete and destructive web routes
+- Automatic sibling discount rule
+- Automatic payment allocation strategy
+- Student activation after registration payment
+- Guardian login and a Guardian-to-User link
+- Teacher section-scoped student access
+- Accountant student visibility decision
+- Promotion reversal (safety window unresolved)
+- CSV/PDF export
+- Audit UI and export
 
 Deferred:
 - Fee structure web editing, because structures are academic-year versioned.
