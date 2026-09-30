@@ -27,7 +27,8 @@ Use this file before broad project reinspection.
 - Phase 10B-7 Web Student Promotion Pages: complete.
 - Phase 10B-8 Web Payment Reminder Pages: complete.
 - Phase 10B-9 Web Admin Usability & Navigation Polish: complete.
-- Phase 10B-10 Web Manual QA & Bug Fix Pass: complete and verified; pending commit.
+- Phase 10B-10 Web Manual QA & Bug Fix Pass: complete.
+- Phase 10C-1 Demo Data & Local Testing Setup: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -138,6 +139,11 @@ Use this file before broad project reinspection.
 - Phase 10B-10 manual QA found no application bugs. The admin journey from login to payment, receipt, event dues, reminders, and promotion works end to end.
 - Promotion only lists active students, so pending_registration students are not promoted until activation is implemented.
 - Post-login still lands on /families while the root route sends admins to /admin. Both were explicitly specified earlier, so both remain as-is.
+- DemoDataSeeder provides deterministic local and testing data, exits early in production, and is never called from DatabaseSeeder.
+- Demo dues, event dues, payments, receipts, reminders, and promotion batches come from the existing actions.
+- Demo login is admin@skooly.test / password. Accountant and Teacher demo users are access-check only.
+- Run locally with: php artisan migrate:fresh, then php artisan db:seed --class=DemoDataSeeder.
+- See docs/local-demo.md for full local instructions.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
@@ -191,4 +197,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 322 tests / 1250 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh and DemoDataSeeder passed; 335 tests / 1321 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

@@ -38,10 +38,12 @@ Laravel modular monolith.
 - Web Event Management Pages (Phase 10B-6)
 - Web Student Promotion Pages (Phase 10B-7)
 - Web Payment Reminder Pages (Phase 10B-8)
-- Web Admin Usability & Navigation Polish (Phase 10B-9, verified and pending commit)
+- Web Admin Usability & Navigation Polish (Phase 10B-9)
+- Web Manual QA & Bug Fix Pass (Phase 10B-10)
+- Demo Data & Local Testing Setup (Phase 10C-1, verified and pending commit)
 
 ## Current Module
-- Phase 10B-9: Web Admin Usability & Navigation Polish is complete / pending commit.
+- Phase 10C-1: Demo Data & Local Testing Setup is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -211,3 +213,10 @@ Laravel modular monolith.
 - The shared layout exposes one grouped admin navigation row plus consistent success, error, and validation flash display.
 - Cross-links reuse existing named routes only; empty states already existed on every index page.
 - No backend action, model, authorization rule, or FormRequest changed in this phase.
+
+## Demo Data & Local Testing
+- DemoDataSeeder builds deterministic local and testing data and returns early in production.
+- All generated records come from the existing actions, never duplicated logic.
+- Every record uses firstOrCreate or updateOrCreate, so repeated runs are safe.
+- DatabaseSeeder stays minimal and never invokes the demo seeder.
+- docs/local-demo.md is the single source for local run instructions and credentials.

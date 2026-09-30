@@ -161,3 +161,14 @@ Do not invent answers for these.
 - The root route always redirects (login for guests, dashboard for authenticated users) and never renders content.
 - Cross-links may only use existing named routes; no route may be invented for a link.
 - No new Accountant or Teacher permissions may be introduced by navigation changes.
+
+## Phase 10B-10 Rules
+- QA fixes only real bugs. Confirmed working behaviour must not be changed.
+- Confirmed behaviours from QA: promotion lists only active students, and post-login still lands on /families.
+
+## Phase 10C-1 Rules
+- Demo data is local and testing only. DemoDataSeeder must never run in production.
+- Demo data must be produced by existing actions, never by duplicated generation logic.
+- Demo seeding must stay idempotent so it can be re-run during development.
+- Demo credentials are throwaway and must be changed before any real deployment.
+- Demo reminders are internal outbox records and must never be sent anywhere.

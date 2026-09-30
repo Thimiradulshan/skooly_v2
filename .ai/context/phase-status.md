@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-10: Web Manual QA & Bug Fix Pass
+Phase 10C-1: Demo Data & Local Testing Setup
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -28,10 +28,11 @@ Phase 10B-10: Web Manual QA & Bug Fix Pass
 - Phase 10B-7: Web Student Promotion Pages - complete
 - Phase 10B-8: Web Payment Reminder Pages - complete
 - Phase 10B-9: Web Admin Usability & Navigation Polish - complete
-- Phase 10B-10: Web Manual QA & Bug Fix Pass - complete / pending commit
+- Phase 10B-10: Web Manual QA & Bug Fix Pass - complete
+- Phase 10C-1: Demo Data & Local Testing Setup - complete / pending commit
 
 ## Current Status
-Phase 10B-10 implementation and verification are complete. Pending review and commit.
+Phase 10C-1 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -172,11 +173,18 @@ Phase 10B-10 implementation and verification are complete. Pending review and co
 - Phase 10B-10 manual QA walked login through every main workflow. No application bugs were found and no code changes were required.
 - All 22 admin pages load, the full journey from login to payment, receipt, event dues, reminders, and promotion completes, and no destructive or API routes exist.
 - Two QA findings were behaviour confirmations, not bugs: promotion only lists active students, and post-login still lands on /families while the root route sends admins to /admin.
+- DemoDataSeeder provides deterministic local and testing data for every existing web page.
+- The seeder exits early when the environment is production, and is never called from DatabaseSeeder.
+- Demo data is produced through the existing actions, so no generation or payment logic is duplicated.
+- Demo records use firstOrCreate or updateOrCreate, so the seeder is safe to run repeatedly.
+- Demo login is admin@skooly.test with password, plus Accountant and Teacher users for access checks.
+- docs/local-demo.md documents reset, seed, run, credentials, and safety notes.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 322 tests, 1250 assertions
+- php artisan db:seed --class=DemoDataSeeder --no-interaction passed
+- php artisan test --compact: 335 tests, 1321 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -186,4 +194,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-10.
+Review git status, then commit Phase 10C-1.

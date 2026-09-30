@@ -382,7 +382,7 @@ Deferred:
 - Payment, promotion, and event features beyond existing pages.
 
 ## Phase 10B-10: Web Manual QA & Bug Fix Pass
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Manual QA checklist completed across auth, admin dashboard, families and students,
 fees and discounts, due generation and dashboard, payments and receipts, events,
@@ -407,6 +407,27 @@ Deferred:
 - Student activation after registration payment.
 - Reminder sending, queues, scheduler, and delivery providers.
 - Accountant and Teacher web access.
+
+## Phase 10C-1: Demo Data & Local Testing Setup
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- database/seeders/DemoDataSeeder.php for local and testing use only.
+- Deterministic roles, users, academic years, grades, sections, families, guardians,
+  students, enrollments, fee categories, fee structures, discount, and opt-in subscription.
+- Recurring dues, one payment with receipt, event charges, event dues, reminders, and a
+  draft promotion batch, all created through the existing workflow actions.
+- Demo Admin, Accountant, and Teacher users, where only Admin has web access.
+- DatabaseSeeder reduced to roles plus one Admin and never calls the demo seeder.
+- docs/local-demo.md with reset, seed, run, credentials, and safety notes.
+- tests/Feature/DemoDataSeederTest.php, 13 tests covering content, idempotency,
+  the production guard, and web page loading after seeding.
+
+Deferred:
+- Automatic DemoDataSeeder execution during migrate.
+- A custom artisan command wrapper for seeding.
+- Realistic large-volume demo data or performance datasets.
+- Any change to production business logic or seeding behaviour.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
