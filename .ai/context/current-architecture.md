@@ -21,10 +21,11 @@ Laravel modular monolith.
 - Students and Enrollments (Phase 4)
 - Fees, Dues and Discounts (Phase 5)
 - Payments & Receipts (Phase 6)
-- Recurring Fee Due Generation (Phase 7A, verified and pending commit)
+- Recurring Fee Due Generation (Phase 7A)
+- Events Generating Due Items (Phase 7B, verified and pending commit)
 
 ## Current Module
-- Phase 7A: Recurring Fee Due Generation is complete / pending commit.
+- Phase 7B: Events Generating Due Items is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -65,3 +66,11 @@ Laravel modular monolith.
 - Discounts are applied at generation time and snapshotted to DueItemDiscount.
 - generation_key prevents duplicate dues for the same student, category, structure, and cycle.
 - Generation is transactional and never creates payments or receipts.
+
+## Events Generating Due Items
+- Event belongs to an AcademicYear and a FeeCategory, with name, event_date, is_mandatory, and confirmed_at.
+- EventCharge holds a per-grade amount; a uniform charge is represented by equal amounts on several charges.
+- EventParticipation records opted_in or opted_out for opt-in events.
+- app/Actions/Events/GenerateEventDueItems.php generates StudentDueItems and links them via event_due_items.
+- Event dues are StudentDueItems and participate in billing like any other fee.
+- Changing an EventCharge later never rewrites an already-generated StudentDueItem.

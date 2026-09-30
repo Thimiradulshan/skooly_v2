@@ -41,3 +41,11 @@ Do not invent answers for these.
 - Automatic payment allocation remains unresolved and is not implemented.
 - Automatic sibling discount rule remains unresolved and is not implemented.
 - generation_key is the duplicate-prevention mechanism; it must stay deterministic.
+
+## Phase 7B Rules
+- Event must reference fee_category_id. Never hardcode or match an event fee category name.
+- EventCharge amount is per grade and is snapshotted at generation time.
+- EventParticipation status is opted_in or opted_out. Mandatory events ignore participation rows.
+- Duplicate generation is prevented by a deterministic generation_key.
+- Event generation never creates payments, receipts, or automatic payment allocation.
+- Participation and payment-status reporting is deferred.

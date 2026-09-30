@@ -67,7 +67,7 @@ Includes:
 - Phase 6 feature tests.
 
 ## Phase 7A: Recurring Fee Due Generation
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - app/Actions/Fees/GenerateRecurringDueItems.php.
@@ -85,7 +85,32 @@ Deferred:
 - Family combined billing aggregation
 - Dashboards
 - Reminders
-- Events
+- UI/controllers/routes
+- Promotion
+- Audit
+
+## Phase 7B: Events Generating Due Items
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- Event, EventCharge, EventParticipation, and EventDueItem models and factories.
+- events, event_charges, event_participations, and event_due_items migrations.
+- app/Actions/Events/GenerateEventDueItems.php.
+- Mandatory and opt-in event due generation for enrolled students.
+- EventCharge amount snapshots and deterministic generation_key duplicate prevention.
+- Discount application with DueItemDiscount snapshots.
+- Phase 7B feature tests.
+
+Deferred:
+- Participation and payment-status reporting
+- Scheduled automation or cron command
+- Automatic payment allocation
+- Automatic sibling discount rule
+- Payment-driven student registration activation
+- Family combined billing aggregation
+- Reminders
+- Dashboards
+- Event notifications
 - UI/controllers/routes
 - Promotion
 - Audit

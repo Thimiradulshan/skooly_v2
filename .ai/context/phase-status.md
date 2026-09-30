@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 7A: Recurring Fee Due Generation
+Phase 7B: Events Generating Due Items
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -10,10 +10,11 @@ Phase 7A: Recurring Fee Due Generation
 - Phase 4: Students & Enrollments - complete
 - Phase 5: Fees, Dues & Discounts - complete
 - Phase 6: Payments & Receipts - complete
-- Phase 7A: Recurring Fee Due Generation - complete / pending commit
+- Phase 7A: Recurring Fee Due Generation - complete
+- Phase 7B: Events Generating Due Items - complete / pending commit
 
 ## Current Status
-Phase 7A implementation and verification are complete. Pending review and commit.
+Phase 7B implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -35,11 +36,18 @@ Phase 7A implementation and verification are complete. Pending review and commit
 - Discount is clamped so net_amount never goes below 0.
 - Duplicate generation is prevented by a deterministic generation_key built from student, category, structure, and cycle.
 - Generation runs inside a DB transaction and creates no payments or receipts.
+- Event belongs to an AcademicYear and a FeeCategory. No event fee category name is hardcoded.
+- EventCharge stores a per-grade amount, unique per event and grade.
+- EventParticipation stores opted_in or opted_out, unique per event and student.
+- event_due_items links a generated StudentDueItem back to its Event.
+- Mandatory events generate for all enrolled applicable students; opt-in events generate only for opted-in students.
+- EventCharge amount is snapshotted into StudentDueItem and never rewritten later.
+- Event generation is transactional and creates no payments or receipts.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 65 tests, 178 assertions
+- php artisan test --compact: 80 tests, 235 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -49,4 +57,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 7A.
+Review git status, then commit Phase 7B.
