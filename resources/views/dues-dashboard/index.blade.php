@@ -101,7 +101,7 @@
         <div class="metric"><span class="metric-label">Due items</span><span class="metric-value">{{ $report['summary']['due_item_count'] }}</span></div>
         <div class="metric">
             <span class="metric-label">Status</span>
-            <span class="metric-value" style="font-size:0.95rem">
+            <span class="metric-status">
                 <x-status-badge value="unpaid" /> {{ $report['summary']['unpaid_count'] }}
                 &nbsp;<x-status-badge value="partially_paid" /> {{ $report['summary']['partially_paid_count'] }}
                 &nbsp;<x-status-badge value="paid" /> {{ $report['summary']['paid_count'] }}

@@ -73,8 +73,7 @@
                                 <td class="num">{{ $dueItem->balance_amount }}</td>
                                 <td class="num">
                                     <input type="hidden" name="allocations[{{ $index }}][student_due_item_id]" value="{{ $dueItem->id }}">
-                                    <input class="form-control" type="number" min="0.01" step="0.01"
-                                           style="max-width: 9rem; margin-left: auto"
+                                    <input class="form-control compact-input" type="number" min="0.01" step="0.01"
                                            name="allocations[{{ $index }}][amount]"
                                            value="{{ old("allocations.$index.amount") }}">
                                 </td>

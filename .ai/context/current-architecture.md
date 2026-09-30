@@ -43,10 +43,11 @@ Laravel modular monolith.
 - Demo Data & Local Testing Setup (Phase 10C-1)
 - Deployment Readiness & Security Review (Phase 10C-2)
 - System Understanding, Data Flow & UX Map (Phase 10C-3)
-- Admin UI/UX Foundation & Login Redesign (Phase 10C-4, verified and pending commit)
+- Admin UI/UX Foundation & Login Redesign (Phase 10C-4)
+- Commercial Admin UI/UX Redesign (Phase 10C-4B, verified and pending commit)
 
 ## Current Module
-- Phase 10C-4: Admin UI/UX Foundation & Login Redesign is complete / pending commit.
+- Phase 10C-4B: Commercial Admin UI/UX Redesign is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -243,3 +244,4 @@ Laravel modular monolith.
   and committing a build artifact would be worse than a static stylesheet.
 - resources/views/components holds the shared UI components. Views stay free of design duplication.
 - Navigation is a grouped sidebar rendered once in the layout. Views never repeat it.
+- The commercial shell is dark sidebar plus light workspace, with a CSS-only mobile drawer.

@@ -479,7 +479,7 @@ Key finding: there is no web screen for academic setup, so years, terms, grades,
 sections still require console access. This is recorded as a High severity gap.
 
 ## Phase 10C-4: Admin UI/UX Foundation & Login Redesign
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Presentation only. No business logic, model, migration, controller, or FormRequest changed.
 
@@ -496,6 +496,27 @@ Implemented:
 Key decision: public/build is gitignored, so the Vite and Tailwind pipeline would
 break every page on a fresh checkout. The prompt's documented fallback was used
 instead: one static CSS file linked from the layout, with no build step.
+
+## Phase 10C-4B: Commercial Admin UI/UX Redesign
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Presentation only. No backend logic, model, migration, controller, or request changed.
+
+Redesigned:
+- Admin shell: dark institutional sidebar, light workspace, sticky topbar, CSS-only mobile drawer.
+- Login: split layout with a brand story panel and a focused sign-in card.
+- Dashboard: product home with stat cards and grouped workflow cards.
+- Panels: double-bezel frames, raised surfaces, layered depth, stronger hierarchy.
+- Forms, tables, detail rows, empty states, alerts, and status badges restyled.
+- Responsive behaviour down to small screens, with reduced-motion support.
+
+Added:
+- x-stat-card and x-form-section components.
+- x-card now renders a framed panel.
+- tests/Feature/WebCommercialUiTest.php, 16 tests.
+
+Carried forward: the static CSS decision from 10C-4, because the
+Vite and Tailwind build output is gitignored.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

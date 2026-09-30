@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10C-4: Admin UI/UX Foundation & Login Redesign
+Phase 10C-4B: Commercial Admin UI/UX Redesign
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -32,10 +32,11 @@ Phase 10C-4: Admin UI/UX Foundation & Login Redesign
 - Phase 10C-1: Demo Data & Local Testing Setup - complete
 - Phase 10C-2: Deployment Readiness & Security Review - complete
 - Phase 10C-3: System Understanding, Data Flow & UX Map - complete
-- Phase 10C-4: Admin UI/UX Foundation & Login Redesign - complete / pending commit
+- Phase 10C-4: Admin UI/UX Foundation & Login Redesign - complete
+- Phase 10C-4B: Commercial Admin UI/UX Redesign - complete / pending commit
 
 ## Current Status
-Phase 10C-4 implementation and verification are complete. Pending review and commit.
+Phase 10C-4B implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -197,12 +198,20 @@ Phase 10C-4 implementation and verification are complete. Pending review and com
 - Forms, tables, detail pages, empty states, and status badges use shared classes.
 - Six reusable Blade components were added under resources/views/components.
 - Field names, route names, and queries are unchanged. The full existing suite passes untouched.
+- Phase 10C-4B is presentation only. No backend logic, model, migration, controller, or request changed.
+- The admin shell is a dark institutional sidebar plus a light operational workspace with a sticky topbar.
+- A CSS-only mobile drawer replaces the previous wrap-on-mobile navigation.
+- The login page uses a split layout: a brand story panel and a focused sign-in card.
+- The dashboard is a product home with stat cards and grouped workflow cards.
+- Panels use a double-bezel frame, raised surfaces, and layered depth.
+- New components: stat-card and form-section. Card now renders a framed panel.
+- Visual QA was code and test based only. No browser was available in this environment.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
 - php artisan db:seed --class=DemoDataSeeder --no-interaction passed
-- php artisan test --compact: 356 tests, 1537 assertions
+- php artisan test --compact: 372 tests, 1666 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -212,4 +221,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10C-4.
+Review git status, then commit Phase 10C-4B.

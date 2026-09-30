@@ -3,93 +3,95 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <x-page-header title="Admin dashboard"
-                   subtitle="Everything the office needs, from registration through collection." />
+    <x-page-header title="Operations overview"
+                   subtitle="Start a workflow or review what needs attention across the school."
+                   eyebrow="Today" />
 
-    <div class="card-grid">
-        <div class="metric">
-            <span class="metric-label">Families</span>
-            <span class="metric-value">{{ $familyCount }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Students</span>
-            <span class="metric-value">{{ $studentCount }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Outstanding due items</span>
-            <span class="metric-value">{{ $outstandingCount }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Draft promotion batches</span>
-            <span class="metric-value">{{ $draftBatchCount }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Payment reminders</span>
-            <span class="metric-value">{{ $reminderCount }}</span>
-        </div>
+    <div class="card-grid" data-testid="dashboard-metrics">
+        <x-stat-card label="Families" :value="$familyCount" hint="Registered households" />
+        <x-stat-card label="Students" :value="$studentCount" hint="Student profiles" />
+        <x-stat-card label="Outstanding due items" :value="$outstandingCount" hint="Require collection" />
+        <x-stat-card label="Draft promotion batches" :value="$draftBatchCount" hint="Awaiting confirmation" />
+        <x-stat-card label="Payment reminders" :value="$reminderCount" hint="Internal outbox records" />
     </div>
 
     <h2 class="section-heading">Registration</h2>
     <div class="card-grid">
         <a class="workflow-card" href="{{ route('families.index') }}">
-            <span class="workflow-card-title">Families</span>
-            <p class="workflow-card-text">Review households, guardians, and students.</p>
+            <span>
+                <span class="workflow-card-title">Families &amp; students</span>
+                <span class="workflow-card-text">Review households, guardians, and enrolled students.</span>
+            </span>
         </a>
         <a class="workflow-card" href="{{ route('families.create') }}">
-            <span class="workflow-card-title">Create family</span>
-            <p class="workflow-card-text">Start a new household with its guardians.</p>
+            <span>
+                <span class="workflow-card-title">Create family</span>
+                <span class="workflow-card-text">Start a household record and add its first guardian.</span>
+            </span>
         </a>
     </div>
 
     <h2 class="section-heading">Fees &amp; dues</h2>
     <div class="card-grid">
         <a class="workflow-card" href="{{ route('fee-categories.index') }}">
-            <span class="workflow-card-title">Fee categories</span>
-            <p class="workflow-card-text">Decide what can be charged and how it behaves.</p>
-        </a>
-        <a class="workflow-card" href="{{ route('fee-structures.index') }}">
-            <span class="workflow-card-title">Fee structures</span>
-            <p class="workflow-card-text">Set amounts per grade and academic year.</p>
+            <span>
+                <span class="workflow-card-title">Fee setup</span>
+                <span class="workflow-card-text">Manage categories and year-specific fee structures.</span>
+            </span>
         </a>
         <a class="workflow-card" href="{{ route('due-generation.recurring.create') }}">
-            <span class="workflow-card-title">Recurring due generation</span>
-            <p class="workflow-card-text">Turn fee structures into payable amounts.</p>
+            <span>
+                <span class="workflow-card-title">Generate recurring dues</span>
+                <span class="workflow-card-text">Turn active fee structures into payable student items.</span>
+            </span>
         </a>
         <a class="workflow-card" href="{{ route('dues-dashboard.index') }}">
-            <span class="workflow-card-title">Dues dashboard</span>
-            <p class="workflow-card-text">See what is due, collected, and outstanding.</p>
+            <span>
+                <span class="workflow-card-title">Dues dashboard</span>
+                <span class="workflow-card-text">Review due, collected, and outstanding balances.</span>
+            </span>
         </a>
     </div>
 
     <h2 class="section-heading">Payments</h2>
     <div class="card-grid">
         <a class="workflow-card" href="{{ route('families.index') }}">
-            <span class="workflow-card-title">Record a payment</span>
-            <p class="workflow-card-text">Open a family to settle its outstanding due items.</p>
+            <span>
+                <span class="workflow-card-title">Record a payment</span>
+                <span class="workflow-card-text">Open a family and allocate a payment manually.</span>
+            </span>
         </a>
     </div>
 
     <h2 class="section-heading">Events &amp; promotion</h2>
     <div class="card-grid">
         <a class="workflow-card" href="{{ route('events.index') }}">
-            <span class="workflow-card-title">Events</span>
-            <p class="workflow-card-text">Create events, charges, and participation.</p>
+            <span>
+                <span class="workflow-card-title">Events</span>
+                <span class="workflow-card-text">Create events, charges, and participation records.</span>
+            </span>
         </a>
         <a class="workflow-card" href="{{ route('due-generation.events.create') }}">
-            <span class="workflow-card-title">Event due generation</span>
-            <p class="workflow-card-text">Charge the applicable students for an event.</p>
+            <span>
+                <span class="workflow-card-title">Generate event dues</span>
+                <span class="workflow-card-text">Charge applicable students for an existing event.</span>
+            </span>
         </a>
         <a class="workflow-card" href="{{ route('promotion-batches.index') }}">
-            <span class="workflow-card-title">Promotion</span>
-            <p class="workflow-card-text">Move students into the next academic year.</p>
+            <span>
+                <span class="workflow-card-title">Promotion</span>
+                <span class="workflow-card-text">Review and confirm year-to-year student movement.</span>
+            </span>
         </a>
     </div>
 
     <h2 class="section-heading">Reminders</h2>
     <div class="card-grid">
         <a class="workflow-card" href="{{ route('payment-reminders.index') }}">
-            <span class="workflow-card-title">Payment reminders</span>
-            <p class="workflow-card-text">Preview which guardians need telling about balances.</p>
+            <span>
+                <span class="workflow-card-title">Payment reminders</span>
+                <span class="workflow-card-text">Generate and preview the internal reminder outbox.</span>
+            </span>
         </a>
     </div>
 @endsection

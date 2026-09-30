@@ -31,7 +31,8 @@ Use this file before broad project reinspection.
 - Phase 10C-1 Demo Data & Local Testing Setup: complete.
 - Phase 10C-2 Deployment Readiness & Security Review: complete.
 - Phase 10C-3 System Understanding, Data Flow & UX Map: complete.
-- Phase 10C-4 Admin UI/UX Foundation & Login Redesign: complete and verified; pending commit.
+- Phase 10C-4 Admin UI/UX Foundation & Login Redesign: complete.
+- Phase 10C-4B Commercial Admin UI/UX Redesign: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -158,6 +159,7 @@ Use this file before broad project reinspection.
 - The admin UI is a static plain-CSS design system in public/css/admin.css. No build step and no npm packages.
 - Navigation lives once in the sidebar. New pages must add their link there, not repeat markup.
 - Shared UI pieces live in resources/views/components. Reuse them instead of restyling per view.
+- The shell is a dark sidebar plus light workspace with a CSS-only mobile drawer. Login is a split layout.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
@@ -211,4 +213,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh and DemoDataSeeder passed; 356 tests / 1537 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh and DemoDataSeeder passed; 372 tests / 1666 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
