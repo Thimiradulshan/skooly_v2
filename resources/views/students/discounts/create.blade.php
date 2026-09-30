@@ -3,11 +3,20 @@
 @section('title', 'Apply discount')
 
 @section('content')
+    <div class="breadcrumb">
+        <a href="{{ route('families.index') }}">Families</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="{{ route('families.show', $student->family_id) }}">{{ $student->family?->family_code }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{{ $student->name }}</span>
+    </div>
+
     <x-page-header :title="'Apply a discount to '.$student->name"
-                   subtitle="The discount applies when due items are generated." />
+                   subtitle="The discount applies when due items are generated."
+                   eyebrow="Fees and dues" />
 
     <x-card>
-        <form method="POST" action="{{ route('students.discounts.store', $student) }}">
+        <form method="POST" action="{{ route('students.discounts.store', $student) }}" data-loading>
             @csrf
 
             <div class="form-grid">

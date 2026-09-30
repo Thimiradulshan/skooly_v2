@@ -23,7 +23,7 @@
         @endif
 
         <x-card>
-            <form method="POST" action="{{ route('events.participation.store', $event) }}">
+            <form method="POST" action="{{ route('events.participation.store', $event) }}" data-loading>
                 @csrf
 
                 <div class="form-field">

@@ -7,7 +7,7 @@
                    subtitle="A family is the household that is billed for its students." />
 
     <x-card>
-        <form method="POST" action="{{ route('families.store') }}">
+        <form method="POST" action="{{ route('families.store') }}" data-loading>
             @csrf
 
             <div class="form-grid">

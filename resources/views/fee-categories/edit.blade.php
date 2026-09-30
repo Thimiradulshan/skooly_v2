@@ -6,7 +6,7 @@
     <x-page-header :title="'Edit '.$feeCategory->name" subtitle="Update the category behaviour." />
 
     <x-card>
-        <form method="POST" action="{{ route('fee-categories.update', $feeCategory) }}">
+        <form method="POST" action="{{ route('fee-categories.update', $feeCategory) }}" data-loading>
             @csrf
             @method('PUT')
 

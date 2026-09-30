@@ -4,19 +4,33 @@
 
 @section('content')
     <x-page-header :title="'Record a payment for '.$family->family_code"
-                   subtitle="Allocate the money manually against outstanding due items." />
+                   subtitle="Allocate the money manually against outstanding due items."
+                   eyebrow="Payments" />
+
+    <div class="page-actions">
+        <x-button-link :href="route('families.show', $family)" variant="secondary">Back to family</x-button-link>
+    </div>
 
     @if ($dueItems->isEmpty())
         <x-empty-state title="No outstanding due items"
                        description="Generate due items before recording a payment for this family." />
 
         <div class="page-actions">
-            <x-button-link :href="route('due-generation.recurring.create')" variant="secondary">Generate recurring dues</x-button-link>
-            <a class="btn btn-secondary" href="{{ route('families.show', $family) }}">Back to family</a>
+            <x-button-link :href="route('due-generation.recurring.create')">Generate recurring dues</x-button-link>
         </div>
     @else
+        <div class="callout">
+            <span class="callout-mark" aria-hidden="1">1</span>
+            <p>Allocation is entirely manual. Enter an amount only against a due item you are settling, then set the total to match the sum of those allocations.</p>
+        </div>
+
         <x-card>
-            <form method="POST" action="{{ route('families.payments.store', $family) }}">
+            <form method="POST" action="{{ route('families.payments.store', $family) }}"
+                  data-confirm="Record this payment? Due item balances will be reduced and a receipt will be created. Payments cannot be edited or reversed from this screen."
+                  data-confirm-title="Record payment"
+                  data-confirm-action="Record payment"
+                  data-confirm-tone="danger"
+                  data-loading>
                 @csrf
 
                 <div class="form-grid">
@@ -24,7 +38,7 @@
                         <label class="form-label" for="receipt_no">Receipt number <span class="req">*</span></label>
                         <input class="form-control" type="text" id="receipt_no" name="receipt_no"
                                value="{{ old('receipt_no') }}" required>
-                        <span class="form-help">Must be unique. There is no generated sequence yet.</span>
+                        <span class="form-help">Must be unique. There is no generated sequence yet, so a duplicate is rejected.</span>
                     </div>
 
                     <div class="form-field">
@@ -86,8 +100,7 @@
                 <div class="btn-row">
                     <button type="submit" class="btn">Record manual payment</button>
                     <a class="btn btn-secondary" href="{{ route('families.show', $family) }}">Cancel</a>
-                </div>
-            </form>
+                </div>            </form>
         </x-card>
     @endif
 @endsection

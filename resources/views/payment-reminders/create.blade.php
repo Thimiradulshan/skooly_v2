@@ -4,10 +4,19 @@
 
 @section('content')
     <x-page-header title="Generate reminder records"
-                   subtitle="Finds guardians linked to students with outstanding due items." />
+                   subtitle="Finds guardians linked to students with outstanding due items."
+                   eyebrow="Communication" />
+
+    <div class="page-actions">
+        <x-button-link :href="route('payment-reminders.index')" variant="secondary">Back to reminders</x-button-link>
+    </div>
 
     <x-card>
-        <form method="POST" action="{{ route('payment-reminders.store') }}">
+        <form method="POST" action="{{ route('payment-reminders.store') }}"
+              data-confirm="Generate reminder records for the selected date? Only guardians explicitly linked to a student will be included."
+              data-confirm-title="Generate reminders"
+              data-confirm-action="Generate reminders"
+              data-loading>
             @csrf
 
             <div class="form-grid">
@@ -55,6 +64,11 @@
             </div>
         </form>
     </x-card>
+
+    <div class="callout">
+        <span class="callout-mark" aria-hidden="true">i</span>
+        <p>These are internal outbox records. Nothing is emailed, texted, or messaged, and reminders are never marked as sent.</p>
+    </div>
 
     <p class="note">Only guardians explicitly linked to a student are included. Running this twice for the same as-of date is safe.</p>
 @endsection

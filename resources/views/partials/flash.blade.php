@@ -1,9 +1,9 @@
 @if (session('status'))
-    <x-alert type="success">{{ session('status') }}</x-alert>
+    <div data-flash-message="{{ session('status') }}" data-flash-tone="success" hidden></div>
 @endif
 
 @if (session('error'))
-    <x-alert type="error">{{ session('error') }}</x-alert>
+    <div data-flash-message="{{ session('error') }}" data-flash-tone="error" hidden></div>
 @endif
 
 @if ($errors->any())

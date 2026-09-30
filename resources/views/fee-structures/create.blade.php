@@ -7,7 +7,7 @@
                    subtitle="Structures are versioned by academic year, so last year's price is never affected." />
 
     <x-card>
-        <form method="POST" action="{{ route('fee-structures.store') }}">
+        <form method="POST" action="{{ route('fee-structures.store') }}" data-loading>
             @csrf
 
             <div class="form-grid">

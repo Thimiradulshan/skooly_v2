@@ -85,7 +85,15 @@
                     </td>
                 </tr>
             @empty
-                <tr class="table-empty"><td colspan="7">No reminder records yet.</td></tr>
+                <tr class="table-empty">
+                    <td colspan="7">
+                        <span class="empty-state-title">No reminder records yet</span>
+                        Generate reminders for guardians linked to students with outstanding balances.
+                        <div class="empty-actions">
+                            <x-button-link :href="route('payment-reminders.create')" size="small">Generate reminders</x-button-link>
+                        </div>
+                    </td>
+                </tr>
             @endforelse
             </tbody>
         </table>

@@ -44,10 +44,11 @@ Laravel modular monolith.
 - Deployment Readiness & Security Review (Phase 10C-2)
 - System Understanding, Data Flow & UX Map (Phase 10C-3)
 - Admin UI/UX Foundation & Login Redesign (Phase 10C-4)
-- Commercial Admin UI/UX Redesign (Phase 10C-4B, verified and pending commit)
+- Commercial Admin UI/UX Redesign (Phase 10C-4B)
+- Commercial UI/UX Defect Audit and Workflow Completion (Phase 10C-4C, verified and pending commit)
 
 ## Current Module
-- Phase 10C-4B: Commercial Admin UI/UX Redesign is complete / pending commit.
+- Phase 10C-4C: Commercial UI/UX Defect Audit and Workflow Completion is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -245,3 +246,7 @@ Laravel modular monolith.
 - resources/views/components holds the shared UI components. Views stay free of design duplication.
 - Navigation is a grouped sidebar rendered once in the layout. Views never repeat it.
 - The commercial shell is dark sidebar plus light workspace, with a CSS-only mobile drawer.
+- public/js/admin-ui.js provides toasts, confirmations, and submit loading. It is local, has no
+  build step, and degrades gracefully: if it fails to load, forms still submit normally.
+- Irreversible-looking actions are marked with data-confirm. Write forms use data-loading.
+- docs/ui-ux-defect-audit.md is the record of audited screens and their remaining limits.

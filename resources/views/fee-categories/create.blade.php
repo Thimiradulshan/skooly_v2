@@ -6,7 +6,7 @@
     <x-page-header title="Create fee category" subtitle="Define a chargeable category." />
 
     <x-card>
-        <form method="POST" action="{{ route('fee-categories.store') }}">
+        <form method="POST" action="{{ route('fee-categories.store') }}" data-loading>
             @csrf
 
             <div class="form-field">

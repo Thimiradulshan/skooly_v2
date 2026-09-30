@@ -498,7 +498,7 @@ break every page on a fresh checkout. The prompt's documented fallback was used
 instead: one static CSS file linked from the layout, with no build step.
 
 ## Phase 10C-4B: Commercial Admin UI/UX Redesign
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Presentation only. No backend logic, model, migration, controller, or request changed.
 
@@ -517,6 +517,31 @@ Added:
 
 Carried forward: the static CSS decision from 10C-4, because the
 Vite and Tailwind build output is gitignored.
+
+## Phase 10C-4C: Commercial UI/UX Defect Audit and Workflow Completion
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Presentation and workflow navigation only. No backend behaviour changed.
+
+Audited and fixed:
+- Missing workflow actions: confirmations, loading states, empty-state calls to
+  action, breadcrumbs, primary-action hierarchy, and back links were added or corrected
+  across every existing screen.
+- No confirmation existed on any irreversible-looking action. Five now confirm first:
+  recurring generation, event generation, payment, reminders, and promotion.
+- No submit loading state existed. All write forms now disable and mark themselves busy.
+- Flash messages were static blocks. They are now dismissible toasts.
+- Empty states were dead text. They now explain the prerequisite and offer the next step.
+- The receipt page did not read as a receipt. It is now a printable receipt sheet.
+- Reminder screens understated that nothing is sent. This is now a labelled callout.
+
+Added:
+- public/js/admin-ui.js. Local, dependency free, no CDN, no build step.
+- docs/ui-ux-defect-audit.md.
+- tests/Feature/WebCommercialWorkflowUiTest.php, 20 tests.
+
+Rejected: SweetAlert2, because the Vite build output is gitignored and depending on
+it would break a fresh checkout and the test suite.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

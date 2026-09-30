@@ -7,7 +7,7 @@
                    subtitle="A draft only. Nothing changes until you confirm it." />
 
     <x-card>
-        <form method="POST" action="{{ route('promotion-batches.store') }}">
+        <form method="POST" action="{{ route('promotion-batches.store') }}" data-loading>
             @csrf
 
             <div class="form-grid">

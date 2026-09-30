@@ -116,12 +116,14 @@ it('renders the shared card, table, and empty state structure', function () {
         ->get(route('families.index'))
         ->assertOk()
         ->assertSee('table-wrap', false)
-        ->assertSee('No families yet.', false);
+        ->assertSee('No families yet', false)
+        ->assertSee(route('families.create', [], false), false);
 
     $this->actingAs(adminUser())
         ->get(route('fee-categories.index'))
         ->assertOk()
-        ->assertSee('No fee categories yet.', false);
+        ->assertSee('No fee categories yet', false)
+        ->assertSee(route('fee-categories.create', [], false), false);
 });
 
 it('keeps the destructive routes absent after the redesign', function () {

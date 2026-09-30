@@ -103,5 +103,7 @@
         @yield('content')
     </div>
 @endauth
+
+<script src="{{ asset('js/admin-ui.js') }}" defer></script>
 </body>
 </html>

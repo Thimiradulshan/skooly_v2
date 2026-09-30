@@ -4,10 +4,20 @@
 
 @section('content')
     <x-page-header title="Recurring due generation"
-                   subtitle="Turn recurring fee structures into payable due items for a cycle." />
+                   subtitle="Turn recurring fee structures into payable due items for a cycle."
+                   eyebrow="Fees and dues" />
+
+    <div class="page-actions">
+        <x-button-link :href="route('dues-dashboard.index')" variant="secondary">Back to dues dashboard</x-button-link>
+        <x-button-link :href="route('fee-structures.index')" variant="secondary">Fee structures</x-button-link>
+    </div>
 
     <x-card>
-        <form method="POST" action="{{ route('due-generation.recurring.store') }}">
+        <form method="POST" action="{{ route('due-generation.recurring.store') }}"
+              data-confirm="Generate recurring due items for the selected cycle? Existing due items are never changed, and running this twice is safe."
+              data-confirm-title="Generate recurring dues"
+              data-confirm-action="Generate dues"
+              data-loading>
             @csrf
 
             <div class="form-grid">
@@ -39,10 +49,13 @@
 
             <div class="btn-row">
                 <button type="submit" class="btn">Generate recurring dues</button>
-                <x-button-link :href="route('dues-dashboard.index')" variant="secondary">View dashboard</x-button-link>
+                <a class="btn btn-secondary" href="{{ route('dues-dashboard.index') }}">Cancel</a>
             </div>
         </form>
     </x-card>
 
-    <p class="note">Generation respects opt-in subscriptions and applies each student's active discounts.</p>
+    <div class="callout">
+        <span class="callout-mark" aria-hidden="true">i</span>
+        <p>Generation respects opt-in subscriptions and applies each student's active discounts. Opt-in categories are only charged to students with an active subscription.</p>
+    </div>
 @endsection

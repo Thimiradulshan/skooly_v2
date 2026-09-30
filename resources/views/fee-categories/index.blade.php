@@ -28,7 +28,15 @@
                     </td>
                 </tr>
             @empty
-                <tr class="table-empty"><td colspan="4">No fee categories yet.</td></tr>
+                <tr class="table-empty">
+                    <td colspan="4">
+                        <span class="empty-state-title">No fee categories yet</span>
+                        Define what can be charged before adding fee structures.
+                        <div class="empty-actions">
+                            <x-button-link :href="route('fee-categories.create')" size="small">Create fee category</x-button-link>
+                        </div>
+                    </td>
+                </tr>
             @endforelse
             </tbody>
         </table>

@@ -26,7 +26,15 @@
                     <td>{{ $feeStructure->frequency }}</td>
                 </tr>
             @empty
-                <tr class="table-empty"><td colspan="5">No fee structures yet.</td></tr>
+                <tr class="table-empty">
+                    <td colspan="5">
+                        <span class="empty-state-title">No fee structures yet</span>
+                        Set an amount per grade and academic year to enable due generation.
+                        <div class="empty-actions">
+                            <x-button-link :href="route('fee-structures.create')" size="small">Create fee structure</x-button-link>
+                        </div>
+                    </td>
+                </tr>
             @endforelse
             </tbody>
         </table>

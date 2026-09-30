@@ -3,7 +3,7 @@
 @section('title', 'Promotion batch')
 
 @section('content')
-    <x-page-header title="Promotion batch" subtitle="Review the items, then confirm to apply them." />
+    <x-page-header title="Promotion batch" subtitle="Review the items, then confirm to apply them." eyebrow="Academic progress" />
 
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('promotion-batches.index') }}">Back to promotion batches</a>
@@ -55,14 +55,19 @@
     </x-card>
 
     @if ($promotionBatch->status === \App\Models\PromotionBatch::STATUS_DRAFT)
-        <x-alert type="info" title="Confirming cannot be undone.">
-            Confirming creates target-year enrollments in one transaction and never changes source-year enrollments.
-            It does not create any fee items.
-        </x-alert>
+        <div class="callout">
+            <span class="callout-mark" aria-hidden="true">!</span>
+            <p>Confirming creates target-year enrollments in one transaction and never changes source-year enrollments. It does not create any fee items, and it cannot be reversed from this screen.</p>
+        </div>
 
-        <form method="POST" action="{{ route('promotion-batches.confirm', $promotionBatch) }}">
+        <form method="POST" action="{{ route('promotion-batches.confirm', $promotionBatch) }}"
+              data-confirm="Confirm this promotion batch? Target-year enrollments will be created for every eligible item. This cannot be undone here."
+              data-confirm-title="Confirm promotion batch"
+              data-confirm-action="Confirm promotion"
+              data-confirm-tone="danger"
+              data-loading>
             @csrf
-            <button type="submit" class="btn">Confirm promotion batch</button>
+            <button type="submit" class="btn btn-danger">Confirm promotion batch</button>
         </form>
     @endif
 @endsection

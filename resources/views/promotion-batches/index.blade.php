@@ -25,7 +25,15 @@
                     <td>{{ $promotionBatch->confirmed_at?->toDateTimeString() }}</td>
                 </tr>
             @empty
-                <tr class="table-empty"><td colspan="5">No promotion batches yet.</td></tr>
+                <tr class="table-empty">
+                    <td colspan="5">
+                        <span class="empty-state-title">No promotion batches yet</span>
+                        Create a draft to review target grades before confirming.
+                        <div class="empty-actions">
+                            <x-button-link :href="route('promotion-batches.create')" size="small">Create promotion batch</x-button-link>
+                        </div>
+                    </td>
+                </tr>
             @endforelse
             </tbody>
         </table>

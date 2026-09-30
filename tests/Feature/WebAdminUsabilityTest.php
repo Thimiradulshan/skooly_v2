@@ -114,7 +114,7 @@ it('shows an empty state when no families exist', function () {
     $this->actingAs(adminUser())
         ->get(route('families.index'))
         ->assertOk()
-        ->assertSee('No families yet.');
+        ->assertSee('No families yet', false);
 });
 
 it('renders a success flash message from session', function () {

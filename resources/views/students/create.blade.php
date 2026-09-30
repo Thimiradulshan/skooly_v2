@@ -3,11 +3,20 @@
 @section('title', 'Register student')
 
 @section('content')
+    <div class="breadcrumb">
+        <a href="{{ route('families.index') }}">Families</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="{{ route('families.show', $family) }}">{{ $family->family_code }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Register student</span>
+    </div>
+
     <x-page-header :title="'Register a student for '.$family->family_code"
-                   subtitle="Only the guardians you tick will be able to access this student." />
+                   subtitle="Only the guardians you tick will be able to access this student."
+                   eyebrow="Registration" />
 
     <x-card>
-        <form method="POST" action="{{ route('families.students.store', $family) }}">
+        <form method="POST" action="{{ route('families.students.store', $family) }}" data-loading>
             @csrf
 
             <div class="form-grid">

@@ -3,11 +3,23 @@
 @section('title', 'Payment reminder '.$paymentReminder->id)
 
 @section('content')
+    <div class="breadcrumb">
+        <a href="{{ route('payment-reminders.index') }}">Payment reminders</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Reminder {{ $paymentReminder->id }}</span>
+    </div>
+
     <x-page-header :title="'Payment reminder '.$paymentReminder->id"
-                   subtitle="Stored preview of what would be sent to this guardian." />
+                   subtitle="Stored preview of what would be sent to this guardian."
+                   eyebrow="Communication" />
 
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('payment-reminders.index') }}">Back to payment reminders</a>
+    </div>
+
+    <div class="callout" data-testid="reminder-not-sent">
+        <span class="callout-mark" aria-hidden="true">i</span>
+        <p><strong>Preview only.</strong> This is an internal outbox record. Nothing has been sent, no email, SMS, or WhatsApp provider is connected, and this record is never marked as sent.</p>
     </div>
 
     <x-card title="Reminder">

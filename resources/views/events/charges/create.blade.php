@@ -6,7 +6,7 @@
     <x-page-header :title="'Add a charge to '.$event->name" subtitle="One charge per grade and amount." />
 
     <x-card>
-        <form method="POST" action="{{ route('events.charges.store', $event) }}">
+        <form method="POST" action="{{ route('events.charges.store', $event) }}" data-loading>
             @csrf
 
             <div class="form-grid">

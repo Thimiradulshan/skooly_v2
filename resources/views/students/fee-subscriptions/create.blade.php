@@ -3,11 +3,20 @@
 @section('title', 'Add fee subscription')
 
 @section('content')
+    <div class="breadcrumb">
+        <a href="{{ route('families.index') }}">Families</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="{{ route('families.show', $student->family_id) }}">{{ $student->family?->family_code }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{{ $student->name }}</span>
+    </div>
+
     <x-page-header :title="'Add a fee subscription for '.$student->name"
-                   subtitle="Only opt-in categories can be subscribed." />
+                   subtitle="Only opt-in categories can be subscribed."
+                   eyebrow="Fees and dues" />
 
     <x-card>
-        <form method="POST" action="{{ route('students.fee-subscriptions.store', $student) }}">
+        <form method="POST" action="{{ route('students.fee-subscriptions.store', $student) }}" data-loading>
             @csrf
 
             <div class="form-grid">

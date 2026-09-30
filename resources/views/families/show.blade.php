@@ -3,7 +3,13 @@
 @section('title', $family->family_code)
 
 @section('content')
-    <x-page-header :title="$family->family_code" subtitle="Family details, guardians, and students." />
+    <div class="breadcrumb">
+        <a href="{{ route('families.index') }}">Families</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{{ $family->family_code }}</span>
+    </div>
+
+    <x-page-header :title="$family->family_code" subtitle="Family details, guardians, and students." eyebrow="Registration" />
 
     <div class="page-actions">
         <x-button-link :href="route('families.edit', $family)">Edit family</x-button-link>

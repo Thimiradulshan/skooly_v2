@@ -4,7 +4,8 @@
 
 @section('content')
     <x-page-header title="Families"
-                   subtitle="Every household, its guardians, and its students." />
+                   subtitle="Every household, its guardians, and its students."
+                   eyebrow="Registration" />
 
     <div class="page-actions">
         <x-button-link :href="route('families.create')">Create family</x-button-link>
@@ -36,7 +37,13 @@
                 </tr>
             @empty
                 <tr class="table-empty">
-                    <td colspan="6">No families yet.</td>
+                    <td colspan="6">
+                        <span class="empty-state-title">No families yet</span>
+                        Create the first household to register guardians and students.
+                        <div class="empty-actions">
+                            <x-button-link :href="route('families.create')" size="small">Create family</x-button-link>
+                        </div>
+                    </td>
                 </tr>
             @endforelse
             </tbody>

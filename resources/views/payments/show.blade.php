@@ -3,7 +3,15 @@
 @section('title', 'Payment '.$payment->id)
 
 @section('content')
-    <x-page-header :title="'Payment '.$payment->id" subtitle="Recorded payment and its allocations." />
+    <div class="breadcrumb">
+        <a href="{{ route('families.index') }}">Families</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="{{ route('families.show', $payment->family) }}">{{ $payment->family->family_code }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Payment {{ $payment->id }}</span>
+    </div>
+
+    <x-page-header :title="'Payment '.$payment->id" subtitle="Recorded payment and its allocations." eyebrow="Payments" />
 
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('families.show', $payment->family) }}">Back to family</a>

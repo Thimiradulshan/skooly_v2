@@ -3,10 +3,16 @@
 @section('title', $event->name)
 
 @section('content')
-    <x-page-header :title="$event->name" subtitle="Event details, charges, and participation." />
+    <div class="breadcrumb">
+        <a href="{{ route('events.index') }}">Events</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{{ $event->name }}</span>
+    </div>
+
+    <x-page-header :title="$event->name" subtitle="Event details, charges, and participation." eyebrow="School life" />
 
     <div class="page-actions">
-        <x-button-link :href="route('events.edit', $event)" variant="secondary">Edit event</x-button-link>
+        <x-button-link :href="route('events.edit', $event)">Edit event</x-button-link>
         <x-button-link :href="route('events.charges.create', $event)" variant="secondary">Add charge</x-button-link>
         <x-button-link :href="route('events.participation.create', $event)" variant="secondary">Manage participation</x-button-link>
         <x-button-link :href="route('due-generation.events.create')" variant="secondary">Generate event dues</x-button-link>
@@ -24,7 +30,7 @@
         </dl>
     </x-card>
 
-    <x-card title="Charges">
+        <x-card title="Charges">
         <div class="table-wrap">
             <table class="table">
                 <thead><tr><th>Grade</th><th class="num">Amount</th></tr></thead>
@@ -35,7 +41,15 @@
                         <td class="num">{{ $charge->amount }}</td>
                     </tr>
                 @empty
-                    <tr class="table-empty"><td colspan="2">No charges yet.</td></tr>
+                    <tr class="table-empty">
+                        <td colspan="2">
+                            <span class="empty-state-title">No charges yet</span>
+                            Add a charge so the event can generate dues.
+                            <div class="empty-actions">
+                                <x-button-link :href="route('events.charges.create', $event)" size="small">Add charge</x-button-link>
+                            </div>
+                        </td>
+                    </tr>
                 @endforelse
                 </tbody>
             </table>
@@ -62,4 +76,9 @@
         </div>
         <p class="note">Participation only affects opt-in events. Mandatory events charge every enrolled student.</p>
     </x-card>
+
+    <div class="callout">
+        <span class="callout-mark" aria-hidden="true">i</span>
+        <p>Dues for this event are only created from the event due generation page. Editing an event never creates or changes due items.</p>
+    </div>
 @endsection

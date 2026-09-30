@@ -32,7 +32,15 @@
                     <td class="num">{{ $event->event_due_items_count }}</td>
                 </tr>
             @empty
-                <tr class="table-empty"><td colspan="8">No events yet.</td></tr>
+                <tr class="table-empty">
+                    <td colspan="8">
+                        <span class="empty-state-title">No events yet</span>
+                        Create an event, add a charge per grade, then generate its dues.
+                        <div class="empty-actions">
+                            <x-button-link :href="route('events.create')" size="small">Create event</x-button-link>
+                        </div>
+                    </td>
+                </tr>
             @endforelse
             </tbody>
         </table>

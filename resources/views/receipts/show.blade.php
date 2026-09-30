@@ -3,49 +3,87 @@
 @section('title', 'Receipt '.$receipt->receipt_no)
 
 @section('content')
+    <div class="breadcrumb">
+        <a href="{{ route('dues-dashboard.index') }}">Dues dashboard</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="{{ route('payments.show', $receipt->payment_id) }}">Payment {{ $receipt->payment_id }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Receipt {{ $receipt->receipt_no }}</span>
+    </div>
+
     <x-page-header :title="'Receipt '.$receipt->receipt_no"
-                   subtitle="Snapshot captured when the payment was recorded." />
+                   subtitle="Snapshot captured when the payment was recorded."
+                   eyebrow="Payments" />
 
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('payments.show', $receipt->payment_id) }}">Back to payment</a>
+        <a class="btn btn-secondary" href="{{ route('dues-dashboard.index')">View dashboard</a>
     </div>
 
-    <x-card title="Receipt">
-        <dl class="kv">
-            <div class="kv-row"><dt>Receipt number</dt><dd>{{ $receipt->receipt_no }}</dd></div>
-            <div class="kv-row"><dt>Issued at</dt><dd>{{ $receipt->issued_at->toDateString() }}</dd></div>
-            <div class="kv-row"><dt>Total amount</dt><dd>{{ $receipt->total_amount }}</dd></div>
-            <div class="kv-row"><dt>Family</dt><dd>{{ $receipt->family_snapshot['family_code'] ?? '' }}</dd></div>
-            <div class="kv-row"><dt>Method</dt><dd>{{ $receipt->payment_snapshot['method'] ?? '' }}</dd></div>
-            <div class="kv-row"><dt>Payment amount</dt><dd>{{ $receipt->payment_snapshot['amount'] ?? '' }}</dd></div>
-        </dl>
-    </x-card>
+    <x-card>
+        <div class="receipt-sheet" data-testid="receipt-preview">
+            <div class="receipt-head">
+                <div>
+                    <span class="receipt-brand">Skooly</span>
+                    <div class="muted" style="margin-top: 0.2rem">Payment receipt</div>
+                </div>
+                <div class="receipt-meta">
+                    <div class="receipt-no">{{ $receipt->receipt_no }}</div>
+                    <div class="receipt-issued">Issued {{ $receipt->issued_at->toDateString() }}</div>
+                </div>
+            </div>
 
-    <x-card title="Allocation snapshot">
-        <div class="table-wrap">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Description</th><th class="num">Original</th><th class="num">Discount</th>
-                    <th class="num">Allocated</th><th class="num">Balance after</th>
-                </tr>
-                </thead>
-                <tbody>
-                @forelse ($receipt->allocation_snapshot as $allocation)
+            <div class="receipt-parties">
+                <div>
+                    <span class="receipt-party-label">Family</span>
+                    <span class="receipt-party-value">{{ $receipt->family_snapshot['family_code'] ?? '—' }}</span>
+                </div>
+                <div>
+                    <span class="receipt-party-label">Method</span>
+                    <span class="receipt-party-value">{{ $receipt->payment_snapshot['method'] ?? '—' }}</span>
+                </div>
+                <div>
+                    <span class="receipt-party-label">Reference</span>
+                    <span class="receipt-party-value">{{ $receipt->payment_snapshot['payment_reference'] ?? '—' }}</span>
+                </div>
+            </div>
+
+            <div class="table-wrap" style="margin-top: 1.2rem">
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td>{{ $allocation['description'] }}</td>
-                        <td class="num">{{ $allocation['original_amount'] }}</td>
-                        <td class="num">{{ $allocation['discount_amount'] }}</td>
-                        <td class="num">{{ $allocation['allocation_amount'] }}</td>
-                        <td class="num">{{ $allocation['balance_amount'] }}</td>
+                        <th>Description</th>
+                        <th class="num">Original</th>
+                        <th class="num">Discount</th>
+                        <th class="num">Allocated</th>
+                        <th class="num">Balance after</th>
                     </tr>
-                @empty
-                    <tr class="table-empty"><td colspan="5">No stored due item snapshot.</td></tr>
-                @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @forelse ($receipt->allocation_snapshot as $allocation)
+                        <tr>
+                            <td>{{ $allocation['description'] }}</td>
+                            <td class="num">{{ $allocation['original_amount'] }}</td>
+                            <td class="num">{{ $allocation['discount_amount'] }}</td>
+                            <td class="num">{{ $allocation['allocation_amount'] }}</td>
+                            <td class="num">{{ $allocation['balance_amount'] }}</td>
+                        </tr>
+                    @empty
+                        <tr class="table-empty"><td colspan="5">No stored due item snapshot.</td></tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="receipt-total">
+                <span class="receipt-total-label">Total received</span>
+                <span class="receipt-total-value">{{ $receipt->total_amount }}</span>
+            </div>
+
+            <p class="receipt-foot">
+                This receipt reproduces the stored snapshot from the time of payment. It is not recalculated from live due items.
+                Use your browser print action for a paper copy; PDF export is not implemented.
+            </p>
         </div>
     </x-card>
-
-    <p class="note">This page shows stored receipt data only. It is never recalculated from live due items, and there is no PDF export yet.</p>
 @endsection

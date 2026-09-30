@@ -6,7 +6,7 @@
     <x-page-header :title="'Edit '.$family->family_code" subtitle="Update the household details." />
 
     <x-card>
-        <form method="POST" action="{{ route('families.update', $family) }}">
+        <form method="POST" action="{{ route('families.update', $family) }}" data-loading>
             @csrf
             @method('PUT')
 

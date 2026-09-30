@@ -32,7 +32,8 @@ Use this file before broad project reinspection.
 - Phase 10C-2 Deployment Readiness & Security Review: complete.
 - Phase 10C-3 System Understanding, Data Flow & UX Map: complete.
 - Phase 10C-4 Admin UI/UX Foundation & Login Redesign: complete.
-- Phase 10C-4B Commercial Admin UI/UX Redesign: complete and verified; pending commit.
+- Phase 10C-4B Commercial Admin UI/UX Redesign: complete.
+- Phase 10C-4C Commercial UI/UX Defect Audit & Workflow Completion: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -160,6 +161,9 @@ Use this file before broad project reinspection.
 - Navigation lives once in the sidebar. New pages must add their link there, not repeat markup.
 - Shared UI pieces live in resources/views/components. Reuse them instead of restyling per view.
 - The shell is a dark sidebar plus light workspace with a CSS-only mobile drawer. Login is a split layout.
+- Toast, confirmation, and submit-loading behaviour lives in public/js/admin-ui.js. It has no build step and degrades gracefully.
+- Mark irreversible actions with data-confirm and every write form with data-loading.
+- docs/ui-ux-defect-audit.md records audited screens, fixes, and remaining limitations.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
@@ -213,4 +217,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh and DemoDataSeeder passed; 372 tests / 1666 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh and DemoDataSeeder passed; 392 tests / 1829 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
