@@ -25,10 +25,11 @@ Laravel modular monolith.
 - Events Generating Due Items (Phase 7B)
 - Dues Dashboard / Reporting Queries (Phase 7C)
 - Payment Reminders / Notification Foundation (Phase 7D)
-- Student Promotion (Phase 8, verified and pending commit)
+- Student Promotion (Phase 8)
+- Authorization & Guardian Privacy Hardening (Phase 9A, verified and pending commit)
 
 ## Current Module
-- Phase 8: Student Promotion is complete / pending commit.
+- Phase 9A: Authorization & Guardian Privacy Hardening is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -102,3 +103,13 @@ Laravel modular monolith.
 - Source-year Enrollments are never modified. Graduated students get status graduated with no target Enrollment.
 - Excluded students are marked skipped. Promotion never generates next-year fee Due Items.
 - Reversal is not implemented because the safety window is unresolved.
+
+## Authorization & Guardian Privacy
+- No Spatie permissions. Authorization uses simple role checks through the existing roles relationship.
+- User::hasAnyRole() complements the existing hasRole(). No new roles were added.
+- Policies cover Student, StudentDueItem, Payment, Receipt, PaymentReminder, and PromotionBatch.
+- Admin can view and manage all covered records. Accountant can view and manage finance records only.
+- Teacher access is denied, including financial details.
+- Guardian has no User link, so Guardian access is enforced by query helpers instead of Gate.
+- AuthorizeGuardianStudentAccess checks guardian_student only. Family membership is never sufficient.
+- ListGuardianVisibleStudents and ListGuardianVisibleDueItems are the entry points for future Guardian-facing screens.

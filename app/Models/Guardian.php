@@ -27,6 +27,9 @@ class Guardian extends Model
     /**
      * Get the students this guardian may access.
      */
+    /**
+     * @return BelongsToMany<Student, $this>
+     */
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(Student::class);

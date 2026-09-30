@@ -86,10 +86,34 @@ Deferred:
 - Frontend dashboards
 - Event notifications
 - UI/controllers/routes
+- Promotion
 - Audit
 
-## Phase 8: Student Promotion
+## Phase 9A: Authorization & Guardian Privacy Hardening
 Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- User::hasAnyRole() alongside the existing hasRole().
+- StudentPolicy, StudentDueItemPolicy, PaymentPolicy, ReceiptPolicy, PaymentReminderPolicy, and PromotionBatchPolicy.
+- Admin manages all covered records; Accountant manages finance records; Teacher is denied everywhere.
+- AuthorizeGuardianStudentAccess, ListGuardianVisibleStudents, and ListGuardianVisibleDueItems.
+- guardian_student enforced as the only Guardian access rule, with family membership and combined billing never sufficient.
+- Phase 9A feature tests.
+
+Deferred:
+- Audit logs (Phase 9B)
+- Guardian login and a Guardian-to-User link
+- Teacher section-scoped student access
+- Accountant student visibility decision
+- Promotion reversal (safety window unresolved)
+- CSV/PDF export
+- Class-in-charge reassignment
+- Scheduled automation or cron command
+- Automatic payment allocation
+- UI/controllers/routes
+
+## Phase 8: Student Promotion
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - PromotionBatch, PromotionBatchSection, and PromotionBatchItem models and factories.

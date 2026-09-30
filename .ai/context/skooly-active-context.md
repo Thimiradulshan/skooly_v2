@@ -13,7 +13,8 @@ Use this file before broad project reinspection.
 - Phase 7B Events Generating Due Items: complete.
 - Phase 7C Dues Dashboard / Reporting Queries: complete.
 - Phase 7D Payment Reminders / Notification Foundation: complete.
-- Phase 8 Student Promotion: complete and verified; pending commit.
+- Phase 8 Student Promotion: complete.
+- Phase 9A Authorization & Guardian Privacy Hardening: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -68,21 +69,25 @@ Use this file before broad project reinspection.
 - Graduated students get status graduated with no target Enrollment. Excluded students are skipped.
 - Promotion never generates next-year fee Due Items.
 - Promotion reversal is deferred because the safety window is unresolved.
+- No Spatie permissions. Authorization uses role checks through the existing roles relationship.
+- Guardian has no User link, so Guardian privacy is enforced by query helpers, not Gate.
+- Guardian access requires an explicit guardian_student link. Family membership and combined billing never grant sibling visibility.
+- Teacher access is denied, including financial details.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 8 Deferred Work
+## Phase 9A Deferred Work
+- Audit logs (Phase 9B).
+- Guardian login and a Guardian-to-User link.
+- Teacher section-scoped student access.
+- Accountant student visibility decision.
 - Promotion reversal (safety window unresolved).
 - CSV/PDF export.
 - Class-in-charge reassignment.
-- Audit logs.
 - Scheduled automation or cron command.
 - Automatic payment allocation strategies.
-- Payment-driven student registration activation.
-- Family combined billing aggregation.
-- Frontend dashboards.
 - UI/controllers/routes.
 
 ## Verification Command Order
@@ -95,4 +100,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 130 tests / 403 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 144 tests / 448 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

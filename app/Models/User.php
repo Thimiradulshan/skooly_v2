@@ -36,6 +36,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine whether the user has at least one of the given roles.
+     *
+     * @param  array<int, string>  $roles
+     */
+    public function hasAnyRole(array $roles): bool
+    {
+        return $this->roles()->whereIn('name', $roles)->exists();
+    }
+
+    /**
      * Get the subjects the teacher is qualified to teach.
      */
     public function qualifiedSubjects(): BelongsToMany

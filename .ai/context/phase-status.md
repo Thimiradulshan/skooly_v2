@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 8: Student Promotion
+Phase 9A: Authorization & Guardian Privacy Hardening
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -14,10 +14,11 @@ Phase 8: Student Promotion
 - Phase 7B: Events Generating Due Items - complete
 - Phase 7C: Dues Dashboard / Reporting Queries - complete
 - Phase 7D: Payment Reminders / Notification Foundation - complete
-- Phase 8: Student Promotion - complete / pending commit
+- Phase 8: Student Promotion - complete
+- Phase 9A: Authorization & Guardian Privacy Hardening - complete / pending commit
 
 ## Current Status
-Phase 8 implementation and verification are complete. Pending review and commit.
+Phase 9A implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -70,11 +71,19 @@ Phase 8 implementation and verification are complete. Pending review and commit.
 - Graduated students get Student status graduated and no target Enrollment. Excluded students are skipped.
 - Confirmation runs in a DB transaction, so a single invalid item rolls back every target Enrollment, status change, and item update.
 - Promotion never generates next-year fee Due Items.
+- Guardian has no User link, so no Guardian authentication exists. Guardian privacy is enforced through query helpers, not Gate.
+- User::hasAnyRole() joins the existing roles relationship and Role constants. No new roles were added.
+- Policies exist for Student, StudentDueItem, Payment, Receipt, PaymentReminder, and PromotionBatch.
+- Admin may view and manage all covered records. Accountant may view and manage finance records only.
+- Teacher access is denied everywhere, including financial details.
+- AuthorizeGuardianStudentAccess returns true only for an explicit guardian_student link.
+- ListGuardianVisibleStudents and ListGuardianVisibleDueItems filter strictly through guardian_student.
+- Family membership and combined billing never broaden guardian visibility.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 130 tests, 403 assertions
+- php artisan test --compact: 144 tests, 448 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -84,4 +93,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 8.
+Review git status, then commit Phase 9A.

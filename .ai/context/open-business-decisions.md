@@ -72,3 +72,11 @@ Do not invent answers for these.
 - Promotion confirmation must stay atomic: all target Enrollments or none.
 - Promotion reversal safety window remains unresolved, so reversal is not implemented.
 - Student.grade_id and Student.section_id must never exist; grade and section live on Enrollment.
+
+## Phase 9A Rules
+- Guardian privacy is enforced only through guardian_student links. Family membership never grants access.
+- Combined billing must never expose a sibling's due items, payments, or academic data to an unlinked Guardian.
+- Teacher financial access is denied. Teacher student access is denied because section scope cannot be proven from current models.
+- Accountant student visibility is an unresolved decision; StudentPolicy currently allows Admin only.
+- Guardian login and a Guardian-to-User link remain deferred because no such link exists today.
+- Audit logs remain deferred to Phase 9B.
