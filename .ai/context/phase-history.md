@@ -17,7 +17,7 @@ Includes:
 - FamilyGuardian feature tests
 
 ## Phase 4: Students & Enrollments
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - Student model and factory
@@ -33,12 +33,27 @@ Includes:
 - database constraints for admission_no uniqueness, annual enrollment uniqueness, and grade-section validity
 - Phase 4 feature tests
 
+## Phase 5: Fees, Dues & Discounts
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- FeeCategory, FeeStructure, StudentFeeSubscription, Discount, StudentDueItem, and DueItemDiscount models and factories.
+- fee_categories, fee_structures, student_fee_subscriptions, discounts, student_due_items, and due_item_discounts migrations.
+- Student-level fee due and discount snapshot foundations.
+- Fee structure versioning and per-academic-year subscription uniqueness.
+- Phase 5 feature tests.
+
 Deferred:
-- Fee due generation
-- Payment-driven Student status transitions
-- Attendance
-- Student UI/controllers/routes
-- Photo upload behavior
+- Scheduled recurring due generation
+- Payment-driven student registration activation
+- Payments
+- Receipts
+- Payment allocation
+- Dashboards
+- Reminders
 - Events
+- Attendance
+- UI/controllers/routes
+- Photo upload behavior
 - Promotion
 - Audit

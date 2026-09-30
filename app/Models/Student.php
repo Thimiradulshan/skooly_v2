@@ -50,6 +50,21 @@ class Student extends Model
         return $this->hasMany(Enrollment::class);
     }
 
+    public function discounts(): HasMany
+    {
+        return $this->hasMany(Discount::class);
+    }
+
+    public function studentDueItems(): HasMany
+    {
+        return $this->hasMany(StudentDueItem::class);
+    }
+
+    public function studentFeeSubscriptions(): HasMany
+    {
+        return $this->hasMany(StudentFeeSubscription::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

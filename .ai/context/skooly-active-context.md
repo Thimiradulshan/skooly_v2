@@ -6,7 +6,8 @@ Use this file before broad project reinspection.
 - Phase 1 Academic Foundation: complete.
 - Phase 2 Users, Roles & Teachers: complete after final MySQL verification.
 - Phase 3 Families & Guardians: complete.
-- Phase 4 Students & Enrollments: complete and verified; pending commit.
+- Phase 4 Students & Enrollments: complete.
+- Phase 5 Fees, Dues & Discounts: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -29,15 +30,26 @@ Use this file before broad project reinspection.
 - Grade and Section are stored on year-specific Enrollments, never on Students.
 - Enrollment::placeIn() is transactional and preserves EnrollmentPlacement history.
 - Database constraints prevent a Section from being paired with a different Grade in Enrollments or placement history.
+- Fee structures are academic-year configuration; StudentDueItems preserve generated amount snapshots.
+- Discounts target a Student and FeeCategory, and DueItemDiscount preserves applied snapshot data.
+- DueItemDiscount.discount_id is nullable and nulls on source Discount deletion so historical snapshots remain.
+- StudentFeeSubscription supports future opt-in fee categories without subscription workflows.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 4 Deferred Work
-- Fee due generation and payment-driven registration activation.
+## Phase 5 Deferred Work
+- Scheduled recurring due generation.
+- Payment-driven student registration activation.
+- Payments.
+- Receipts.
+- Payment allocation.
+- Dashboards.
+- Reminders.
+- Events.
 - Attendance and class rosters.
-- Student UI, controllers, and routes.
+- UI/controllers/routes.
 - Photo uploads and storage behavior.
 - Duplicate-family detection beyond unique family_code.
 - Payment allocation and combined-billing behavior.
@@ -52,4 +64,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 30 tests / 71 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 43 tests / 105 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

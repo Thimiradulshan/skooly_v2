@@ -10,28 +10,22 @@ git diff --check
 git status
 
 ## Latest Known Good
-Phase 4 passed on 2026-09-30:
-- migrate:fresh passed, including students, guardian_student, enrollments, and enrollment_placements.
-- 30 tests / 71 assertions passed.
+Phase 5 passed on 2026-09-30:
+- migrate:fresh passed.
+- 43 tests / 105 assertions passed.
 - PHPStan passed with 0 errors.
 - Pint passed.
-- Composer audit found no security vulnerability advisories.
-- git diff --check passed.
+- Composer audit found no vulnerabilities.
+- git diff --check passed with CRLF warning only.
 
 ## Previous Known Good
-Phase 3 passed:
-- migrate:fresh passed.
-- 20 tests / 45 assertions passed.
-- PHPStan passed.
-- Pint passed.
-- Composer audit passed.
-- git diff --check passed.
+Phase 4 passed:
+- 30 tests / 71 assertions passed.
 
 ## Earlier Known Good
+Phase 3 passed:
+- 20 tests / 45 assertions passed.
+
+## Phase 2 Known Good
 Phase 2 passed:
-- MySQL 8.4.7 working
-- migrate:fresh passed
 - 14 tests / 38 assertions passed
-- PHPStan passed
-- Pint passed
-- Composer audit passed
