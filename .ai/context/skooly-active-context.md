@@ -7,7 +7,8 @@ Use this file before broad project reinspection.
 - Phase 2 Users, Roles & Teachers: complete after final MySQL verification.
 - Phase 3 Families & Guardians: complete.
 - Phase 4 Students & Enrollments: complete.
-- Phase 5 Fees, Dues & Discounts: complete and verified; pending commit.
+- Phase 5 Fees, Dues & Discounts: complete.
+- Phase 6 Payments & Receipts: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -34,25 +35,25 @@ Use this file before broad project reinspection.
 - Discounts target a Student and FeeCategory, and DueItemDiscount preserves applied snapshot data.
 - DueItemDiscount.discount_id is nullable and nulls on source Discount deletion so historical snapshots remain.
 - StudentFeeSubscription supports future opt-in fee categories without subscription workflows.
+- Payments are family-level; manual allocation only.
+- StudentDueItem tracks paid_amount, balance_amount, and status.
+- Receipt snapshots are immutable; later due item changes do not rewrite receipt.
+- Payment recording uses DB transaction for atomicity.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 5 Deferred Work
+## Phase 6 Deferred Work
+- Automatic allocation strategies (even-split, oldest-first)
 - Scheduled recurring due generation.
 - Payment-driven student registration activation.
-- Payments.
-- Receipts.
-- Payment allocation.
 - Dashboards.
 - Reminders.
 - Events.
-- Attendance and class rosters.
 - UI/controllers/routes.
-- Photo uploads and storage behavior.
-- Duplicate-family detection beyond unique family_code.
-- Payment allocation and combined-billing behavior.
+- Promotion.
+- Audit.
 
 ## Verification Command Order
 php artisan migrate:fresh
@@ -64,4 +65,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 43 tests / 105 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 52 tests / 130 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

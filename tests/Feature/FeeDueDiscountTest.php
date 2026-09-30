@@ -217,7 +217,7 @@ it('prevents duplicate student fee subscriptions in an academic year', function 
         ->toThrow(QueryException::class);
 });
 
-it('does not create payment or payment allocation tables in Phase 5', function () {
-    expect(Schema::hasTable('payments'))->toBeFalse();
-    expect(Schema::hasTable('payment_allocations'))->toBeFalse();
+it('creates payment and payment allocation tables in Phase 6', function () {
+    expect(Schema::hasTable('payments'))->toBeTrue();
+    expect(Schema::hasTable('payment_allocations'))->toBeTrue();
 });

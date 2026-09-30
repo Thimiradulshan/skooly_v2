@@ -26,3 +26,10 @@ Do not invent answers for these.
 - Default sibling discount percentage/rule remains unresolved; no automatic sibling discount suggestion or application exists.
 - Discounts are per Student and FeeCategory and are snapshotted to DueItemDiscount when a future due-generation workflow applies them.
 - Fee due generation is schema-ready only; recurring scheduling is deferred.
+
+## Phase 6 Rules
+- Payments are family-level; allocations are manual only.
+- No automatic even-split or oldest-first allocation is implemented.
+- StudentDueItem tracks paid_amount, balance_amount, and status.
+- Receipt snapshots are immutable; later due item changes do not rewrite receipt.
+- Payment recording uses DB transaction for atomicity.

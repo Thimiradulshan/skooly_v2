@@ -19,10 +19,11 @@ Laravel modular monolith.
 - Identity and Teacher Foundation
 - Families and Guardians (Phase 3)
 - Students and Enrollments (Phase 4)
-- Fees, Dues and Discounts (Phase 5, verified and pending commit)
+- Fees, Dues and Discounts (Phase 5)
+- Payments & Receipts (Phase 6, verified and pending commit)
 
 ## Current Module
-- Phase 5: Fees, Dues and Discounts is complete / pending commit.
+- Phase 6: Payments & Receipts is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -46,3 +47,11 @@ Laravel modular monolith.
 - Discount applies to a specific Student and FeeCategory; it is not automatically applied.
 - DueItemDiscount snapshots applied discount data and its nullable discount_id nulls on source Discount deletion.
 - StudentFeeSubscription supports future opt-in categories without subscription workflows.
+
+## Payments & Receipts
+- Payments are family-level.
+- PaymentAllocation links a Payment to specific StudentDueItems.
+- Manual allocation only is implemented. No automatic even-split or oldest-first allocation.
+- StudentDueItem tracks paid_amount, balance_amount, and status (unpaid, partially_paid, paid).
+- Receipt snapshots payment, family, and allocation details immutably.
+- Payment recording uses DB transaction for atomicity.

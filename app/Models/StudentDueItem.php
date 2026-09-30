@@ -9,12 +9,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['student_id', 'academic_year_id', 'fee_category_id', 'fee_structure_id', 'description', 'frequency', 'original_amount', 'discount_amount', 'net_amount', 'due_date', 'status', 'generation_key'])]
+#[Fillable(['student_id', 'academic_year_id', 'fee_category_id', 'fee_structure_id', 'description', 'frequency', 'original_amount', 'discount_amount', 'net_amount', 'paid_amount', 'balance_amount', 'due_date', 'status', 'generation_key'])]
 class StudentDueItem extends Model
 {
+    public const STATUS_UNPAID = 'unpaid';
+
+    public const STATUS_PARTIALLY_PAID = 'partially_paid';
+
+    public const STATUS_PAID = 'paid';
+
     /** @use HasFactory<StudentDueItemFactory> */
     use HasFactory;
 
+    /**
+     * @return BelongsTo<Student, $this>
+     */
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
@@ -40,6 +49,11 @@ class StudentDueItem extends Model
         return $this->hasMany(DueItemDiscount::class);
     }
 
+    public function paymentAllocations(): HasMany
+    {
+        return $this->hasMany(PaymentAllocation::class);
+    }
+
     /**
      * @return array<string, string>
      */
@@ -49,6 +63,8 @@ class StudentDueItem extends Model
             'original_amount' => 'decimal:2',
             'discount_amount' => 'decimal:2',
             'net_amount' => 'decimal:2',
+            'paid_amount' => 'decimal:2',
+            'balance_amount' => 'decimal:2',
             'due_date' => 'date',
         ];
     }

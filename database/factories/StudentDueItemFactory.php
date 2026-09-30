@@ -30,8 +30,10 @@ class StudentDueItemFactory extends Factory
             'original_amount' => 100,
             'discount_amount' => 0,
             'net_amount' => 100,
+            'paid_amount' => 0,
+            'balance_amount' => 100,
             'due_date' => fake()->optional()->date(),
-            'status' => 'unpaid',
+            'status' => StudentDueItem::STATUS_UNPAID,
             'generation_key' => null,
         ];
     }

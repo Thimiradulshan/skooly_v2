@@ -34,7 +34,7 @@ Includes:
 - Phase 4 feature tests
 
 ## Phase 5: Fees, Dues & Discounts
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - FeeCategory, FeeStructure, StudentFeeSubscription, Discount, StudentDueItem, and DueItemDiscount models and factories.
@@ -46,14 +46,33 @@ Includes:
 Deferred:
 - Scheduled recurring due generation
 - Payment-driven student registration activation
-- Payments
-- Receipts
-- Payment allocation
 - Dashboards
 - Reminders
 - Events
 - Attendance
 - UI/controllers/routes
 - Photo upload behavior
+- Promotion
+- Audit
+
+## Phase 6: Payments & Receipts
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- Payment, PaymentAllocation, and Receipt models and factories.
+- payments, payment_allocations, and receipts migrations.
+- paid_amount, balance_amount, and status on student_due_items.
+- Manual payment allocation with DB transaction.
+- Receipt snapshot with family, payment, and allocation details.
+- Phase 6 feature tests.
+
+Deferred:
+- Automatic allocation strategies (even-split, oldest-first)
+- Scheduled recurring due generation
+- Payment-driven student registration activation
+- Dashboards
+- Reminders
+- Events
+- UI/controllers/routes
 - Promotion
 - Audit
