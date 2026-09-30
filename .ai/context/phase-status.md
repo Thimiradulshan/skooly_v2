@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 9B: Audit Logs
+Phase 9C: Backend Hardening & Final Foundation Review
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -16,10 +16,11 @@ Phase 9B: Audit Logs
 - Phase 7D: Payment Reminders / Notification Foundation - complete
 - Phase 8: Student Promotion - complete
 - Phase 9A: Authorization & Guardian Privacy Hardening - complete
-- Phase 9B: Audit Logs - complete / pending commit
+- Phase 9B: Audit Logs - complete
+- Phase 9C: Backend Hardening & Final Foundation Review - complete / pending commit
 
 ## Current Status
-Phase 9B implementation and verification are complete. Pending review and commit.
+Phase 9C review is complete and verified. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -87,11 +88,16 @@ Phase 9B implementation and verification are complete. Pending review and commit
 - The recurring, event, and reminder generation actions log once per run, never once per record.
 - Confirmation audit logs roll back with the transaction, so a failed promotion writes nothing.
 - Payment recording, promotion, and generation business rules are unchanged by audit logging.
+- Phase 9C hardening review found no application code defects and required no code changes.
+- Destructive-action protections are already DB-enforced with restrictOnDelete across payments, allocations, receipts, due items, reminders, and promotion source enrollments.
+- Provenance pointers (due_item_discounts.discount_id, promotion_batch_items.applied_enrollment_id, audit_logs.actor_user_id) intentionally null on source deletion and are covered by tests.
+- Sequential payments cannot overpay a partially paid due item, and a settled due item reaches exactly zero rather than a negative balance.
+- Audit log metadata and due item discount snapshots stay historical after the source record is edited or deleted.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 159 tests, 531 assertions
+- php artisan test --compact: 170 tests, 573 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -101,4 +107,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 9B.
+Review git status, then commit Phase 9C.

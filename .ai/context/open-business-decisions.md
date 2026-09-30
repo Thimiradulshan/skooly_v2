@@ -88,3 +88,8 @@ Do not invent answers for these.
 - Payment and promotion audit entries must be written inside the same transaction as the change they describe.
 - student_registered, family_created, family_updated, and discount_applied constants exist but are not yet wired to workflows, because those controllers/actions do not exist.
 - Do not invent controllers purely to produce audit entries.
+
+## Phase 9C Findings
+- No DB-level CHECK constraint prevents a negative StudentDueItem.balance_amount. The payment path guards this in application code only. Adding a CHECK constraint remains an open decision.
+- No money column uses an unsigned type, consistent with the existing decimal(12,2) convention.
+- No new open decisions were introduced. Hardening required no code changes.

@@ -27,10 +27,11 @@ Laravel modular monolith.
 - Payment Reminders / Notification Foundation (Phase 7D)
 - Student Promotion (Phase 8)
 - Authorization & Guardian Privacy Hardening (Phase 9A)
-- Audit Logs (Phase 9B, verified and pending commit)
+- Audit Logs (Phase 9B)
+- Backend Hardening & Final Foundation Review (Phase 9C, verified and pending commit)
 
 ## Current Module
-- Phase 9B: Audit Logs is complete / pending commit.
+- Phase 9C: Backend Hardening & Final Foundation Review is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -122,3 +123,9 @@ Laravel modular monolith.
 - Promotion batch creation and confirmation are logged inside their existing transactions.
 - Recurring, event, and reminder generation log once per run.
 - A failed transaction writes no audit entries, so the log never claims a change that rolled back.
+
+## Backend Hardening
+- Historical and financial tables are protected by the database with restrictOnDelete, not by application code.
+- Provenance pointers deliberately null out on source deletion so the local record survives.
+- Balance correctness is enforced in the payment action, including against sequential payments.
+- Snapshot tables (receipts, due_item_discounts, audit_logs.metadata) are never recomputed from live records.

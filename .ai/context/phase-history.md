@@ -113,7 +113,7 @@ Deferred:
 - UI/controllers/routes
 
 ## Phase 9B: Audit Logs
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - AuditLog model and factory.
@@ -134,6 +134,37 @@ Deferred:
 - Promotion reversal (safety window unresolved)
 - Scheduled automation or cron command
 - Automatic payment allocation
+- UI/controllers/routes
+
+## Phase 9C: Backend Hardening & Final Foundation Review
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Focus:
+- Destructive-action protections
+- Financial invariants
+- Promotion atomicity
+- Guardian privacy
+- Snapshot immutability
+- Duplicate prevention
+- Audit rollback safety
+
+Outcome:
+- No application code defects were found, so no code changes were made.
+- Added tests/Feature/BackendHardeningTest.php covering destructive protections, sequential overpayment, snapshot immutability, and audit metadata history.
+- Existing Phase 4-9 coverage was confirmed rather than duplicated.
+
+Deferred:
+- DB-level CHECK constraint for non-negative balances (open decision)
+- Guardian login and a Guardian-to-User link
+- Teacher section-scoped student access
+- Accountant student visibility decision
+- Promotion reversal (safety window unresolved)
+- Automatic payment allocation strategy
+- Automatic sibling discount rule
+- CSV/PDF export
+- Real notification channels
+- Scheduled cron setup
+- Audit UI and export
 - UI/controllers/routes
 
 ## Phase 8: Student Promotion

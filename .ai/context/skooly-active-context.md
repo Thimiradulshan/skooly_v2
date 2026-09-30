@@ -15,7 +15,8 @@ Use this file before broad project reinspection.
 - Phase 7D Payment Reminders / Notification Foundation: complete.
 - Phase 8 Student Promotion: complete.
 - Phase 9A Authorization & Guardian Privacy Hardening: complete.
-- Phase 9B Audit Logs: complete and verified; pending commit.
+- Phase 9B Audit Logs: complete.
+- Phase 9C Backend Hardening & Final Foundation Review: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -78,21 +79,27 @@ Use this file before broad project reinspection.
 - Payment recording, payment allocations, and promotion create/confirm are audited inside their transactions.
 - Recurring, event, and reminder generation each log once per run.
 - A failed transaction writes no audit entries.
+- Historical and financial tables are protected by the database with restrictOnDelete, not by application code.
+- Provenance pointers null out on source deletion so the local record survives.
+- Balance correctness is enforced in the payment action, including against sequential payments.
+- No DB CHECK constraint currently prevents a negative balance_amount; that remains an open decision.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 9B Deferred Work
-- Audit UI, audit browse screens, and CSV/PDF export.
-- Audit entry update or delete workflows.
-- student_registered, family_created, family_updated, and discount_applied integration, pending those workflows existing.
+## Phase 9C Deferred Work
+- DB-level CHECK constraint for non-negative balances (open decision).
 - Guardian login and a Guardian-to-User link.
 - Teacher section-scoped student access.
 - Accountant student visibility decision.
 - Promotion reversal (safety window unresolved).
-- Scheduled automation or cron command.
-- Automatic payment allocation strategies.
+- Automatic payment allocation strategy.
+- Automatic sibling discount rule.
+- CSV/PDF export.
+- Real notification channels.
+- Scheduled cron setup.
+- Audit UI and export.
 - UI/controllers/routes.
 
 ## Verification Command Order
@@ -105,4 +112,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 159 tests / 531 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 170 tests / 573 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
