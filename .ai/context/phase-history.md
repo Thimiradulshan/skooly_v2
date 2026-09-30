@@ -90,7 +90,7 @@ Deferred:
 - Audit
 
 ## Phase 9A: Authorization & Guardian Privacy Hardening
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - User::hasAnyRole() alongside the existing hasRole().
@@ -108,6 +108,30 @@ Deferred:
 - Promotion reversal (safety window unresolved)
 - CSV/PDF export
 - Class-in-charge reassignment
+- Scheduled automation or cron command
+- Automatic payment allocation
+- UI/controllers/routes
+
+## Phase 9B: Audit Logs
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- AuditLog model and factory.
+- audit_logs migration with actor, action, polymorphic auditable, metadata, and occurred_at.
+- app/Actions/Audit/RecordAuditLog.php as the single append-only writer.
+- Payment and payment allocation audit entries.
+- Promotion batch creation and confirmation audit entries.
+- Recurring, event, and reminder generation audit entries, one per run.
+- Phase 9B feature tests.
+
+Deferred:
+- Audit UI, audit browse screens, and CSV/PDF export
+- Audit entry update or delete workflows
+- student_registered, family_created, family_updated, and discount_applied integration, pending those workflows existing
+- Guardian login and a Guardian-to-User link
+- Teacher section-scoped student access
+- Accountant student visibility decision
+- Promotion reversal (safety window unresolved)
 - Scheduled automation or cron command
 - Automatic payment allocation
 - UI/controllers/routes

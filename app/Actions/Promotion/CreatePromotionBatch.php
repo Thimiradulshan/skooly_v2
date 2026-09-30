@@ -2,7 +2,9 @@
 
 namespace App\Actions\Promotion;
 
+use App\Actions\Audit\RecordAuditLog;
 use App\Models\AcademicYear;
+use App\Models\AuditLog;
 use App\Models\Enrollment;
 use App\Models\Grade;
 use App\Models\PromotionBatch;
@@ -64,6 +66,15 @@ class CreatePromotionBatch
                     'status' => PromotionBatchItem::STATUS_PENDING,
                 ]);
             }
+
+            $audit = new RecordAuditLog;
+            $audit->handle(AuditLog::ACTION_PROMOTION_BATCH_CREATED, $batch, $createdBy, [
+                'promotion_batch_id' => $batch->id,
+                'source_academic_year_id' => $batch->source_academic_year_id,
+                'target_academic_year_id' => $batch->target_academic_year_id,
+                'source_section_ids' => $sections->pluck('id')->all(),
+                'item_count' => $batch->items()->count(),
+            ]);
 
             return $batch->load(['sections', 'items']);
         });

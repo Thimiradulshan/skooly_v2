@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 9A: Authorization & Guardian Privacy Hardening
+Phase 9B: Audit Logs
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -15,10 +15,11 @@ Phase 9A: Authorization & Guardian Privacy Hardening
 - Phase 7C: Dues Dashboard / Reporting Queries - complete
 - Phase 7D: Payment Reminders / Notification Foundation - complete
 - Phase 8: Student Promotion - complete
-- Phase 9A: Authorization & Guardian Privacy Hardening - complete / pending commit
+- Phase 9A: Authorization & Guardian Privacy Hardening - complete
+- Phase 9B: Audit Logs - complete / pending commit
 
 ## Current Status
-Phase 9A implementation and verification are complete. Pending review and commit.
+Phase 9B implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -79,11 +80,18 @@ Phase 9A implementation and verification are complete. Pending review and commit
 - AuthorizeGuardianStudentAccess returns true only for an explicit guardian_student link.
 - ListGuardianVisibleStudents and ListGuardianVisibleDueItems filter strictly through guardian_student.
 - Family membership and combined billing never broaden guardian visibility.
+- audit_logs is append-only with a nullable actor, polymorphic auditable, small metadata, and occurred_at.
+- RecordAuditLog is an explicit action call. No observers were introduced, so audit stays deterministic in tests.
+- Payment::recordManual logs payment_recorded plus one payment_allocation_recorded per allocation, inside its existing transaction.
+- CreatePromotionBatch and ConfirmPromotionBatch log promotion_batch_created and promotion_batch_confirmed.
+- The recurring, event, and reminder generation actions log once per run, never once per record.
+- Confirmation audit logs roll back with the transaction, so a failed promotion writes nothing.
+- Payment recording, promotion, and generation business rules are unchanged by audit logging.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 144 tests, 448 assertions
+- php artisan test --compact: 159 tests, 531 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -93,4 +101,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 9A.
+Review git status, then commit Phase 9B.

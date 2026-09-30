@@ -80,3 +80,11 @@ Do not invent answers for these.
 - Accountant student visibility is an unresolved decision; StudentPolicy currently allows Admin only.
 - Guardian login and a Guardian-to-User link remain deferred because no such link exists today.
 - Audit logs remain deferred to Phase 9B.
+
+## Phase 9B Rules
+- Audit logs are append-only. No update or delete audit workflow exists.
+- Audit entries are written by explicit RecordAuditLog calls, not observers, so behaviour stays testable.
+- actor_user_id stays nullable because backend actions may run without a user context.
+- Payment and promotion audit entries must be written inside the same transaction as the change they describe.
+- student_registered, family_created, family_updated, and discount_applied constants exist but are not yet wired to workflows, because those controllers/actions do not exist.
+- Do not invent controllers purely to produce audit entries.

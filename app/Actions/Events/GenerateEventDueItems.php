@@ -2,12 +2,15 @@
 
 namespace App\Actions\Events;
 
+use App\Actions\Audit\RecordAuditLog;
+use App\Models\AuditLog;
 use App\Models\Discount;
 use App\Models\Enrollment;
 use App\Models\Event;
 use App\Models\EventCharge;
 use App\Models\EventParticipation;
 use App\Models\StudentDueItem;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -18,9 +21,9 @@ class GenerateEventDueItems
      *
      * @return int Number of due items created in this run.
      */
-    public function handle(Event $event): int
+    public function handle(Event $event, ?User $actor = null): int
     {
-        return DB::transaction(function () use ($event): int {
+        return DB::transaction(function () use ($event, $actor): int {
             if ($event->confirmed_at === null) {
                 $event->update(['confirmed_at' => now()]);
             }
@@ -53,6 +56,11 @@ class GenerateEventDueItems
                     $created++;
                 }
             }
+
+            (new RecordAuditLog)->handle(AuditLog::ACTION_EVENT_DUES_GENERATED, $event, $actor, [
+                'event_id' => $event->id,
+                'created_count' => $created,
+            ]);
 
             return $created;
         });

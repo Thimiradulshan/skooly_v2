@@ -2,10 +2,13 @@
 
 namespace App\Actions\Notifications;
 
+use App\Actions\Audit\RecordAuditLog;
+use App\Models\AuditLog;
 use App\Models\Family;
 use App\Models\Guardian;
 use App\Models\PaymentReminder;
 use App\Models\StudentDueItem;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -24,8 +27,9 @@ class GeneratePaymentReminders
         int $upcomingWindowDays = 7,
         ?int $academicYearId = null,
         ?int $familyId = null,
+        ?User $actor = null,
     ): int {
-        return DB::transaction(function () use ($asOfDate, $upcomingWindowDays, $academicYearId, $familyId): int {
+        return DB::transaction(function () use ($asOfDate, $upcomingWindowDays, $academicYearId, $familyId, $actor): int {
             $upcomingLimit = date('Y-m-d', strtotime($asOfDate.' +'.$upcomingWindowDays.' days'));
 
             $dueItems = StudentDueItem::query()
@@ -48,15 +52,19 @@ class GeneratePaymentReminders
                 ->orderBy('id')
                 ->get();
 
-            return $this->createReminders($dueItems, $asOfDate);
+            return $this->recordReminders($dueItems, $asOfDate, $upcomingWindowDays, $actor);
         });
     }
 
     /**
      * @param  Collection<int, StudentDueItem>  $dueItems
      */
-    private function createReminders(Collection $dueItems, string $asOfDate): int
-    {
+    private function recordReminders(
+        Collection $dueItems,
+        string $asOfDate,
+        int $upcomingWindowDays,
+        ?User $actor,
+    ): int {
         $pending = [];
 
         foreach ($dueItems as $dueItem) {
@@ -109,6 +117,12 @@ class GeneratePaymentReminders
 
             $created++;
         }
+
+        (new RecordAuditLog)->handle(AuditLog::ACTION_PAYMENT_REMINDERS_GENERATED, null, $actor, [
+            'as_of_date' => $asOfDate,
+            'upcoming_window_days' => $upcomingWindowDays,
+            'created_count' => $created,
+        ]);
 
         return $created;
     }

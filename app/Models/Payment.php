@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Actions\Audit\RecordAuditLog;
 use Carbon\CarbonInterface;
 use Database\Factories\PaymentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -52,6 +53,7 @@ class Payment extends Model
         ?string $paymentReference = null,
         ?string $notes = null,
         ?CarbonInterface $paidAt = null,
+        ?User $actor = null,
     ): self {
         $paymentAmount = self::toCents($amount);
 
@@ -68,7 +70,7 @@ class Payment extends Model
             throw new InvalidArgumentException('Allocation total must equal payment amount.');
         }
 
-        return DB::transaction(function () use ($family, $receiptNo, $method, $amount, $allocations, $paymentReference, $notes, $paidAt): self {
+        return DB::transaction(function () use ($family, $receiptNo, $method, $amount, $allocations, $paymentReference, $notes, $paidAt, $actor): self {
             $payment = $family->payments()->create([
                 'payment_reference' => $paymentReference,
                 'paid_at' => $paidAt ?? now(),
@@ -77,6 +79,8 @@ class Payment extends Model
                 'notes' => $notes,
             ]);
             $allocationSnapshot = [];
+            $allocationModels = [];
+            $dueItemIds = [];
 
             foreach ($allocations as $allocation) {
                 $dueItem = StudentDueItem::query()
@@ -104,10 +108,11 @@ class Payment extends Model
                         ? StudentDueItem::STATUS_PAID
                         : StudentDueItem::STATUS_PARTIALLY_PAID,
                 ]);
-                $payment->allocations()->create([
+                $allocationModels[] = $payment->allocations()->create([
                     'student_due_item_id' => $dueItem->id,
                     'amount' => self::fromCents($allocationAmount),
                 ]);
+                $dueItemIds[] = $dueItem->id;
                 $allocationSnapshot[] = [
                     'student_due_item_id' => $dueItem->id,
                     'description' => $dueItem->description,
@@ -128,8 +133,47 @@ class Payment extends Model
                 'total_amount' => $amount,
             ]);
 
+            self::recordAuditLogs($payment, $allocationModels, $dueItemIds, $method, $amount, $family, $actor);
+
             return $payment->load(['allocations.studentDueItem', 'receipt']);
         });
+    }
+
+    /**
+     * Audit the recorded payment and each of its allocations.
+     *
+     * @param  array<int, PaymentAllocation>  $allocationModels
+     * @param  array<int, int>  $dueItemIds
+     */
+    private static function recordAuditLogs(
+        Payment $payment,
+        array $allocationModels,
+        array $dueItemIds,
+        string $method,
+        string $amount,
+        Family $family,
+        ?User $actor,
+    ): void {
+        $audit = new RecordAuditLog;
+
+        $audit->handle(AuditLog::ACTION_PAYMENT_RECORDED, $payment, $actor, [
+            'family_id' => $family->id,
+            'payment_id' => $payment->id,
+            'amount' => $payment->amount,
+            'method' => $method,
+            'allocation_count' => count($allocationModels),
+            'due_item_ids' => $dueItemIds,
+        ]);
+
+        foreach ($allocationModels as $allocation) {
+            $audit->handle(AuditLog::ACTION_PAYMENT_ALLOCATION_RECORDED, $allocation, $actor, [
+                'family_id' => $family->id,
+                'payment_id' => $payment->id,
+                'allocation_id' => $allocation->id,
+                'amount' => $allocation->amount,
+                'student_due_item_id' => $allocation->student_due_item_id,
+            ]);
+        }
     }
 
     /**

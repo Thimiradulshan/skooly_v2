@@ -26,10 +26,11 @@ Laravel modular monolith.
 - Dues Dashboard / Reporting Queries (Phase 7C)
 - Payment Reminders / Notification Foundation (Phase 7D)
 - Student Promotion (Phase 8)
-- Authorization & Guardian Privacy Hardening (Phase 9A, verified and pending commit)
+- Authorization & Guardian Privacy Hardening (Phase 9A)
+- Audit Logs (Phase 9B, verified and pending commit)
 
 ## Current Module
-- Phase 9A: Authorization & Guardian Privacy Hardening is complete / pending commit.
+- Phase 9B: Audit Logs is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -113,3 +114,11 @@ Laravel modular monolith.
 - Guardian has no User link, so Guardian access is enforced by query helpers instead of Gate.
 - AuthorizeGuardianStudentAccess checks guardian_student only. Family membership is never sufficient.
 - ListGuardianVisibleStudents and ListGuardianVisibleDueItems are the entry points for future Guardian-facing screens.
+
+## Audit Logs
+- audit_logs is append-only with a nullable actor, polymorphic auditable, small metadata, and occurred_at.
+- app/Actions/Audit/RecordAuditLog.php is the only writer. No observers or packages are used.
+- Payment recording logs payment_recorded and one payment_allocation_recorded per allocation.
+- Promotion batch creation and confirmation are logged inside their existing transactions.
+- Recurring, event, and reminder generation log once per run.
+- A failed transaction writes no audit entries, so the log never claims a change that rolled back.

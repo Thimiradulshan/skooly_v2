@@ -2,12 +2,15 @@
 
 namespace App\Actions\Fees;
 
+use App\Actions\Audit\RecordAuditLog;
 use App\Models\AcademicYear;
+use App\Models\AuditLog;
 use App\Models\Discount;
 use App\Models\Enrollment;
 use App\Models\FeeStructure;
 use App\Models\StudentDueItem;
 use App\Models\StudentFeeSubscription;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -18,11 +21,15 @@ class GenerateRecurringDueItems
      *
      * @return int Number of due items created in this run.
      */
-    public function handle(AcademicYear $academicYear, string $dueDate, ?string $cycleKey = null): int
-    {
+    public function handle(
+        AcademicYear $academicYear,
+        string $dueDate,
+        ?string $cycleKey = null,
+        ?User $actor = null,
+    ): int {
         $cycleKey ??= substr($dueDate, 0, 7);
 
-        return DB::transaction(function () use ($academicYear, $dueDate, $cycleKey): int {
+        return DB::transaction(function () use ($academicYear, $dueDate, $cycleKey, $actor): int {
             $created = 0;
 
             $feeStructures = FeeStructure::query()
@@ -81,6 +88,13 @@ class GenerateRecurringDueItems
                     $created++;
                 }
             }
+
+            (new RecordAuditLog)->handle(AuditLog::ACTION_RECURRING_DUES_GENERATED, $academicYear, $actor, [
+                'academic_year_id' => $academicYear->id,
+                'due_date' => $dueDate,
+                'cycle_key' => $cycleKey,
+                'created_count' => $created,
+            ]);
 
             return $created;
         });

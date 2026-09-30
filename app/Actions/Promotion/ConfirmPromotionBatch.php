@@ -2,11 +2,14 @@
 
 namespace App\Actions\Promotion;
 
+use App\Actions\Audit\RecordAuditLog;
+use App\Models\AuditLog;
 use App\Models\Enrollment;
 use App\Models\PromotionBatch;
 use App\Models\PromotionBatchItem;
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use RuntimeException;
@@ -18,13 +21,13 @@ class ConfirmPromotionBatch
      *
      * Either every target Enrollment is created and the batch is confirmed, or nothing changes.
      */
-    public function handle(PromotionBatch $batch): PromotionBatch
+    public function handle(PromotionBatch $batch, ?User $actor = null): PromotionBatch
     {
         if ($batch->status !== PromotionBatch::STATUS_DRAFT) {
             throw new RuntimeException('Only a draft promotion batch can be confirmed.');
         }
 
-        return DB::transaction(function () use ($batch): PromotionBatch {
+        return DB::transaction(function () use ($batch, $actor): PromotionBatch {
             foreach ($batch->items()->orderBy('id')->get() as $item) {
                 $this->applyItem($batch, $item);
             }
@@ -32,6 +35,18 @@ class ConfirmPromotionBatch
             $batch->update([
                 'status' => PromotionBatch::STATUS_CONFIRMED,
                 'confirmed_at' => now(),
+            ]);
+
+            (new RecordAuditLog)->handle(AuditLog::ACTION_PROMOTION_BATCH_CONFIRMED, $batch, $actor, [
+                'promotion_batch_id' => $batch->id,
+                'source_academic_year_id' => $batch->source_academic_year_id,
+                'target_academic_year_id' => $batch->target_academic_year_id,
+                'applied_count' => $batch->items()->where('status', PromotionBatchItem::STATUS_APPLIED)->count(),
+                'skipped_count' => $batch->items()->where('status', PromotionBatchItem::STATUS_SKIPPED)->count(),
+                'graduated_count' => $batch->items()
+                    ->where('action', PromotionBatchItem::ACTION_GRADUATE)
+                    ->where('status', PromotionBatchItem::STATUS_APPLIED)
+                    ->count(),
             ]);
 
             return $batch->refresh();
