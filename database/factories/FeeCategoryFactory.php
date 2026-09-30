@@ -20,6 +20,7 @@ class FeeCategoryFactory extends Factory
         return [
             'name' => fake()->unique()->words(2, true),
             'is_recurring' => fake()->boolean(),
+            'is_opt_in' => false,
         ];
     }
 }

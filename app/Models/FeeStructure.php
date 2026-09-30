@@ -15,6 +15,9 @@ class FeeStructure extends Model
     /** @use HasFactory<FeeStructureFactory> */
     use HasFactory;
 
+    /**
+     * @return BelongsTo<FeeCategory, $this>
+     */
     public function feeCategory(): BelongsTo
     {
         return $this->belongsTo(FeeCategory::class);

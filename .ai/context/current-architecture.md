@@ -20,10 +20,11 @@ Laravel modular monolith.
 - Families and Guardians (Phase 3)
 - Students and Enrollments (Phase 4)
 - Fees, Dues and Discounts (Phase 5)
-- Payments & Receipts (Phase 6, verified and pending commit)
+- Payments & Receipts (Phase 6)
+- Recurring Fee Due Generation (Phase 7A, verified and pending commit)
 
 ## Current Module
-- Phase 6: Payments & Receipts is complete / pending commit.
+- Phase 7A: Recurring Fee Due Generation is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -55,3 +56,12 @@ Laravel modular monolith.
 - StudentDueItem tracks paid_amount, balance_amount, and status (unpaid, partially_paid, paid).
 - Receipt snapshots payment, family, and allocation details immutably.
 - Payment recording uses DB transaction for atomicity.
+
+## Recurring Fee Due Generation
+- app/Actions/Fees/GenerateRecurringDueItems.php generates StudentDueItems for a cycle.
+- Source of truth is recurring FeeStructures for the academic year, matched to students enrolled in the same year and grade.
+- FeeCategory.is_opt_in gates categories that require an active StudentFeeSubscription.
+- Generated dues are still StudentDueItems with paid_amount 0 and status unpaid.
+- Discounts are applied at generation time and snapshotted to DueItemDiscount.
+- generation_key prevents duplicate dues for the same student, category, structure, and cycle.
+- Generation is transactional and never creates payments or receipts.

@@ -56,7 +56,7 @@ Deferred:
 - Audit
 
 ## Phase 6: Payments & Receipts
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - Payment, PaymentAllocation, and Receipt models and factories.
@@ -66,10 +66,23 @@ Includes:
 - Receipt snapshot with family, payment, and allocation details.
 - Phase 6 feature tests.
 
+## Phase 7A: Recurring Fee Due Generation
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- app/Actions/Fees/GenerateRecurringDueItems.php.
+- FeeCategory.is_opt_in flag, default false.
+- Generation from recurring FeeStructures for students enrolled in the same year and grade.
+- Active, in-date-range discount application with DueItemDiscount snapshots.
+- Deterministic generation_key duplicate prevention.
+- Phase 7A feature tests.
+
 Deferred:
-- Automatic allocation strategies (even-split, oldest-first)
-- Scheduled recurring due generation
+- Scheduled automation or cron command (not implemented in 7A)
+- Automatic payment allocation
+- Automatic sibling discount rule
 - Payment-driven student registration activation
+- Family combined billing aggregation
 - Dashboards
 - Reminders
 - Events

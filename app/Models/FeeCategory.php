@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'is_recurring'])]
+#[Fillable(['name', 'is_recurring', 'is_opt_in'])]
 class FeeCategory extends Model
 {
     /** @use HasFactory<FeeCategoryFactory> */
@@ -36,6 +36,7 @@ class FeeCategory extends Model
     {
         return [
             'is_recurring' => 'boolean',
+            'is_opt_in' => 'boolean',
         ];
     }
 }

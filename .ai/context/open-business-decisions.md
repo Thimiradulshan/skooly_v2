@@ -33,3 +33,11 @@ Do not invent answers for these.
 - StudentDueItem tracks paid_amount, balance_amount, and status.
 - Receipt snapshots are immutable; later due item changes do not rewrite receipt.
 - Payment recording uses DB transaction for atomicity.
+
+## Phase 7A Rules
+- Opt-in fee categories are declared explicitly with FeeCategory.is_opt_in. No name-based detection is used.
+- is_opt_in defaults to false. When true, an active StudentFeeSubscription is required.
+- Discount value_type vocabulary is amount or percentage. A null value_type is treated as amount.
+- Automatic payment allocation remains unresolved and is not implemented.
+- Automatic sibling discount rule remains unresolved and is not implemented.
+- generation_key is the duplicate-prevention mechanism; it must stay deterministic.
