@@ -116,7 +116,7 @@ Deferred:
 - Audit
 
 ## Phase 7C: Dues Dashboard / Reporting Queries
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - app/Actions/Reports/BuildDuesDashboardReport.php.
@@ -132,7 +132,34 @@ Deferred:
 - Automatic sibling discount rule
 - Payment-driven student registration activation
 - Family combined billing aggregation
-- Reminders
+- Frontend dashboards
+- Event notifications
+- UI/controllers/routes
+- Promotion
+- Audit
+
+## Phase 7D: Payment Reminders / Notification Foundation
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- PaymentReminder model and factory.
+- payment_reminders migration as an internal outbox table.
+- app/Actions/Notifications/GeneratePaymentReminders.php.
+- Upcoming and overdue due item coverage.
+- Guardian eligibility through explicit guardian_student links.
+- Combined billing consolidation per Guardian and Family.
+- Deterministic reminder_key duplicate prevention.
+- Read-only guarantee for due items, payments, allocations, and receipts.
+- Phase 7D feature tests.
+
+Deferred:
+- Real notification channels (email, SMS, WhatsApp)
+- Reminder templates and rendering
+- Scheduled automation or cron command
+- Automatic payment allocation
+- Automatic sibling discount rule
+- Payment-driven student registration activation
+- Family combined billing aggregation
 - Frontend dashboards
 - Event notifications
 - UI/controllers/routes

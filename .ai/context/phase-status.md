@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 7C: Dues Dashboard / Reporting Queries
+Phase 7D: Payment Reminders / Notification Foundation
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -12,10 +12,11 @@ Phase 7C: Dues Dashboard / Reporting Queries
 - Phase 6: Payments & Receipts - complete
 - Phase 7A: Recurring Fee Due Generation - complete
 - Phase 7B: Events Generating Due Items - complete
-- Phase 7C: Dues Dashboard / Reporting Queries - complete / pending commit
+- Phase 7C: Dues Dashboard / Reporting Queries - complete
+- Phase 7D: Payment Reminders / Notification Foundation - complete / pending commit
 
 ## Current Status
-Phase 7C implementation and verification are complete. Pending review and commit.
+Phase 7D implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -50,11 +51,19 @@ Phase 7C implementation and verification are complete. Pending review and commit
 - grade_id or section_id without academic_year_id throws InvalidArgumentException because enrollment is year-specific.
 - Report sections: summary, by_fee_category, family_balances, student_balances, outstanding_due_items.
 - Money totals are formatted as two-decimal strings without floating-point arithmetic.
+- payment_reminders is an internal outbox table. No external sending is implemented.
+- Reminder types are upcoming and overdue. Statuses are pending, sent, and cancelled.
+- Reminder eligibility requires balance_amount > 0, status unpaid or partially_paid, and a non-null due_date.
+- Guardian reminder eligibility uses explicit guardian_student links only, never family membership alone.
+- Combined billing families get one consolidated reminder per Guardian and Family with student_due_item_id null.
+- Non-combined families get one reminder per Guardian and StudentDueItem.
+- reminder_key is deterministic and prevents duplicate reminders for the same as_of_date.
+- Generation creates no payments, receipts, allocations, and never modifies StudentDueItem.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 97 tests, 295 assertions
+- php artisan test --compact: 113 tests, 352 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -64,4 +73,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 7C.
+Review git status, then commit Phase 7D.

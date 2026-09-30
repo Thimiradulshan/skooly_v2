@@ -11,7 +11,8 @@ Use this file before broad project reinspection.
 - Phase 6 Payments & Receipts: complete.
 - Phase 7A Recurring Fee Due Generation: complete.
 - Phase 7B Events Generating Due Items: complete.
-- Phase 7C Dues Dashboard / Reporting Queries: complete and verified; pending commit.
+- Phase 7C Dues Dashboard / Reporting Queries: complete.
+- Phase 7D Payment Reminders / Notification Foundation: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -56,19 +57,24 @@ Use this file before broad project reinspection.
 - Dashboard filters: academic year, grade, section, date range, fee category, family.
 - grade_id or section_id require academic_year_id because enrollment is year-specific.
 - Family and student balance summaries are available; no UI/controllers/routes exist yet.
+- payment_reminders is an internal outbox table. No external channel sends anything.
+- Reminder eligibility requires an outstanding balance, an unpaid or partially_paid status, and a due date.
+- Guardian reminder eligibility uses explicit guardian_student links, never family membership alone.
+- Combined billing families receive one consolidated reminder per Guardian and Family.
+- Reminder generation never creates payments, receipts, or allocations, and never changes due item balances.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 7C Deferred Work
-- Participation and payment-status reporting.
+## Phase 7D Deferred Work
+- Real notification channels (email, SMS, WhatsApp) and sending providers.
+- Reminder templates and rendering.
 - Scheduled automation or cron command.
 - Automatic payment allocation strategies.
 - Automatic sibling discount rule.
 - Payment-driven student registration activation.
 - Family combined billing aggregation.
-- Reminders.
 - Frontend dashboards.
 - Event notifications.
 - UI/controllers/routes.
@@ -85,4 +91,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 97 tests / 295 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 113 tests / 352 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

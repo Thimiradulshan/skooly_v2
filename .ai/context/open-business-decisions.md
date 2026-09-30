@@ -56,3 +56,11 @@ Do not invent answers for these.
 - grade_id and section_id are only valid together with academic_year_id because enrollment is year-specific.
 - No new payment allocation strategy is introduced by reporting.
 - Frontend dashboards, reminders, and notifications remain deferred.
+
+## Phase 7D Rules
+- PaymentReminder is an internal outbox record only. No external channel sends anything yet.
+- Reminder eligibility must use explicit guardian_student links. Family membership alone is never sufficient.
+- Combined billing consolidates into one reminder per Guardian and Family. Non-combined families get one per due item.
+- Reminder generation must never create payments, receipts, or allocations, and must not modify due item balances or statuses.
+- reminder_key must stay deterministic so re-running for the same as_of_date is safe.
+- Reminder timing, templates, and channels are deferred.

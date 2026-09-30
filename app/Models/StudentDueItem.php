@@ -63,6 +63,11 @@ class StudentDueItem extends Model
         return $this->hasOne(EventDueItem::class);
     }
 
+    public function paymentReminders(): HasMany
+    {
+        return $this->hasMany(PaymentReminder::class);
+    }
+
     /**
      * @return array<string, string>
      */

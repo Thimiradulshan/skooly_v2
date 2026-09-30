@@ -23,10 +23,11 @@ Laravel modular monolith.
 - Payments & Receipts (Phase 6)
 - Recurring Fee Due Generation (Phase 7A)
 - Events Generating Due Items (Phase 7B)
-- Dues Dashboard / Reporting Queries (Phase 7C, verified and pending commit)
+- Dues Dashboard / Reporting Queries (Phase 7C)
+- Payment Reminders / Notification Foundation (Phase 7D, verified and pending commit)
 
 ## Current Module
-- Phase 7C: Dues Dashboard / Reporting Queries is complete / pending commit.
+- Phase 7D: Payment Reminders / Notification Foundation is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -83,3 +84,11 @@ Laravel modular monolith.
 - Filters: academic year, grade, section, date range, fee category, family.
 - Family and student balance summaries are available, sorted by balance descending.
 - Money is normalized to two-decimal strings without floating-point arithmetic.
+
+## Payment Reminders / Notification Foundation
+- payment_reminders is an internal outbox table. Nothing is sent.
+- app/Actions/Notifications/GeneratePaymentReminders.php builds records for upcoming and overdue due items.
+- Eligibility requires an outstanding balance, an unpaid or partially_paid status, and a due date.
+- Guardian eligibility uses explicit guardian_student links only.
+- Combined billing families receive one consolidated reminder per Guardian and Family.
+- A deterministic reminder_key makes re-running for the same as_of_date safe.

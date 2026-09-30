@@ -29,6 +29,9 @@ class Student extends Model
     /**
      * Get the family that registers the student.
      */
+    /**
+     * @return BelongsTo<Family, $this>
+     */
     public function family(): BelongsTo
     {
         return $this->belongsTo(Family::class);
@@ -36,6 +39,9 @@ class Student extends Model
 
     /**
      * Get the guardians explicitly linked to the student.
+     */
+    /**
+     * @return BelongsToMany<Guardian, $this>
      */
     public function guardians(): BelongsToMany
     {

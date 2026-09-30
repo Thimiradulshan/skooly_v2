@@ -38,6 +38,11 @@ class Family extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function paymentReminders(): HasMany
+    {
+        return $this->hasMany(PaymentReminder::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
