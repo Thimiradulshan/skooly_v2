@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-7: Web Student Promotion Pages
+Phase 10B-8: Web Payment Reminder Pages
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -24,11 +24,12 @@ Phase 10B-7: Web Student Promotion Pages
 - Phase 10B-3: Web Fee & Discount Management - complete
 - Phase 10B-4: Web Due Generation & Dashboard Pages - complete
 - Phase 10B-5: Web Payment Collection & Receipt Pages - complete
- - Phase 10B-6: Web Event Management Pages - complete
- - Phase 10B-7: Web Student Promotion Pages - complete / pending commit
+- Phase 10B-6: Web Event Management Pages - complete
+- Phase 10B-7: Web Student Promotion Pages - complete
+- Phase 10B-8: Web Payment Reminder Pages - complete / pending commit
 
 ## Current Status
-Phase 10B-7 implementation and verification are complete. Pending review and commit.
+Phase 10B-8 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -155,11 +156,16 @@ Phase 10B-7 implementation and verification are complete. Pending review and com
 - Draft item targets are derived by the existing action; per-item target editing is not part of this web pass.
 - Confirmation only creates target-year Enrollments, never modifies source-year Enrollments, and never creates StudentDueItems.
 - No reversal, export, delete, or destructive promotion route exists.
+- Admin web pages exist for payment reminder list, generate, and stored detail preview.
+- PaymentReminderController delegates generation only to GeneratePaymentReminders.
+- The generation form exposes only the existing action contract: as-of date, upcoming window days, optional academic year, and optional family.
+- Reminder list and detail pages display stored PaymentReminder fields and message_snapshot data only.
+- No SMS, WhatsApp, email, queue, scheduler, status transition, send, edit, or delete workflow exists.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 285 tests, 1015 assertions
+- php artisan test --compact: 297 tests, 1054 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -169,4 +175,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-7.
+Review git status, then commit Phase 10B-8.

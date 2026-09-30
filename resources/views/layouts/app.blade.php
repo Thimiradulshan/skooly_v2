@@ -36,6 +36,7 @@
         <a href="{{ route('due-generation.events.create') }}">Event Due Generation</a> &middot;
         <a href="{{ route('events.index') }}">Events</a> &middot;
         <a href="{{ route('promotion-batches.index') }}">Promotion</a> &middot;
+        <a href="{{ route('payment-reminders.index') }}">Payment Reminders</a> &middot;
         <a href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
     </p>
 @else

@@ -36,10 +36,11 @@ Laravel modular monolith.
 - Web Due Generation & Dashboard Pages (Phase 10B-4)
 - Web Payment Collection & Receipt Pages (Phase 10B-5)
 - Web Event Management Pages (Phase 10B-6)
-- Web Student Promotion Pages (Phase 10B-7, verified and pending commit)
+- Web Student Promotion Pages (Phase 10B-7)
+- Web Payment Reminder Pages (Phase 10B-8, verified and pending commit)
 
 ## Current Module
-- Phase 10B-7: Web Student Promotion Pages is complete / pending commit.
+- Phase 10B-8: Web Payment Reminder Pages is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -196,3 +197,9 @@ Laravel modular monolith.
 - Draft items remain derived and read-only in the web layer; confirmation uses their existing backend targets and actions.
 - Source enrollments are never modified. Target enrollments are created only on confirmation, within the existing transaction.
 - No promotion reversal, export, destructive route, or next-year due generation exists.
+
+## Web Payment Reminders
+- PaymentReminderController lists and previews internal reminder records and delegates generation to GeneratePaymentReminders.
+- Reminder generation can be limited by academic year or family, the exact action-supported filters.
+- The detail page renders due_item_ids and message_snapshot without recalculating content or sending a channel message.
+- No send, edit, delete, status-transition, queue, scheduler, or Guardian web workflow exists.

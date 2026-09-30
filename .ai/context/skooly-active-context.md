@@ -24,7 +24,8 @@ Use this file before broad project reinspection.
 - Phase 10B-4 Web Due Generation & Dashboard Pages: complete.
 - Phase 10B-5 Web Payment Collection & Receipt Pages: complete.
 - Phase 10B-6 Web Event Management Pages: complete.
-- Phase 10B-7 Web Student Promotion Pages: complete and verified; pending commit.
+- Phase 10B-7 Web Student Promotion Pages: complete.
+- Phase 10B-8 Web Payment Reminder Pages: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -123,12 +124,16 @@ Use this file before broad project reinspection.
 - Promotion pages only call CreatePromotionBatch and ConfirmPromotionBatch.
 - Draft target mappings are derived by the backend action and are read-only in the web layer.
 - No reversal, export, delete, or next-year due generation route exists.
+- Admin web pages exist for payment reminder list, generation, and stored preview.
+- Reminder web generation only calls GeneratePaymentReminders and passes the Admin as the audit actor.
+- Reminder pages render stored records and message snapshots only; no sending or status mutation exists.
+- No queue, scheduler, or Guardian login workflow exists.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 10B-7 Deferred Work
+## Phase 10B-8 Deferred Work
 - Scheduler and cron setup for recurring generation.
 - Payment edit, delete, refund, receipt delete, and receipt PDF export.
 - Payment reporting/index UI.
@@ -139,6 +144,9 @@ Use this file before broad project reinspection.
 - Promotion reversal and reversal safety window.
 - Promotion export (CSV/PDF) and class-in-charge reassignment.
 - Promotion delete or destructive routes.
+- Reminder send/status-transition/edit/delete routes.
+- SMS, WhatsApp, email, delivery providers, queues, and scheduling.
+- Reminder API and mobile endpoints.
 - Automatic allocation, even-split allocation, and oldest-first allocation.
 - Online payment gateways.
 - Reminder sending UI.
@@ -169,4 +177,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 285 tests / 1015 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 297 tests / 1054 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

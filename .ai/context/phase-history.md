@@ -315,7 +315,7 @@ Deferred:
 - Receipt PDF export, CSV/PDF export, and audit UI/export.
 
 ## Phase 10B-7: Web Student Promotion Pages
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - PromotionBatchController with index, create, store, show, and confirm.
@@ -338,6 +338,28 @@ Deferred:
 - Automatic payment allocation and automatic sibling discount.
 - Student activation after registration payment.
 - Scheduled cron setup and audit UI/export.
+
+## Phase 10B-8: Web Payment Reminder Pages
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- PaymentReminderController with index, create, store, and show.
+- GeneratePaymentRemindersRequest and PaymentReminderFilterRequest, both Admin-only.
+- Reminder list, generation, and stored preview Blade views.
+- Payment reminder navigation in the shared layout.
+- Phase 10B-8 feature tests, 12 in total.
+
+Deferred:
+- Reminder send/status-transition/edit/delete routes.
+- SMS, WhatsApp, email, delivery providers, queues, and scheduling.
+- Reminder API and mobile endpoints.
+- Guardian login and a Guardian-to-User link.
+- Accountant and Teacher reminder web access.
+- Payment, receipt, promotion, and event management beyond existing pages.
+- Promotion reversal (safety window unresolved).
+- Automatic payment allocation and automatic sibling discount.
+- Student activation after registration payment.
+- Receipt PDF export, CSV/PDF export, and audit UI/export.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

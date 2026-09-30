@@ -148,3 +148,9 @@ Do not invent answers for these.
 - ConfirmPromotionBatch remains the only confirmation path and stays atomic.
 - Promotion reversal safety window remains unresolved, so no reversal route or workflow exists.
 - Promotion web workflows never generate StudentDueItems or next-year fees.
+
+## Phase 10B-8 Rules
+- Payment reminder web generation supports only the existing GeneratePaymentReminders action contract; it always considers both upcoming and overdue due items.
+- Reminder pages are internal outbox previews only. They must not send a message, change status, or infer Guardian visibility.
+- Guardian privacy remains enforced by the generation action through explicit guardian_student links.
+- No reminder channel, delivery provider, queue, or scheduling rule has been chosen.
