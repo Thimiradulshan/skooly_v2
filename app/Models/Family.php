@@ -17,6 +17,9 @@ class Family extends Model
     /**
      * Get the guardians registered to the family.
      */
+    /**
+     * @return HasMany<Guardian, $this>
+     */
     public function guardians(): HasMany
     {
         return $this->hasMany(Guardian::class);

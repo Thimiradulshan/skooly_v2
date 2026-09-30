@@ -137,7 +137,7 @@ Deferred:
 - UI/controllers/routes
 
 ## Phase 9C: Backend Hardening & Final Foundation Review
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Focus:
 - Destructive-action protections
@@ -155,6 +155,34 @@ Outcome:
 
 Deferred:
 - DB-level CHECK constraint for non-negative balances (open decision)
+- Guardian login and a Guardian-to-User link
+- Teacher section-scoped student access
+- Accountant student visibility decision
+- Promotion reversal (safety window unresolved)
+- Automatic payment allocation strategy
+- Automatic sibling discount rule
+- CSV/PDF export
+- Real notification channels
+- Scheduled cron setup
+- Audit UI and export
+- UI/controllers/routes
+
+## Phase 10A: Backend Workflow Actions / Service Layer Completion
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- CreateFamily and UpdateFamily.
+- LinkGuardianToStudent, with same-Family validation and idempotency.
+- RegisterStudent, with optional initial Enrollment and explicit Guardian linking.
+- ApplyStudentDiscount.
+- CreateFeeStructure.
+- Wired the previously deferred audit constants: student_registered, family_created, family_updated, discount_applied.
+- Phase 10A feature tests.
+
+Deferred:
+- ActivateStudentAfterRegistrationPaid, because registration mandatory Due Items are not identifiable without a new business rule or a new FeeCategory flag.
+- Fee structure creation audit, no existing audit constant covers it.
+- Guardian-student linking audit, no existing audit constant covers it.
 - Guardian login and a Guardian-to-User link
 - Teacher section-scoped student access
 - Accountant student visibility decision

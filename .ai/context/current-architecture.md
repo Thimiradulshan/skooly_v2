@@ -28,10 +28,11 @@ Laravel modular monolith.
 - Student Promotion (Phase 8)
 - Authorization & Guardian Privacy Hardening (Phase 9A)
 - Audit Logs (Phase 9B)
-- Backend Hardening & Final Foundation Review (Phase 9C, verified and pending commit)
+- Backend Hardening & Final Foundation Review (Phase 9C)
+- Backend Workflow Actions / Service Layer Completion (Phase 10A, verified and pending commit)
 
 ## Current Module
-- Phase 9C: Backend Hardening & Final Foundation Review is complete / pending commit.
+- Phase 10A: Backend Workflow Actions / Service Layer Completion is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -129,3 +130,12 @@ Laravel modular monolith.
 - Provenance pointers deliberately null out on source deletion so the local record survives.
 - Balance correctness is enforced in the payment action, including against sequential payments.
 - Snapshot tables (receipts, due_item_discounts, audit_logs.metadata) are never recomputed from live records.
+
+## Backend Workflow Actions
+- app/Actions holds every business workflow. Controllers, routes, and requests are still absent.
+- CreateFamily and UpdateFamily manage the household registration and billing unit.
+- RegisterStudent registers a Student under an existing Family and may create one initial Enrollment.
+- LinkGuardianToStudent is the only way a Guardian gains access to a Student.
+- ApplyStudentDiscount records a discount; due generation later applies and snapshots it.
+- CreateFeeStructure records academic-year scoped configuration.
+- All multi-write workflows run inside a DB transaction and audit through RecordAuditLog.

@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 9C: Backend Hardening & Final Foundation Review
+Phase 10A: Backend Workflow Actions / Service Layer Completion
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -17,10 +17,11 @@ Phase 9C: Backend Hardening & Final Foundation Review
 - Phase 8: Student Promotion - complete
 - Phase 9A: Authorization & Guardian Privacy Hardening - complete
 - Phase 9B: Audit Logs - complete
-- Phase 9C: Backend Hardening & Final Foundation Review - complete / pending commit
+- Phase 9C: Backend Hardening & Final Foundation Review - complete
+- Phase 10A: Backend Workflow Actions / Service Layer Completion - complete / pending commit
 
 ## Current Status
-Phase 9C review is complete and verified. Pending review and commit.
+Phase 10A implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -93,11 +94,19 @@ Phase 9C review is complete and verified. Pending review and commit.
 - Provenance pointers (due_item_discounts.discount_id, promotion_batch_items.applied_enrollment_id, audit_logs.actor_user_id) intentionally null on source deletion and are covered by tests.
 - Sequential payments cannot overpay a partially paid due item, and a settled due item reaches exactly zero rather than a negative balance.
 - Audit log metadata and due item discount snapshots stay historical after the source record is edited or deleted.
+- CreateFamily creates a Family plus optional Guardians, and never links Guardians to Students.
+- UpdateFamily edits only family_code, address, home_contact_no, and combined_billing_enabled, and never merges Families.
+- LinkGuardianToStudent requires the same Family and is idempotent. Family membership alone still grants nothing.
+- RegisterStudent defaults status to pending_registration, links only explicitly passed Guardians, optionally creates one Enrollment, and validates that Section belongs to Grade.
+- RegisterStudent never generates StudentDueItems and never activates the Student.
+- ApplyStudentDiscount creates a Discount for one Student and FeeCategory and never touches existing due items.
+- CreateFeeStructure creates academic-year scoped configuration and never rewrites existing due items.
+- The four previously deferred audit constants are now wired: student_registered, family_created, family_updated, discount_applied.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 170 tests, 573 assertions
+- php artisan test --compact: 188 tests, 640 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -107,4 +116,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 9C.
+Review git status, then commit Phase 10A.

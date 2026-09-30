@@ -16,7 +16,8 @@ Use this file before broad project reinspection.
 - Phase 8 Student Promotion: complete.
 - Phase 9A Authorization & Guardian Privacy Hardening: complete.
 - Phase 9B Audit Logs: complete.
-- Phase 9C Backend Hardening & Final Foundation Review: complete and verified; pending commit.
+- Phase 9C Backend Hardening & Final Foundation Review: complete.
+- Phase 10A Backend Workflow Actions / Service Layer Completion: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -83,19 +84,25 @@ Use this file before broad project reinspection.
 - Provenance pointers null out on source deletion so the local record survives.
 - Balance correctness is enforced in the payment action, including against sequential payments.
 - No DB CHECK constraint currently prevents a negative balance_amount; that remains an open decision.
+- All business workflows live in app/Actions. Controllers, routes, and requests still do not exist.
+- RegisterStudent defaults to pending_registration, links only explicit Guardians, and never generates due items.
+- LinkGuardianToStudent is the only path to Guardian access and requires the same Family.
+- Student activation after registration payment is deferred because registration dues are not identifiable.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 9C Deferred Work
-- DB-level CHECK constraint for non-negative balances (open decision).
+## Phase 10A Deferred Work
+- ActivateStudentAfterRegistrationPaid (registration dues are not identifiable).
+- Audit entries for fee structure creation and guardian-student linking (no existing audit constant).
 - Guardian login and a Guardian-to-User link.
 - Teacher section-scoped student access.
 - Accountant student visibility decision.
 - Promotion reversal (safety window unresolved).
 - Automatic payment allocation strategy.
 - Automatic sibling discount rule.
+- DB-level CHECK constraint for non-negative balances (open decision).
 - CSV/PDF export.
 - Real notification channels.
 - Scheduled cron setup.
@@ -112,4 +119,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 170 tests / 573 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 188 tests / 640 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

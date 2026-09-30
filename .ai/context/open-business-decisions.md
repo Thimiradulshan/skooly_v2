@@ -93,3 +93,9 @@ Do not invent answers for these.
 - No DB-level CHECK constraint prevents a negative StudentDueItem.balance_amount. The payment path guards this in application code only. Adding a CHECK constraint remains an open decision.
 - No money column uses an unsigned type, consistent with the existing decimal(12,2) convention.
 - No new open decisions were introduced. Hardening required no code changes.
+
+## Phase 10A Rules
+- Student activation after registration payment remains deferred. There is no explicit way to identify registration mandatory Due Items, so no activation action was written.
+- FeeCategory has no registration flag, and name-matching a category such as "Registration" is forbidden.
+- CreateFeeStructure and LinkGuardianToStudent are intentionally not audited because no existing audit constant covers them and none may be invented.
+- Workflow actions never generate due items, never activate students, and never grant Guardian access by family membership.

@@ -10,15 +10,18 @@ git diff --check
 git status
 
 ## Latest Known Good
-Phase 9C passed on 2026-09-30:
+Phase 10A passed on 2026-09-30:
 - migrate:fresh passed.
-- 170 tests / 573 assertions passed.
+- 188 tests / 640 assertions passed.
 - PHPStan passed with 0 errors.
 - Pint passed.
 - Composer audit found no vulnerabilities.
 - git diff --check passed.
 
 ## Previous Known Good
+Phase 9C passed:
+- 170 tests / 573 assertions passed.
+
 Phase 9B passed:
 - 159 tests / 531 assertions passed.
 
