@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-8: Web Payment Reminder Pages
+Phase 10B-9: Web Admin Usability & Navigation Polish
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -26,10 +26,11 @@ Phase 10B-8: Web Payment Reminder Pages
 - Phase 10B-5: Web Payment Collection & Receipt Pages - complete
 - Phase 10B-6: Web Event Management Pages - complete
 - Phase 10B-7: Web Student Promotion Pages - complete
-- Phase 10B-8: Web Payment Reminder Pages - complete / pending commit
+- Phase 10B-8: Web Payment Reminder Pages - complete
+- Phase 10B-9: Web Admin Usability & Navigation Polish - complete / pending commit
 
 ## Current Status
-Phase 10B-8 implementation and verification are complete. Pending review and commit.
+Phase 10B-9 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -161,11 +162,17 @@ Phase 10B-8 implementation and verification are complete. Pending review and com
 - The generation form exposes only the existing action contract: as-of date, upcoming window days, optional academic year, and optional family.
 - Reminder list and detail pages display stored PaymentReminder fields and message_snapshot data only.
 - No SMS, WhatsApp, email, queue, scheduler, status transition, send, edit, or delete workflow exists.
+- AdminDashboardController serves a read-only landing page at /admin with cheap COUNT summaries.
+- The root route now redirects guests to login and authenticated users to the admin dashboard. It no longer renders the welcome page.
+- Layout navigation is grouped into one admin row: Dashboard, Families, Fees, Due Generation, Dues Dashboard, Events, Promotion, Reminders.
+- The layout renders success, error, and validation flash messages consistently.
+- Cross-links added only where named routes already existed: fee categories to fee structure creation, dues dashboard to recurring generation and reminders.
+- Existing index pages already carried empty-state messages, so no new empty state was required.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 297 tests, 1054 assertions
+- php artisan test --compact: 314 tests, 1115 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -175,4 +182,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-8.
+Review git status, then commit Phase 10B-9.

@@ -25,7 +25,8 @@ Use this file before broad project reinspection.
 - Phase 10B-5 Web Payment Collection & Receipt Pages: complete.
 - Phase 10B-6 Web Event Management Pages: complete.
 - Phase 10B-7 Web Student Promotion Pages: complete.
-- Phase 10B-8 Web Payment Reminder Pages: complete and verified; pending commit.
+- Phase 10B-8 Web Payment Reminder Pages: complete.
+- Phase 10B-9 Web Admin Usability & Navigation Polish: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -128,12 +129,21 @@ Use this file before broad project reinspection.
 - Reminder web generation only calls GeneratePaymentReminders and passes the Admin as the audit actor.
 - Reminder pages render stored records and message snapshots only; no sending or status mutation exists.
 - No queue, scheduler, or Guardian login workflow exists.
+- /admin is a read-only dashboard with COUNT summaries and workflow link cards.
+- The root route always redirects: guests to login, authenticated users to the admin dashboard.
+- Layout navigation is one grouped admin row with consistent success, error, and validation flash display.
+- Cross-links reuse existing named routes only. No new route exists for navigation.
+- No backend action, model, authorization rule, or FormRequest changed in this phase.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 10B-8 Deferred Work
+## Phase 10B-9 Deferred Work
+- Dashboard widgets, charts, and reporting queries beyond COUNT summaries.
+- Accountant and Teacher dashboard or navigation access.
+- Role-specific or personalized navigation variants.
+- Frontend framework, asset pipeline, and advanced styling.
 - Scheduler and cron setup for recurring generation.
 - Payment edit, delete, refund, receipt delete, and receipt PDF export.
 - Payment reporting/index UI.
@@ -177,4 +187,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 297 tests / 1054 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 314 tests / 1115 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

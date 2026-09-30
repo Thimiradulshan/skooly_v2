@@ -137,6 +137,10 @@ it('adds no API routes or API authentication', function () {
     expect(config('sanctum'))->toBeNull();
 });
 
-it('keeps the root route public', function () {
-    $this->get('/')->assertOk();
+it('redirects a guest from the root route to login', function () {
+    $this->get('/')->assertRedirect(route('login'));
+});
+
+it('redirects an authenticated admin from the root route to the dashboard', function () {
+    $this->actingAs(adminUser())->get('/')->assertRedirect(route('admin.dashboard'));
 });

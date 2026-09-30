@@ -4,6 +4,14 @@
 @section('heading', 'Dues dashboard')
 
 @section('content')
+    <p>
+        <a href="{{ route('due-generation.recurring.create') }}">Generate recurring dues</a>
+        &middot;
+        <a href="{{ route('payment-reminders.index') }}">Payment reminders</a>
+        &middot;
+        <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+    </p>
+
     <form method="GET" action="{{ route('dues-dashboard.index') }}">
         <label for="academic_year_id">Academic year</label>
         <select id="academic_year_id" name="academic_year_id">

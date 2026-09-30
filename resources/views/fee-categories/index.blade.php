@@ -8,6 +8,8 @@
         <a href="{{ route('fee-categories.create') }}">Create fee category</a>
         &middot;
         <a href="{{ route('fee-structures.index') }}">Fee structures</a>
+        &middot;
+        <a href="{{ route('fee-structures.create') }}">Create fee structure</a>
     </p>
 
     <table>

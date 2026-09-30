@@ -14,6 +14,11 @@
         }
         .error { color: #b00020; }
         .status { background: #e6f4ea; border: 1px solid #34a853; padding: 0.6rem; }
+        .alert { background: #fdecea; border: 1px solid #b00020; padding: 0.6rem; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem; }
+        .card { border: 1px solid #ccc; padding: 1rem; }
+        .card h3 { margin-top: 0; }
+        .nav a { margin-right: 0.25rem; }
     </style>
 </head>
 <body>
@@ -28,16 +33,15 @@
         </form>
     </p>
 
-    <p>
-        <a href="{{ route('families.index') }}">Families</a> &middot;
-        <a href="{{ route('fee-categories.index') }}">Fee Categories</a> &middot;
-        <a href="{{ route('fee-structures.index') }}">Fee Structures</a> &middot;
-        <a href="{{ route('due-generation.recurring.create') }}">Recurring Due Generation</a> &middot;
-        <a href="{{ route('due-generation.events.create') }}">Event Due Generation</a> &middot;
-        <a href="{{ route('events.index') }}">Events</a> &middot;
-        <a href="{{ route('promotion-batches.index') }}">Promotion</a> &middot;
-        <a href="{{ route('payment-reminders.index') }}">Payment Reminders</a> &middot;
-        <a href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
+    <p class="nav">
+        <a href="{{ route('admin.dashboard') }}">Dashboard</a> |
+        <a href="{{ route('families.index') }}">Families</a> |
+        <a href="{{ route('fee-categories.index') }}">Fees</a> |
+        <a href="{{ route('due-generation.recurring.create') }}">Due Generation</a> |
+        <a href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a> |
+        <a href="{{ route('events.index') }}">Events</a> |
+        <a href="{{ route('promotion-batches.index') }}">Promotion</a> |
+        <a href="{{ route('payment-reminders.index') }}">Reminders</a>
     </p>
 @else
     <p><a href="{{ route('login') }}">Sign in</a></p>
@@ -45,6 +49,10 @@
 
 @if (session('status'))
     <p class="status">{{ session('status') }}</p>
+@endif
+
+@if (session('error'))
+    <p class="alert">{{ session('error') }}</p>
 @endif
 
 @if ($errors->any())

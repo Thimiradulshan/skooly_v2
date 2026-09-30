@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Web\AdminDashboardController;
 use App\Http\Controllers\Web\DueGenerationController;
 use App\Http\Controllers\Web\DuesDashboardController;
 use App\Http\Controllers\Web\EventChargeController;
@@ -20,7 +21,9 @@ use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return auth()->check()
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('login');
 });
 
 Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -28,6 +31,8 @@ Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
 Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
+    Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
     Route::get('/families', [FamilyController::class, 'index'])->name('families.index');
     Route::get('/families/create', [FamilyController::class, 'create'])->name('families.create');
     Route::post('/families', [FamilyController::class, 'store'])->name('families.store');

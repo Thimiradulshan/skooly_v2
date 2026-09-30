@@ -37,10 +37,11 @@ Laravel modular monolith.
 - Web Payment Collection & Receipt Pages (Phase 10B-5)
 - Web Event Management Pages (Phase 10B-6)
 - Web Student Promotion Pages (Phase 10B-7)
-- Web Payment Reminder Pages (Phase 10B-8, verified and pending commit)
+- Web Payment Reminder Pages (Phase 10B-8)
+- Web Admin Usability & Navigation Polish (Phase 10B-9, verified and pending commit)
 
 ## Current Module
-- Phase 10B-8: Web Payment Reminder Pages is complete / pending commit.
+- Phase 10B-9: Web Admin Usability & Navigation Polish is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -203,3 +204,10 @@ Laravel modular monolith.
 - Reminder generation can be limited by academic year or family, the exact action-supported filters.
 - The detail page renders due_item_ids and message_snapshot without recalculating content or sending a channel message.
 - No send, edit, delete, status-transition, queue, scheduler, or Guardian web workflow exists.
+
+## Web Admin Usability & Navigation
+- AdminDashboardController serves a read-only /admin landing page with COUNT summaries and workflow link cards.
+- The root route always redirects: guests to login, authenticated users to the admin dashboard.
+- The shared layout exposes one grouped admin navigation row plus consistent success, error, and validation flash display.
+- Cross-links reuse existing named routes only; empty states already existed on every index page.
+- No backend action, model, authorization rule, or FormRequest changed in this phase.

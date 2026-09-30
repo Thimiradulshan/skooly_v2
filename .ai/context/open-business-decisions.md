@@ -154,3 +154,10 @@ Do not invent answers for these.
 - Reminder pages are internal outbox previews only. They must not send a message, change status, or infer Guardian visibility.
 - Guardian privacy remains enforced by the generation action through explicit guardian_student links.
 - No reminder channel, delivery provider, queue, or scheduling rule has been chosen.
+
+## Phase 10B-9 Rules
+- Usability polish must not change backend actions, models, or FormRequest authorization.
+- The admin dashboard is read-only: COUNT summaries only, no money calculation in Blade.
+- The root route always redirects (login for guests, dashboard for authenticated users) and never renders content.
+- Cross-links may only use existing named routes; no route may be invented for a link.
+- No new Accountant or Teacher permissions may be introduced by navigation changes.

@@ -340,7 +340,7 @@ Deferred:
 - Scheduled cron setup and audit UI/export.
 
 ## Phase 10B-8: Web Payment Reminder Pages
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - PaymentReminderController with index, create, store, and show.
@@ -360,6 +360,26 @@ Deferred:
 - Automatic payment allocation and automatic sibling discount.
 - Student activation after registration payment.
 - Receipt PDF export, CSV/PDF export, and audit UI/export.
+
+## Phase 10B-9: Web Admin Usability & Navigation Polish
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- AdminDashboardController serving a read-only /admin landing page.
+- Root route now redirects guests to login and authenticated users to the admin dashboard.
+- Grouped admin navigation row in the shared layout.
+- Consistent success, error, and validation flash display in the layout.
+- Safe cross-links between existing named routes only.
+- Phase 10B-9 feature tests, 16 in total.
+- Existing ExampleTest and root-route auth test updated for the redirect behaviour.
+
+Deferred:
+- Any new dashboard widgets, charts, or reporting queries.
+- Accountant and Teacher dashboard or navigation access.
+- Personalized or role-specific navigation variants.
+- Advanced UI styling, frontend framework, or asset pipeline.
+- Reminder sending, queues, scheduler, and delivery providers.
+- Payment, promotion, and event features beyond existing pages.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
