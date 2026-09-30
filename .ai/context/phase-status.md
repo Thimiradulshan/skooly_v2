@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-6: Web Event Management Pages
+Phase 10B-7: Web Student Promotion Pages
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -24,10 +24,11 @@ Phase 10B-6: Web Event Management Pages
 - Phase 10B-3: Web Fee & Discount Management - complete
 - Phase 10B-4: Web Due Generation & Dashboard Pages - complete
 - Phase 10B-5: Web Payment Collection & Receipt Pages - complete
-- Phase 10B-6: Web Event Management Pages - complete / pending commit
+ - Phase 10B-6: Web Event Management Pages - complete
+ - Phase 10B-7: Web Student Promotion Pages - complete / pending commit
 
 ## Current Status
-Phase 10B-6 implementation and verification are complete. Pending review and commit.
+Phase 10B-7 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -148,11 +149,17 @@ Phase 10B-6 implementation and verification are complete. Pending review and com
 - Event participation uses only opted_in and opted_out and is duplicate-safe through updateOrCreate.
 - Event management creates no StudentDueItems, Payments, Receipts, or PaymentAllocations.
 - Event due generation remains a separate existing flow through GenerateEventDueItems.
+- Admin web pages exist for promotion batch list, draft creation, show, and confirmation.
+- PromotionBatchController delegates only to CreatePromotionBatch and ConfirmPromotionBatch.
+- The create form submits source academic year, target academic year, and source section IDs, exactly matching the existing action signature.
+- Draft item targets are derived by the existing action; per-item target editing is not part of this web pass.
+- Confirmation only creates target-year Enrollments, never modifies source-year Enrollments, and never creates StudentDueItems.
+- No reversal, export, delete, or destructive promotion route exists.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 276 tests, 975 assertions
+- php artisan test --compact: 285 tests, 1015 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -162,4 +169,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-6.
+Review git status, then commit Phase 10B-7.

@@ -35,10 +35,11 @@ Laravel modular monolith.
 - Web Fee & Discount Management (Phase 10B-3)
 - Web Due Generation & Dashboard Pages (Phase 10B-4)
 - Web Payment Collection & Receipt Pages (Phase 10B-5)
-- Web Event Management Pages (Phase 10B-6, verified and pending commit)
+- Web Event Management Pages (Phase 10B-6)
+- Web Student Promotion Pages (Phase 10B-7, verified and pending commit)
 
 ## Current Module
-- Phase 10B-6: Web Event Management Pages is complete / pending commit.
+- Phase 10B-7: Web Student Promotion Pages is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -188,3 +189,10 @@ Laravel modular monolith.
 - EventParticipationController uses SetEventParticipation and preserves the existing opted_in and opted_out statuses.
 - GenerateEventDueItems remains the only creator of EventDueItem and StudentDueItem records.
 - No event management deletion, payment, receipt, or audit workflow exists.
+
+## Web Student Promotion
+- PromotionBatchController creates drafts through CreatePromotionBatch and confirms drafts through ConfirmPromotionBatch.
+- The web layer accepts only source/target academic years and source section IDs, the complete existing creation contract.
+- Draft items remain derived and read-only in the web layer; confirmation uses their existing backend targets and actions.
+- Source enrollments are never modified. Target enrollments are created only on confirmation, within the existing transaction.
+- No promotion reversal, export, destructive route, or next-year due generation exists.

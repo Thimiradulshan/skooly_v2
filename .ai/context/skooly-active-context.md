@@ -23,7 +23,8 @@ Use this file before broad project reinspection.
 - Phase 10B-3 Web Fee & Discount Management: complete.
 - Phase 10B-4 Web Due Generation & Dashboard Pages: complete.
 - Phase 10B-5 Web Payment Collection & Receipt Pages: complete.
-- Phase 10B-6 Web Event Management Pages: complete and verified; pending commit.
+- Phase 10B-6 Web Event Management Pages: complete.
+- Phase 10B-7 Web Student Promotion Pages: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -118,22 +119,29 @@ Use this file before broad project reinspection.
 - Event management only creates or updates Event, EventCharge, and EventParticipation records.
 - Event due generation remains separate through GenerateEventDueItems.
 - Event charges are create-only in the web layer, and no event deletion route exists.
+- Admin web pages exist for promotion batch list, draft creation, detail, and confirmation.
+- Promotion pages only call CreatePromotionBatch and ConfirmPromotionBatch.
+- Draft target mappings are derived by the backend action and are read-only in the web layer.
+- No reversal, export, delete, or next-year due generation route exists.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 10B-6 Deferred Work
+## Phase 10B-7 Deferred Work
 - Scheduler and cron setup for recurring generation.
-- Event management UI.
 - Payment edit, delete, refund, receipt delete, and receipt PDF export.
 - Payment reporting/index UI.
 - Event charge editing and destructive event, charge, and participation routes.
 - Event management audit entries, no existing audit constant covers them.
 - Event management API and mobile endpoints.
+- Draft item target/action editing in the web layer.
+- Promotion reversal and reversal safety window.
+- Promotion export (CSV/PDF) and class-in-charge reassignment.
+- Promotion delete or destructive routes.
 - Automatic allocation, even-split allocation, and oldest-first allocation.
 - Online payment gateways.
-- Promotion UI and reminder sending UI.
+- Reminder sending UI.
 - Accountant and Teacher web access.
 - API auth, API controllers, and mobile endpoints.
 - Advanced user management, password reset, and email verification.
@@ -161,4 +169,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 265 tests / 915 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 285 tests / 1015 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

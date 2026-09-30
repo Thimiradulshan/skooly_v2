@@ -141,3 +141,10 @@ Do not invent answers for these.
 - Event participation does not generate due items; GenerateEventDueItems remains the sole generation action.
 - No event management audit constant exists, so event create/update, charges, and participation workflows are unaudited.
 - Event deletion stays deferred because generated EventDueItem records are historical.
+
+## Phase 10B-7 Rules
+- Web promotion batch creation supports only the existing action signature: source year, target year, and source section IDs.
+- Target mappings are derived by CreatePromotionBatch. Per-item editing needs a separate backend workflow decision.
+- ConfirmPromotionBatch remains the only confirmation path and stays atomic.
+- Promotion reversal safety window remains unresolved, so no reversal route or workflow exists.
+- Promotion web workflows never generate StudentDueItems or next-year fees.

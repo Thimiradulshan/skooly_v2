@@ -290,7 +290,7 @@ Deferred:
 - Audit UI and export.
 
 ## Phase 10B-6: Web Event Management Pages
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - CreateEvent, UpdateEvent, CreateEventCharge, and SetEventParticipation actions.
@@ -313,6 +313,31 @@ Deferred:
 - Promotion reversal (safety window unresolved).
 - Automatic payment allocation and automatic sibling discount.
 - Receipt PDF export, CSV/PDF export, and audit UI/export.
+
+## Phase 10B-7: Web Student Promotion Pages
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- PromotionBatchController with index, create, store, show, and confirm.
+- StorePromotionBatchRequest and ConfirmPromotionBatchRequest, both Admin-only.
+- Promotion batch list, draft create, and detail Blade views.
+- Promotion navigation in the shared layout.
+- Phase 10B-7 feature tests, 9 in total.
+
+Deferred:
+- Draft item target/action editing in the web layer.
+- Promotion reversal and reversal safety window.
+- Promotion export (CSV/PDF) and class-in-charge reassignment.
+- Promotion delete or destructive routes.
+- Promotion API and mobile endpoints.
+- Due generation, payment, receipt, event, reminder, and dashboard UI beyond existing web pages.
+- Accountant and Teacher promotion web access.
+- Guardian login and a Guardian-to-User link.
+- Teacher section-scoped student access.
+- Accountant student visibility decision.
+- Automatic payment allocation and automatic sibling discount.
+- Student activation after registration payment.
+- Scheduled cron setup and audit UI/export.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
