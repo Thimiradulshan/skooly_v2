@@ -26,7 +26,8 @@ Use this file before broad project reinspection.
 - Phase 10B-6 Web Event Management Pages: complete.
 - Phase 10B-7 Web Student Promotion Pages: complete.
 - Phase 10B-8 Web Payment Reminder Pages: complete.
-- Phase 10B-9 Web Admin Usability & Navigation Polish: complete and verified; pending commit.
+- Phase 10B-9 Web Admin Usability & Navigation Polish: complete.
+- Phase 10B-10 Web Manual QA & Bug Fix Pass: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -134,6 +135,9 @@ Use this file before broad project reinspection.
 - Layout navigation is one grouped admin row with consistent success, error, and validation flash display.
 - Cross-links reuse existing named routes only. No new route exists for navigation.
 - No backend action, model, authorization rule, or FormRequest changed in this phase.
+- Phase 10B-10 manual QA found no application bugs. The admin journey from login to payment, receipt, event dues, reminders, and promotion works end to end.
+- Promotion only lists active students, so pending_registration students are not promoted until activation is implemented.
+- Post-login still lands on /families while the root route sends admins to /admin. Both were explicitly specified earlier, so both remain as-is.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
@@ -187,4 +191,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 314 tests / 1115 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 322 tests / 1250 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

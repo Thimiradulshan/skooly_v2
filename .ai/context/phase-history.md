@@ -362,7 +362,7 @@ Deferred:
 - Receipt PDF export, CSV/PDF export, and audit UI/export.
 
 ## Phase 10B-9: Web Admin Usability & Navigation Polish
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - AdminDashboardController serving a read-only /admin landing page.
@@ -380,6 +380,33 @@ Deferred:
 - Advanced UI styling, frontend framework, or asset pipeline.
 - Reminder sending, queues, scheduler, and delivery providers.
 - Payment, promotion, and event features beyond existing pages.
+
+## Phase 10B-10: Web Manual QA & Bug Fix Pass
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Manual QA checklist completed across auth, admin dashboard, families and students,
+fees and discounts, due generation and dashboard, payments and receipts, events,
+promotion, reminders, and route safety.
+
+Bugs found: none. No application code changes were required.
+
+Findings confirmed as correct behaviour:
+- Promotion lists only active students, so a pending_registration student is not promoted.
+- Post-login lands on /families while the root route sends authenticated admins to /admin.
+  Both were explicitly specified in earlier phases, so neither was changed here.
+
+Added:
+- tests/Feature/WebManualQaRegressionTest.php covering all admin pages, destructive
+  and API route absence, dashboard filter combinations, family and event update
+  forms, logout protection, and one full journey from login through payment,
+  receipt, event dues, reminders, and promotion.
+
+Deferred:
+- Any new feature, module, or business rule.
+- Standardising the post-login landing page.
+- Student activation after registration payment.
+- Reminder sending, queues, scheduler, and delivery providers.
+- Accountant and Teacher web access.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

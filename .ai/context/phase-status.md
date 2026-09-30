@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-9: Web Admin Usability & Navigation Polish
+Phase 10B-10: Web Manual QA & Bug Fix Pass
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -27,10 +27,11 @@ Phase 10B-9: Web Admin Usability & Navigation Polish
 - Phase 10B-6: Web Event Management Pages - complete
 - Phase 10B-7: Web Student Promotion Pages - complete
 - Phase 10B-8: Web Payment Reminder Pages - complete
-- Phase 10B-9: Web Admin Usability & Navigation Polish - complete / pending commit
+- Phase 10B-9: Web Admin Usability & Navigation Polish - complete
+- Phase 10B-10: Web Manual QA & Bug Fix Pass - complete / pending commit
 
 ## Current Status
-Phase 10B-9 implementation and verification are complete. Pending review and commit.
+Phase 10B-10 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -168,11 +169,14 @@ Phase 10B-9 implementation and verification are complete. Pending review and com
 - The layout renders success, error, and validation flash messages consistently.
 - Cross-links added only where named routes already existed: fee categories to fee structure creation, dues dashboard to recurring generation and reminders.
 - Existing index pages already carried empty-state messages, so no new empty state was required.
+- Phase 10B-10 manual QA walked login through every main workflow. No application bugs were found and no code changes were required.
+- All 22 admin pages load, the full journey from login to payment, receipt, event dues, reminders, and promotion completes, and no destructive or API routes exist.
+- Two QA findings were behaviour confirmations, not bugs: promotion only lists active students, and post-login still lands on /families while the root route sends admins to /admin.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 314 tests, 1115 assertions
+- php artisan test --compact: 322 tests, 1250 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -182,4 +186,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-9.
+Review git status, then commit Phase 10B-10.
