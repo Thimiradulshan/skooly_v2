@@ -179,3 +179,9 @@ Do not invent answers for these.
 - Production deployment must never rely on a seeded account. Admin credentials are created on the server.
 - Known security gaps are documented rather than silently fixed, so no auth redesign happens without a decision.
 - Login throttling, password reset, email verification, and 2FA remain deferred until explicitly requested.
+
+## Phase 10C-3 Rules
+- Documentation only. Do not change business logic, models, migrations, or controllers to make the docs look nicer.
+- Do not resolve an open business decision while documenting it. Record the decision and what it blocks instead.
+- UI/UX work must not start for a screen whose shape depends on an unresolved decision.
+- Honest status reporting is required. Do not describe a partial module as complete.

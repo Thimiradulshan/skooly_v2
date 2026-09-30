@@ -29,7 +29,8 @@ Use this file before broad project reinspection.
 - Phase 10B-9 Web Admin Usability & Navigation Polish: complete.
 - Phase 10B-10 Web Manual QA & Bug Fix Pass: complete.
 - Phase 10C-1 Demo Data & Local Testing Setup: complete.
-- Phase 10C-2 Deployment Readiness & Security Review: complete and verified; pending commit.
+- Phase 10C-2 Deployment Readiness & Security Review: complete.
+- Phase 10C-3 System Understanding, Data Flow & UX Map: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -149,6 +150,10 @@ Use this file before broad project reinspection.
 - .env.example ships mysql keys, an empty APP_KEY and DB_PASSWORD, and a SESSION_SECURE_COOKIE hint.
 - Both seeders return early when APP_ENV=production, and tests lock that behaviour in.
 - Known production blockers are documented, not fixed: no login throttling, no password reset, no email verification, coarse Admin-only authorization, and no database money constraints.
+- Read docs/system-overview.md and docs/data-flow.md to understand the system without re-reading the code.
+- Use docs/user-workflows.md to see how each Admin task is performed and where it is limited.
+- docs/ui-ux-roadmap.md and docs/production-gap-register.md record what the interface and the release still need.
+- Academic setup has no web screen yet. Years, terms, grades, and sections still need console access.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.

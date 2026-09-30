@@ -41,10 +41,11 @@ Laravel modular monolith.
 - Web Admin Usability & Navigation Polish (Phase 10B-9)
 - Web Manual QA & Bug Fix Pass (Phase 10B-10)
 - Demo Data & Local Testing Setup (Phase 10C-1)
-- Deployment Readiness & Security Review (Phase 10C-2, verified and pending commit)
+- Deployment Readiness & Security Review (Phase 10C-2)
+- System Understanding, Data Flow & UX Map (Phase 10C-3, verified and pending commit)
 
 ## Current Module
-- Phase 10C-2: Deployment Readiness & Security Review is complete / pending commit.
+- Phase 10C-3: System Understanding, Data Flow & UX Map is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -227,3 +228,10 @@ Laravel modular monolith.
 - docs/security-review.md owns the current auth, authorization, privacy, and risk record.
 - Both seeders return early in production, and this is covered by tests.
 - DeploymentReadinessTest asserts every admin route carries auth plus role:Admin.
+
+## Documentation Set
+- docs/system-overview.md explains what the system is and its module status.
+- docs/data-flow.md is the reference for how data moves and which safety rules apply.
+- docs/user-workflows.md is the reference for how staff actually operate the app.
+- docs/ui-ux-roadmap.md records interface gaps and the redesign sequence.
+- docs/production-gap-register.md is the single list of what blocks production.

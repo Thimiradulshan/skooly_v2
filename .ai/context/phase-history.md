@@ -430,7 +430,7 @@ Deferred:
 - Any change to production business logic or seeding behaviour.
 
 ## Phase 10C-2: Deployment Readiness & Security Review
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - docs/deployment-readiness.md with the production env checklist, deployment steps,
@@ -457,6 +457,26 @@ Deferred:
 - Per-resource Accountant and Teacher permissions.
 - Audit review screen, export, and retention policy.
 - Receipt numbering rule.
+
+## Phase 10C-3: System Understanding, Data Flow & UX Map
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Documentation only. No business logic, model, migration, controller, or test changed.
+
+Created:
+- docs/system-overview.md. What Skooly is, who can use it today, module status, and
+  an honest split between demo-ready and not-production-ready.
+- docs/data-flow.md. Registration, fee, payment, event, reminder, and promotion
+  flows with Mermaid diagrams, plus the safety rules that protect money and privacy.
+- docs/user-workflows.md. Fourteen practical Admin workflows, each with purpose,
+  navigation path, prerequisites, what is written, and current limitations.
+- docs/ui-ux-roadmap.md. Honest assessment of the plain HTML interface and a phased
+  redesign plan from foundation through role-specific experiences.
+- docs/production-gap-register.md. 27 gaps with severity, rationale, suggested phase,
+  and the business decision each one waits on.
+
+Key finding: there is no web screen for academic setup, so years, terms, grades, and
+sections still require console access. This is recorded as a High severity gap.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
