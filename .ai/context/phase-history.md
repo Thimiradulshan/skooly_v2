@@ -409,7 +409,7 @@ Deferred:
 - Accountant and Teacher web access.
 
 ## Phase 10C-1: Demo Data & Local Testing Setup
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - database/seeders/DemoDataSeeder.php for local and testing use only.
@@ -428,6 +428,35 @@ Deferred:
 - A custom artisan command wrapper for seeding.
 - Realistic large-volume demo data or performance datasets.
 - Any change to production business logic or seeding behaviour.
+
+## Phase 10C-2: Deployment Readiness & Security Review
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- docs/deployment-readiness.md with the production env checklist, deployment steps,
+  rollback basics, and the current production blockers.
+- docs/security-review.md with the auth and authorization state, guardian privacy,
+  attack surface, seeding and secret hygiene, open risks, and next steps.
+- .env.example corrected to ship mysql keys and a SESSION_SECURE_COOKIE hint.
+- tests/Feature/DeploymentReadinessTest.php, 10 tests locking in the production
+  guards, secret hygiene, route exposure, and auth plus role coverage.
+
+Findings fixed:
+- .env.example pointed at sqlite with MySQL keys commented out, which would have
+  produced a broken local setup when copied to .env.
+
+Findings documented, not fixed, by design:
+- No login rate limiting.
+- No password reset and no email verification.
+- Coarse Admin-only authorization model.
+- SESSION_SECURE_COOKIE has no safe default and must be set in production.
+- No database-level money constraints.
+
+Deferred:
+- Login throttling, password reset, email verification, and 2FA.
+- Per-resource Accountant and Teacher permissions.
+- Audit review screen, export, and retention policy.
+- Receipt numbering rule.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

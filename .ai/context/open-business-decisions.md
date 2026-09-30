@@ -172,3 +172,10 @@ Do not invent answers for these.
 - Demo seeding must stay idempotent so it can be re-run during development.
 - Demo credentials are throwaway and must be changed before any real deployment.
 - Demo reminders are internal outbox records and must never be sent anywhere.
+
+## Phase 10C-2 Rules
+- .env.example must contain placeholders only, never a real APP_KEY, password, or token.
+- DemoDataSeeder and DatabaseSeeder must both stay inert when APP_ENV=production.
+- Production deployment must never rely on a seeded account. Admin credentials are created on the server.
+- Known security gaps are documented rather than silently fixed, so no auth redesign happens without a decision.
+- Login throttling, password reset, email verification, and 2FA remain deferred until explicitly requested.

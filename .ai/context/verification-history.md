@@ -10,16 +10,19 @@ git diff --check
 git status
 
 ## Latest Known Good
-Phase 10C-1 passed on 2026-09-30:
+Phase 10C-2 passed on 2026-09-30:
 - migrate:fresh passed.
 - db:seed --class=DemoDataSeeder passed.
-- 335 tests / 1321 assertions passed.
+- 345 tests / 1474 assertions passed.
 - PHPStan passed with 0 errors.
 - Pint passed.
 - Composer audit found no vulnerabilities.
 - git diff --check passed.
 
 ## Previous Known Good
+Phase 10C-1 passed:
+- 335 tests / 1321 assertions passed.
+
 Phase 10B-10 passed:
 - 322 tests / 1250 assertions passed.
 

@@ -28,7 +28,8 @@ Use this file before broad project reinspection.
 - Phase 10B-8 Web Payment Reminder Pages: complete.
 - Phase 10B-9 Web Admin Usability & Navigation Polish: complete.
 - Phase 10B-10 Web Manual QA & Bug Fix Pass: complete.
-- Phase 10C-1 Demo Data & Local Testing Setup: complete and verified; pending commit.
+- Phase 10C-1 Demo Data & Local Testing Setup: complete.
+- Phase 10C-2 Deployment Readiness & Security Review: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -144,6 +145,10 @@ Use this file before broad project reinspection.
 - Demo login is admin@skooly.test / password. Accountant and Teacher demo users are access-check only.
 - Run locally with: php artisan migrate:fresh, then php artisan db:seed --class=DemoDataSeeder.
 - See docs/local-demo.md for full local instructions.
+- docs/deployment-readiness.md and docs/security-review.md record the production checklist, deploy steps, and current security posture.
+- .env.example ships mysql keys, an empty APP_KEY and DB_PASSWORD, and a SESSION_SECURE_COOKIE hint.
+- Both seeders return early when APP_ENV=production, and tests lock that behaviour in.
+- Known production blockers are documented, not fixed: no login throttling, no password reset, no email verification, coarse Admin-only authorization, and no database money constraints.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
@@ -197,4 +202,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh and DemoDataSeeder passed; 335 tests / 1321 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh and DemoDataSeeder passed; 345 tests / 1474 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

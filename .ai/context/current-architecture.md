@@ -40,10 +40,11 @@ Laravel modular monolith.
 - Web Payment Reminder Pages (Phase 10B-8)
 - Web Admin Usability & Navigation Polish (Phase 10B-9)
 - Web Manual QA & Bug Fix Pass (Phase 10B-10)
-- Demo Data & Local Testing Setup (Phase 10C-1, verified and pending commit)
+- Demo Data & Local Testing Setup (Phase 10C-1)
+- Deployment Readiness & Security Review (Phase 10C-2, verified and pending commit)
 
 ## Current Module
-- Phase 10C-1: Demo Data & Local Testing Setup is complete / pending commit.
+- Phase 10C-2: Deployment Readiness & Security Review is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -220,3 +221,9 @@ Laravel modular monolith.
 - Every record uses firstOrCreate or updateOrCreate, so repeated runs are safe.
 - DatabaseSeeder stays minimal and never invokes the demo seeder.
 - docs/local-demo.md is the single source for local run instructions and credentials.
+
+## Deployment and Security
+- docs/deployment-readiness.md owns the production env checklist, deploy, and rollback steps.
+- docs/security-review.md owns the current auth, authorization, privacy, and risk record.
+- Both seeders return early in production, and this is covered by tests.
+- DeploymentReadinessTest asserts every admin route carries auth plus role:Admin.

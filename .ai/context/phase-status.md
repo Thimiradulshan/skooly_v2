@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10C-1: Demo Data & Local Testing Setup
+Phase 10C-2: Deployment Readiness & Security Review
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -29,10 +29,11 @@ Phase 10C-1: Demo Data & Local Testing Setup
 - Phase 10B-8: Web Payment Reminder Pages - complete
 - Phase 10B-9: Web Admin Usability & Navigation Polish - complete
 - Phase 10B-10: Web Manual QA & Bug Fix Pass - complete
-- Phase 10C-1: Demo Data & Local Testing Setup - complete / pending commit
+- Phase 10C-1: Demo Data & Local Testing Setup - complete
+- Phase 10C-2: Deployment Readiness & Security Review - complete / pending commit
 
 ## Current Status
-Phase 10C-1 implementation and verification are complete. Pending review and commit.
+Phase 10C-2 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -179,12 +180,16 @@ Phase 10C-1 implementation and verification are complete. Pending review and com
 - Demo records use firstOrCreate or updateOrCreate, so the seeder is safe to run repeatedly.
 - Demo login is admin@skooly.test with password, plus Accountant and Teacher users for access checks.
 - docs/local-demo.md documents reset, seed, run, credentials, and safety notes.
+- docs/deployment-readiness.md and docs/security-review.md were added in Phase 10C-2.
+- .env.example was corrected to ship mysql connection keys and a SESSION_SECURE_COOKIE hint, matching the real application.
+- No business logic, payment, promotion, due-generation, or reminder logic changed in Phase 10C-2.
+- DeploymentReadinessTest locks in the production guards, secret hygiene, and route exposure rules.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
 - php artisan db:seed --class=DemoDataSeeder --no-interaction passed
-- php artisan test --compact: 335 tests, 1321 assertions
+- php artisan test --compact: 345 tests, 1474 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -194,4 +199,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10C-1.
+Review git status, then commit Phase 10C-2.
