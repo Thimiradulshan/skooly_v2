@@ -263,7 +263,7 @@ Deferred:
 - Audit UI and export
 
 ## Phase 10B-5: Web Payment Collection & Receipt Pages
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - PaymentCollectionController with create, store, and show.
@@ -288,6 +288,31 @@ Deferred:
 - Student activation after registration payment.
 - Scheduled cron setup.
 - Audit UI and export.
+
+## Phase 10B-6: Web Event Management Pages
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- CreateEvent, UpdateEvent, CreateEventCharge, and SetEventParticipation actions.
+- EventController, EventChargeController, and EventParticipationController.
+- Four new Admin-only Web Form Requests.
+- Event list, create, show, edit, charge, and participation Blade views.
+- Event navigation in the shared layout.
+- Phase 10B-6 feature tests, 11 in total.
+
+Deferred:
+- Event charge editing and destructive event, charge, and participation routes.
+- Event management audit entries, no existing audit constant covers them.
+- Event creation/editing API and mobile endpoints.
+- Payment, receipt, reminder, and promotion UI.
+- Scheduler and cron setup for recurring generation.
+- Accountant and Teacher event web access.
+- Guardian login and a Guardian-to-User link.
+- Teacher section-scoped student access.
+- Accountant student visibility decision.
+- Promotion reversal (safety window unresolved).
+- Automatic payment allocation and automatic sibling discount.
+- Receipt PDF export, CSV/PDF export, and audit UI/export.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

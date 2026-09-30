@@ -34,10 +34,11 @@ Laravel modular monolith.
 - Web Auth & Route Protection (Phase 10B-2)
 - Web Fee & Discount Management (Phase 10B-3)
 - Web Due Generation & Dashboard Pages (Phase 10B-4)
-- Web Payment Collection & Receipt Pages (Phase 10B-5, verified and pending commit)
+- Web Payment Collection & Receipt Pages (Phase 10B-5)
+- Web Event Management Pages (Phase 10B-6, verified and pending commit)
 
 ## Current Module
-- Phase 10B-5: Web Payment Collection & Receipt Pages is complete / pending commit.
+- Phase 10B-6: Web Event Management Pages is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -180,3 +181,10 @@ Laravel modular monolith.
 - StoreManualPaymentRequest provides user-friendly validation for totals, family ownership, and current balances; Payment::recordManual() remains authoritative.
 - ReceiptController renders the stored Receipt snapshot only.
 - The payment UI is Admin-only and supports manual collection, payment viewing, and receipt viewing without mutation routes.
+
+## Web Event Management
+- EventController uses CreateEvent and UpdateEvent; it does not confirm or generate dues.
+- EventChargeController creates per-grade charges only; editing is deliberately absent.
+- EventParticipationController uses SetEventParticipation and preserves the existing opted_in and opted_out statuses.
+- GenerateEventDueItems remains the only creator of EventDueItem and StudentDueItem records.
+- No event management deletion, payment, receipt, or audit workflow exists.

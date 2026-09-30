@@ -22,7 +22,8 @@ Use this file before broad project reinspection.
 - Phase 10B-2 Web Auth & Route Protection: complete.
 - Phase 10B-3 Web Fee & Discount Management: complete.
 - Phase 10B-4 Web Due Generation & Dashboard Pages: complete.
-- Phase 10B-5 Web Payment Collection & Receipt Pages: complete and verified; pending commit.
+- Phase 10B-5 Web Payment Collection & Receipt Pages: complete.
+- Phase 10B-6 Web Event Management Pages: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -113,16 +114,23 @@ Use this file before broad project reinspection.
 - Only outstanding due items for the selected Family are shown in the payment form.
 - Receipt pages render stored snapshots and never recalculate from live due items.
 - No payment edit, refund, delete, automatic allocation, or receipt export route exists.
+- Admin web pages exist for event management, charges, and participation.
+- Event management only creates or updates Event, EventCharge, and EventParticipation records.
+- Event due generation remains separate through GenerateEventDueItems.
+- Event charges are create-only in the web layer, and no event deletion route exists.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 10B-5 Deferred Work
+## Phase 10B-6 Deferred Work
 - Scheduler and cron setup for recurring generation.
 - Event management UI.
 - Payment edit, delete, refund, receipt delete, and receipt PDF export.
 - Payment reporting/index UI.
+- Event charge editing and destructive event, charge, and participation routes.
+- Event management audit entries, no existing audit constant covers them.
+- Event management API and mobile endpoints.
 - Automatic allocation, even-split allocation, and oldest-first allocation.
 - Online payment gateways.
 - Promotion UI and reminder sending UI.

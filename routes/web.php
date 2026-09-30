@@ -3,6 +3,9 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Web\DueGenerationController;
 use App\Http\Controllers\Web\DuesDashboardController;
+use App\Http\Controllers\Web\EventChargeController;
+use App\Http\Controllers\Web\EventController;
+use App\Http\Controllers\Web\EventParticipationController;
 use App\Http\Controllers\Web\FamilyController;
 use App\Http\Controllers\Web\FeeCategoryController;
 use App\Http\Controllers\Web\FeeStructureController;
@@ -67,6 +70,23 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('due-generation.events.store');
 
     Route::get('/dues-dashboard', [DuesDashboardController::class, 'index'])->name('dues-dashboard.index');
+
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+    Route::match(['put', 'patch'], '/events/{event}', [EventController::class, 'update'])->name('events.update');
+
+    Route::get('/events/{event}/charges/create', [EventChargeController::class, 'create'])
+        ->name('events.charges.create');
+    Route::post('/events/{event}/charges', [EventChargeController::class, 'store'])
+        ->name('events.charges.store');
+
+    Route::get('/events/{event}/participation/create', [EventParticipationController::class, 'create'])
+        ->name('events.participation.create');
+    Route::post('/events/{event}/participation', [EventParticipationController::class, 'store'])
+        ->name('events.participation.store');
 
     Route::get('/families/{family}/payments/create', [PaymentCollectionController::class, 'create'])
         ->name('families.payments.create');

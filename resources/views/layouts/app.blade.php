@@ -34,6 +34,7 @@
         <a href="{{ route('fee-structures.index') }}">Fee Structures</a> &middot;
         <a href="{{ route('due-generation.recurring.create') }}">Recurring Due Generation</a> &middot;
         <a href="{{ route('due-generation.events.create') }}">Event Due Generation</a> &middot;
+        <a href="{{ route('events.index') }}">Events</a> &middot;
         <a href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
     </p>
 @else

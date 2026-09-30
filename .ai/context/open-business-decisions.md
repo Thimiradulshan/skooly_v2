@@ -134,3 +134,10 @@ Do not invent answers for these.
 - Receipt numbers are entered manually because Payment::recordManual() requires a unique receipt number and no numbering rule exists.
 - The form validates allocations for a selected Family, but Payment::recordManual() remains the final transaction and balance guard.
 - Payment edits, deletes, refunds, receipt export, and online gateways remain deferred.
+
+## Phase 10B-6 Rules
+- Event management uses only existing Event, EventCharge, and EventParticipation fields and constants.
+- Event charges are create-only in the web layer because charges can already have generated due item snapshots.
+- Event participation does not generate due items; GenerateEventDueItems remains the sole generation action.
+- No event management audit constant exists, so event create/update, charges, and participation workflows are unaudited.
+- Event deletion stays deferred because generated EventDueItem records are historical.

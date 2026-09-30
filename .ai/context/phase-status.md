@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-5: Web Payment Collection & Receipt Pages
+Phase 10B-6: Web Event Management Pages
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -23,10 +23,11 @@ Phase 10B-5: Web Payment Collection & Receipt Pages
 - Phase 10B-2: Web Auth & Route Protection - complete
 - Phase 10B-3: Web Fee & Discount Management - complete
 - Phase 10B-4: Web Due Generation & Dashboard Pages - complete
-- Phase 10B-5: Web Payment Collection & Receipt Pages - complete / pending commit
+- Phase 10B-5: Web Payment Collection & Receipt Pages - complete
+- Phase 10B-6: Web Event Management Pages - complete / pending commit
 
 ## Current Status
-Phase 10B-5 implementation and verification are complete. Pending review and commit.
+Phase 10B-6 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -141,11 +142,17 @@ Phase 10B-5 implementation and verification are complete. Pending review and com
 - Only outstanding due items for the selected Family are shown for allocation.
 - Payment and receipt pages display stored Payment and Receipt snapshots. Receipt values are never recalculated from live due items.
 - No automatic allocation, refund, payment edit, payment delete, receipt delete, or receipt export route exists.
+- Admin web pages exist for event list, create, show, edit, event charges, and event participation.
+- Event fields use only existing schema: academic year, fee category, name, date, description, and is_mandatory.
+- Event charges are create-only in this phase. Existing generated due item snapshots are never rewritten.
+- Event participation uses only opted_in and opted_out and is duplicate-safe through updateOrCreate.
+- Event management creates no StudentDueItems, Payments, Receipts, or PaymentAllocations.
+- Event due generation remains a separate existing flow through GenerateEventDueItems.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 265 tests, 915 assertions
+- php artisan test --compact: 276 tests, 975 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -155,4 +162,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-5.
+Review git status, then commit Phase 10B-6.
