@@ -30,10 +30,11 @@ Laravel modular monolith.
 - Audit Logs (Phase 9B)
 - Backend Hardening & Final Foundation Review (Phase 9C)
 - Backend Workflow Actions / Service Layer Completion (Phase 10A)
-- Web Layer for Core Registration Workflows (Phase 10B-1, verified and pending commit)
+- Web Layer for Core Registration Workflows (Phase 10B-1)
+- Web Auth & Route Protection (Phase 10B-2, verified and pending commit)
 
 ## Current Module
-- Phase 10B-1: Web Layer for Core Registration Workflows is complete / pending commit.
+- Phase 10B-2: Web Auth & Route Protection is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -147,3 +148,10 @@ Laravel modular monolith.
 - resources/views uses a single layouts/app layout with plain HTML and no frontend framework.
 - Web routes currently cover family browsing, family create/update, and student registration only.
 - No authentication middleware, login, API, resource, or delete route exists yet.
+
+## Web Auth
+- Session login and logout live in app/Http/Controllers/Auth/LoginController with LoginRequest validation.
+- EnsureUserHasRole is registered as the role middleware alias in bootstrap/app.php.
+- Family and student registration routes require auth plus role:Admin. Admin is the only allowed role today.
+- Web Form Requests repeat the Admin check, so protection does not depend on route configuration alone.
+- No auth package, API auth, or token scheme exists.

@@ -107,3 +107,10 @@ Do not invent answers for these.
 - No delete or destructive web route exists yet.
 - No API controllers, resources, or mobile endpoints exist yet.
 - Audit entries are produced by actions only. Controllers must not write audit logs.
+
+## Phase 10B-2 Rules
+- Web access is Admin only for family and student registration pages. Accountant and Teacher are denied until their exact web permissions are confirmed.
+- No auth package may be installed. Session auth plus the role middleware alias is the whole mechanism.
+- Route middleware is the primary gate; Web FormRequest::authorize() repeats the Admin check as defense in depth.
+- Login failures must never reveal whether the email exists.
+- The root route and the login routes stay public.

@@ -196,7 +196,7 @@ Deferred:
 - UI/controllers/routes
 
 ## Phase 10B-1: Web Layer for Core Registration Workflows
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - FamilyController with index, create, store, show, edit, and update.
@@ -205,6 +205,37 @@ Implemented:
 - Blade layout plus family index, create, show, edit, and student registration views.
 - Named family and student registration web routes.
 - Phase 10B-1 feature tests, including no-delete-route and no-due-item guarantees.
+
+## Phase 10B-2: Web Auth & Route Protection
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- LoginController with create, store, and destroy.
+- LoginRequest with credential validation and authentication.
+- resources/views/auth/login.blade.php.
+- EnsureUserHasRole middleware registered as the role alias in bootstrap/app.php.
+- auth plus role:Admin protection on all family and student registration web routes.
+- Admin check repeated in the three Web Form Requests.
+- Session user and logout form in the shared layout.
+- Phase 10B-2 feature tests covering guests, login, logout, Admin access, and 403 for Teacher, Accountant, and role-less users.
+
+Deferred:
+- Accountant and Teacher web access to registration pages
+- API auth, tokens, and mobile endpoints
+- Advanced user management, password reset, and email verification
+- Guardian login and a Guardian-to-User link
+- Teacher section-scoped student access
+- Accountant student visibility decision
+- Promotion reversal (safety window unresolved)
+- Automatic payment allocation strategy
+- Automatic sibling discount rule
+- ActivateStudentAfterRegistrationPaid
+- Delete and destructive web routes
+- Payment UI, promotion UI, reminders UI, and dashboard UI
+- CSV/PDF export
+- Real notification channels
+- Scheduled cron setup
+- Audit UI and export
 
 Deferred:
 - Authentication, login, and authorization middleware on web routes

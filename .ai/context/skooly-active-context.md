@@ -18,7 +18,8 @@ Use this file before broad project reinspection.
 - Phase 9B Audit Logs: complete.
 - Phase 9C Backend Hardening & Final Foundation Review: complete.
 - Phase 10A Backend Workflow Actions / Service Layer Completion: complete.
-- Phase 10B-1 Web Layer for Core Registration Workflows: complete and verified; pending commit.
+- Phase 10B-1 Web Layer for Core Registration Workflows: complete.
+- Phase 10B-2 Web Auth & Route Protection: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -93,25 +94,28 @@ Use this file before broad project reinspection.
 - Web validation lives in app/Http/Requests/Web. Views use a single plain-HTML layout.
 - Web routes have no auth middleware yet, so FormRequest::authorize() returns true.
 - No delete route, API controller, or frontend framework exists.
+- Minimal session login and logout exist. No auth package is installed.
+- Family and student registration web routes require auth plus role:Admin.
+- Admin is the only role allowed on those routes. Teacher, Accountant, and role-less users get 403.
+- Web Form Requests repeat the Admin check as defense in depth.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 10B-1 Deferred Work
-- Authentication, login, and authorization middleware on web routes.
-- API controllers, API resources, and mobile endpoints.
-- Delete and destructive web routes.
-- Payment UI, promotion UI, reminders UI, and dashboard UI.
-- Advanced UI design, CSS framework, and dynamic guardian rows.
-- ActivateStudentAfterRegistrationPaid (registration dues are not identifiable).
-- Audit entries for fee structure creation and guardian-student linking.
+## Phase 10B-2 Deferred Work
+- Accountant and Teacher web access to registration pages.
+- API auth, tokens, and mobile endpoints.
+- Advanced user management, password reset, and email verification.
 - Guardian login and a Guardian-to-User link.
 - Teacher section-scoped student access.
 - Accountant student visibility decision.
 - Promotion reversal (safety window unresolved).
 - Automatic payment allocation strategy.
 - Automatic sibling discount rule.
+- ActivateStudentAfterRegistrationPaid (registration dues are not identifiable).
+- Delete and destructive web routes.
+- Payment UI, promotion UI, reminders UI, and dashboard UI.
 - DB-level CHECK constraint for non-negative balances.
 - CSV/PDF export.
 - Real notification channels.
@@ -128,4 +132,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 204 tests / 695 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 221 tests / 743 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

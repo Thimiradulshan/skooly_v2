@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-1: Web Layer for Core Registration Workflows
+Phase 10B-2: Web Auth & Route Protection
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -19,10 +19,11 @@ Phase 10B-1: Web Layer for Core Registration Workflows
 - Phase 9B: Audit Logs - complete
 - Phase 9C: Backend Hardening & Final Foundation Review - complete
 - Phase 10A: Backend Workflow Actions / Service Layer Completion - complete
-- Phase 10B-1: Web Layer for Core Registration Workflows - complete / pending commit
+- Phase 10B-1: Web Layer for Core Registration Workflows - complete
+- Phase 10B-2: Web Auth & Route Protection - complete / pending commit
 
 ## Current Status
-Phase 10B-1 implementation and verification are complete. Pending review and commit.
+Phase 10B-2 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -109,11 +110,18 @@ Phase 10B-1 implementation and verification are complete. Pending review and com
 - Student registration web routes: create and store under a Family.
 - Audit logs are produced only by the actions, never by controllers.
 - Registration still defaults to pending_registration and still creates no StudentDueItem.
+- Minimal session login and logout exist at /login and /logout using Laravel session auth only.
+- Login regenerates the session; logout invalidates the session and regenerates the CSRF token.
+- Family and student registration web routes are wrapped in auth plus role:Admin.
+- EnsureUserHasRole is registered as the role middleware alias in bootstrap/app.php.
+- Web Form Requests also require an authenticated Admin, as defense in depth.
+- Teacher, Accountant, and role-less authenticated users receive 403 on those routes.
+- No auth package was installed. No API auth, API routes, or mobile endpoints exist.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 204 tests, 695 assertions
+- php artisan test --compact: 221 tests, 743 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -123,4 +131,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-1.
+Review git status, then commit Phase 10B-2.

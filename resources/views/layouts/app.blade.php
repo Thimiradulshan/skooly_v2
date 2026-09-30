@@ -19,6 +19,18 @@
 <body>
 <h1>@yield('heading', 'Skooly')</h1>
 
+@auth
+    <p>
+        Signed in as {{ auth()->user()->email }}
+        <form method="POST" action="{{ route('logout') }}" style="display:inline">
+            @csrf
+            <button type="submit">Sign out</button>
+        </form>
+    </p>
+@else
+    <p><a href="{{ route('login') }}">Sign in</a></p>
+@endauth
+
 @if (session('status'))
     <p class="status">{{ session('status') }}</p>
 @endif

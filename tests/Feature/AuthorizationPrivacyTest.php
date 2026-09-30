@@ -19,14 +19,6 @@ use Illuminate\Support\Facades\Gate;
 
 uses(LazilyRefreshDatabase::class);
 
-function userWithRole(string $role): User
-{
-    $user = User::factory()->create();
-    $user->roles()->attach(Role::query()->firstOrCreate(['name' => $role]));
-
-    return $user->refresh();
-}
-
 function privacyDueItem(Student $student, array $attributes = []): StudentDueItem
 {
     return StudentDueItem::factory()

@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
 
+beforeEach(function () {
+    $this->actingAs(adminUser());
+});
+
 it('loads the families index page', function () {
     Family::factory()->create(['family_code' => 'FAM-INDEX']);
 
