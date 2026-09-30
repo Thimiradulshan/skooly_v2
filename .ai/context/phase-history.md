@@ -168,7 +168,7 @@ Deferred:
 - UI/controllers/routes
 
 ## Phase 10A: Backend Workflow Actions / Service Layer Completion
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - CreateFamily and UpdateFamily.
@@ -194,6 +194,35 @@ Deferred:
 - Scheduled cron setup
 - Audit UI and export
 - UI/controllers/routes
+
+## Phase 10B-1: Web Layer for Core Registration Workflows
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- FamilyController with index, create, store, show, edit, and update.
+- StudentRegistrationController with create and store.
+- StoreFamilyRequest, UpdateFamilyRequest, and RegisterStudentRequest.
+- Blade layout plus family index, create, show, edit, and student registration views.
+- Named family and student registration web routes.
+- Phase 10B-1 feature tests, including no-delete-route and no-due-item guarantees.
+
+Deferred:
+- Authentication, login, and authorization middleware on web routes
+- API controllers, API resources, and mobile endpoints
+- Delete and destructive web routes
+- Payment UI, promotion UI, reminders UI, and dashboard UI
+- Advanced UI design, CSS framework, and dynamic guardian rows
+- Guardian login and a Guardian-to-User link
+- Teacher section-scoped student access
+- Accountant student visibility decision
+- Promotion reversal (safety window unresolved)
+- Automatic payment allocation strategy
+- Automatic sibling discount rule
+- ActivateStudentAfterRegistrationPaid
+- CSV/PDF export
+- Real notification channels
+- Scheduled cron setup
+- Audit UI and export
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

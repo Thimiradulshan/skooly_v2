@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10A: Backend Workflow Actions / Service Layer Completion
+Phase 10B-1: Web Layer for Core Registration Workflows
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -18,10 +18,11 @@ Phase 10A: Backend Workflow Actions / Service Layer Completion
 - Phase 9A: Authorization & Guardian Privacy Hardening - complete
 - Phase 9B: Audit Logs - complete
 - Phase 9C: Backend Hardening & Final Foundation Review - complete
-- Phase 10A: Backend Workflow Actions / Service Layer Completion - complete / pending commit
+- Phase 10A: Backend Workflow Actions / Service Layer Completion - complete
+- Phase 10B-1: Web Layer for Core Registration Workflows - complete / pending commit
 
 ## Current Status
-Phase 10A implementation and verification are complete. Pending review and commit.
+Phase 10B-1 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -102,11 +103,17 @@ Phase 10A implementation and verification are complete. Pending review and commi
 - ApplyStudentDiscount creates a Discount for one Student and FeeCategory and never touches existing due items.
 - CreateFeeStructure creates academic-year scoped configuration and never rewrites existing due items.
 - The four previously deferred audit constants are now wired: student_registered, family_created, family_updated, discount_applied.
+- Web controllers are thin. They validate with Form Requests and delegate to the Phase 10A actions.
+- No business rule lives in a controller or a view.
+- Family web routes: index, create, store, show, edit, update. No delete route exists.
+- Student registration web routes: create and store under a Family.
+- Audit logs are produced only by the actions, never by controllers.
+- Registration still defaults to pending_registration and still creates no StudentDueItem.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 188 tests, 640 assertions
+- php artisan test --compact: 204 tests, 695 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -116,4 +123,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10A.
+Review git status, then commit Phase 10B-1.

@@ -29,10 +29,11 @@ Laravel modular monolith.
 - Authorization & Guardian Privacy Hardening (Phase 9A)
 - Audit Logs (Phase 9B)
 - Backend Hardening & Final Foundation Review (Phase 9C)
-- Backend Workflow Actions / Service Layer Completion (Phase 10A, verified and pending commit)
+- Backend Workflow Actions / Service Layer Completion (Phase 10A)
+- Web Layer for Core Registration Workflows (Phase 10B-1, verified and pending commit)
 
 ## Current Module
-- Phase 10A: Backend Workflow Actions / Service Layer Completion is complete / pending commit.
+- Phase 10B-1: Web Layer for Core Registration Workflows is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -139,3 +140,10 @@ Laravel modular monolith.
 - ApplyStudentDiscount records a discount; due generation later applies and snapshots it.
 - CreateFeeStructure records academic-year scoped configuration.
 - All multi-write workflows run inside a DB transaction and audit through RecordAuditLog.
+
+## Web Layer
+- app/Http/Controllers/Web holds thin web controllers. app/Http/Requests/Web owns web validation.
+- Controllers only transform validated input and delegate to app/Actions.
+- resources/views uses a single layouts/app layout with plain HTML and no frontend framework.
+- Web routes currently cover family browsing, family create/update, and student registration only.
+- No authentication middleware, login, API, resource, or delete route exists yet.

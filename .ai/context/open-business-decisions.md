@@ -99,3 +99,11 @@ Do not invent answers for these.
 - FeeCategory has no registration flag, and name-matching a category such as "Registration" is forbidden.
 - CreateFeeStructure and LinkGuardianToStudent are intentionally not audited because no existing audit constant covers them and none may be invented.
 - Workflow actions never generate due items, never activate students, and never grant Guardian access by family membership.
+
+## Phase 10B-1 Rules
+- Web controllers must stay thin. They validate and delegate to app/Actions and never re-implement business rules.
+- Form Requests in app/Http/Requests/Web own all web input validation.
+- No authentication or authorization middleware is applied yet, so FormRequest::authorize() returns true. Login and route protection remain deferred.
+- No delete or destructive web route exists yet.
+- No API controllers, resources, or mobile endpoints exist yet.
+- Audit entries are produced by actions only. Controllers must not write audit logs.

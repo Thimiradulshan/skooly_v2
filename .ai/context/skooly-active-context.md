@@ -17,7 +17,8 @@ Use this file before broad project reinspection.
 - Phase 9A Authorization & Guardian Privacy Hardening: complete.
 - Phase 9B Audit Logs: complete.
 - Phase 9C Backend Hardening & Final Foundation Review: complete.
-- Phase 10A Backend Workflow Actions / Service Layer Completion: complete and verified; pending commit.
+- Phase 10A Backend Workflow Actions / Service Layer Completion: complete.
+- Phase 10B-1 Web Layer for Core Registration Workflows: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -88,26 +89,34 @@ Use this file before broad project reinspection.
 - RegisterStudent defaults to pending_registration, links only explicit Guardians, and never generates due items.
 - LinkGuardianToStudent is the only path to Guardian access and requires the same Family.
 - Student activation after registration payment is deferred because registration dues are not identifiable.
+- Web controllers live in app/Http/Controllers/Web and only validate plus delegate to app/Actions.
+- Web validation lives in app/Http/Requests/Web. Views use a single plain-HTML layout.
+- Web routes have no auth middleware yet, so FormRequest::authorize() returns true.
+- No delete route, API controller, or frontend framework exists.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 10A Deferred Work
+## Phase 10B-1 Deferred Work
+- Authentication, login, and authorization middleware on web routes.
+- API controllers, API resources, and mobile endpoints.
+- Delete and destructive web routes.
+- Payment UI, promotion UI, reminders UI, and dashboard UI.
+- Advanced UI design, CSS framework, and dynamic guardian rows.
 - ActivateStudentAfterRegistrationPaid (registration dues are not identifiable).
-- Audit entries for fee structure creation and guardian-student linking (no existing audit constant).
+- Audit entries for fee structure creation and guardian-student linking.
 - Guardian login and a Guardian-to-User link.
 - Teacher section-scoped student access.
 - Accountant student visibility decision.
 - Promotion reversal (safety window unresolved).
 - Automatic payment allocation strategy.
 - Automatic sibling discount rule.
-- DB-level CHECK constraint for non-negative balances (open decision).
+- DB-level CHECK constraint for non-negative balances.
 - CSV/PDF export.
 - Real notification channels.
 - Scheduled cron setup.
 - Audit UI and export.
-- UI/controllers/routes.
 
 ## Verification Command Order
 php artisan migrate:fresh
@@ -119,4 +128,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 188 tests / 640 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 204 tests / 695 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
