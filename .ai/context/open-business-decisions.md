@@ -114,3 +114,10 @@ Do not invent answers for these.
 - Route middleware is the primary gate; Web FormRequest::authorize() repeats the Admin check as defense in depth.
 - Login failures must never reveal whether the email exists.
 - The root route and the login routes stay public.
+
+## Phase 10B-3 Rules
+- Fee structure web editing stays deferred. Fee structures are academic-year versioned, so changing one is a separate decision.
+- Fee category and fee subscription workflows stay unaudited until audit constants exist for them.
+- Only opt-in fee categories may be subscribed, enforced by both the form request and the action.
+- Discounts are never applied retroactively to existing StudentDueItems.
+- No delete or destructive web route may be added without an explicit decision.

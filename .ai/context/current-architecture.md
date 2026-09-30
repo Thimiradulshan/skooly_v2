@@ -31,10 +31,11 @@ Laravel modular monolith.
 - Backend Hardening & Final Foundation Review (Phase 9C)
 - Backend Workflow Actions / Service Layer Completion (Phase 10A)
 - Web Layer for Core Registration Workflows (Phase 10B-1)
-- Web Auth & Route Protection (Phase 10B-2, verified and pending commit)
+- Web Auth & Route Protection (Phase 10B-2)
+- Web Fee & Discount Management (Phase 10B-3, verified and pending commit)
 
 ## Current Module
-- Phase 10B-2: Web Auth & Route Protection is complete / pending commit.
+- Phase 10B-3: Web Fee & Discount Management is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -155,3 +156,11 @@ Laravel modular monolith.
 - Family and student registration routes require auth plus role:Admin. Admin is the only allowed role today.
 - Web Form Requests repeat the Admin check, so protection does not depend on route configuration alone.
 - No auth package, API auth, or token scheme exists.
+
+## Web Fee and Discount Management
+- Admin web pages cover FeeCategory list, create, and edit, plus FeeStructure list and create.
+- FeeStructure web editing is deliberately absent because structures are academic-year versioned.
+- Student discounts and opt-in fee subscriptions are managed per student from the family page.
+- Discount application reuses ApplyStudentDiscount, so discount_applied auditing still works.
+- CreateFeeStructure and CreateStudentFeeSubscription never create or modify StudentDueItems.
+- No delete route exists for any fee, discount, or subscription resource.

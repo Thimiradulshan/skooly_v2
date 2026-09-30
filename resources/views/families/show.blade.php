@@ -41,9 +41,9 @@
     </table>
 
     <h2>Students</h2>
-    <table>
+        <table>
         <thead>
-        <tr><th>Name</th><th>Admission number</th><th>Status</th></tr>
+        <tr><th>Name</th><th>Admission number</th><th>Status</th><th></th></tr>
         </thead>
         <tbody>
         @forelse ($family->students as $student)
@@ -51,9 +51,13 @@
                 <td>{{ $student->name }}</td>
                 <td>{{ $student->admission_no }}</td>
                 <td>{{ $student->status }}</td>
+                <td>
+                    <a href="{{ route('students.discounts.create', $student) }}">Discount</a>
+                    <a href="{{ route('students.fee-subscriptions.create', $student) }}">Fee subscription</a>
+                </td>
             </tr>
         @empty
-            <tr><td colspan="3">No students yet.</td></tr>
+            <tr><td colspan="4">No students yet.</td></tr>
         @endforelse
         </tbody>
     </table>

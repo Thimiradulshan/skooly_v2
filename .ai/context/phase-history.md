@@ -207,7 +207,7 @@ Implemented:
 - Phase 10B-1 feature tests, including no-delete-route and no-due-item guarantees.
 
 ## Phase 10B-2: Web Auth & Route Protection
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - LoginController with create, store, and destroy.
@@ -218,6 +218,39 @@ Implemented:
 - Admin check repeated in the three Web Form Requests.
 - Session user and logout form in the shared layout.
 - Phase 10B-2 feature tests covering guests, login, logout, Admin access, and 403 for Teacher, Accountant, and role-less users.
+
+## Phase 10B-3: Web Fee & Discount Management
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- CreateFeeCategory, UpdateFeeCategory, and CreateStudentFeeSubscription actions.
+- FeeCategoryController with index, create, store, edit, and update.
+- FeeStructureController with index, create, and store.
+- StudentDiscountController with create and store.
+- StudentFeeSubscriptionController with create and store.
+- Five new Web Form Requests, all Admin-only.
+- Seven new Blade views for fee categories, fee structures, discounts, and subscriptions.
+- Discount and fee subscription links on the family show page.
+- Phase 10B-3 feature tests, 15 in total.
+
+Deferred:
+- Fee structure web editing, because structures are academic-year versioned.
+- Audit entries for fee category and fee subscription workflows.
+- Accountant and Teacher web access to fee and discount pages
+- API controllers, API resources, and mobile endpoints
+- Delete and destructive web routes
+- Due generation UI, payments UI, promotion UI, reminders UI, dashboard UI
+- Automatic sibling discount rule
+- Student activation after registration payment
+- Guardian login and a Guardian-to-User link
+- Teacher section-scoped student access
+- Accountant student visibility decision
+- Promotion reversal (safety window unresolved)
+- Automatic payment allocation strategy
+- CSV/PDF export
+- Real notification channels
+- Scheduled cron setup
+- Audit UI and export
 
 Deferred:
 - Accountant and Teacher web access to registration pages

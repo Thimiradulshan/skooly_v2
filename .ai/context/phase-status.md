@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-2: Web Auth & Route Protection
+Phase 10B-3: Web Fee & Discount Management
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -20,10 +20,11 @@ Phase 10B-2: Web Auth & Route Protection
 - Phase 9C: Backend Hardening & Final Foundation Review - complete
 - Phase 10A: Backend Workflow Actions / Service Layer Completion - complete
 - Phase 10B-1: Web Layer for Core Registration Workflows - complete
-- Phase 10B-2: Web Auth & Route Protection - complete / pending commit
+- Phase 10B-2: Web Auth & Route Protection - complete
+- Phase 10B-3: Web Fee & Discount Management - complete / pending commit
 
 ## Current Status
-Phase 10B-2 implementation and verification are complete. Pending review and commit.
+Phase 10B-3 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -117,11 +118,19 @@ Phase 10B-2 implementation and verification are complete. Pending review and com
 - Web Form Requests also require an authenticated Admin, as defense in depth.
 - Teacher, Accountant, and role-less authenticated users receive 403 on those routes.
 - No auth package was installed. No API auth, API routes, or mobile endpoints exist.
+- Admin web pages exist for FeeCategory list, create, and edit, and for FeeStructure list and create.
+- Fee structures are create-only in the web layer. Editing an existing structure is deferred because it is academic-year versioned.
+- Admin web flow exists for applying a Student discount through the existing ApplyStudentDiscount action.
+- Admin web flow exists for adding a Student fee subscription, and only opt-in categories are accepted.
+- New actions added: CreateFeeCategory, UpdateFeeCategory, CreateStudentFeeSubscription.
+- Fee category and fee subscription workflows are unaudited because no audit constant exists for them.
+- No StudentDueItem is generated or rewritten by any of these web flows.
+- No delete or destructive route was added.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 221 tests, 743 assertions
+- php artisan test --compact: 236 tests, 803 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -131,4 +140,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-2.
+Review git status, then commit Phase 10B-3.

@@ -54,9 +54,9 @@ function something()
 function userWithRole(string $role): User
 {
     $user = User::factory()->create();
-    $user->roles()->attach(Role::factory()->create(['name' => $role]));
+    $user->roles()->syncWithoutDetaching([Role::query()->firstOrCreate(['name' => $role])->id]);
 
-    return $user;
+    return $user->refresh();
 }
 
 function adminUser(): User
