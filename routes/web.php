@@ -6,6 +6,8 @@ use App\Http\Controllers\Web\DuesDashboardController;
 use App\Http\Controllers\Web\FamilyController;
 use App\Http\Controllers\Web\FeeCategoryController;
 use App\Http\Controllers\Web\FeeStructureController;
+use App\Http\Controllers\Web\PaymentCollectionController;
+use App\Http\Controllers\Web\ReceiptController;
 use App\Http\Controllers\Web\StudentDiscountController;
 use App\Http\Controllers\Web\StudentFeeSubscriptionController;
 use App\Http\Controllers\Web\StudentRegistrationController;
@@ -65,4 +67,11 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('due-generation.events.store');
 
     Route::get('/dues-dashboard', [DuesDashboardController::class, 'index'])->name('dues-dashboard.index');
+
+    Route::get('/families/{family}/payments/create', [PaymentCollectionController::class, 'create'])
+        ->name('families.payments.create');
+    Route::post('/families/{family}/payments', [PaymentCollectionController::class, 'store'])
+        ->name('families.payments.store');
+    Route::get('/payments/{payment}', [PaymentCollectionController::class, 'show'])->name('payments.show');
+    Route::get('/receipts/{receipt}', [ReceiptController::class, 'show'])->name('receipts.show');
 });

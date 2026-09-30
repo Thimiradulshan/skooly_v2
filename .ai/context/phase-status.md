@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10B-4: Web Due Generation & Dashboard Pages
+Phase 10B-5: Web Payment Collection & Receipt Pages
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -22,10 +22,11 @@ Phase 10B-4: Web Due Generation & Dashboard Pages
 - Phase 10B-1: Web Layer for Core Registration Workflows - complete
 - Phase 10B-2: Web Auth & Route Protection - complete
 - Phase 10B-3: Web Fee & Discount Management - complete
-- Phase 10B-4: Web Due Generation & Dashboard Pages - complete / pending commit
+- Phase 10B-4: Web Due Generation & Dashboard Pages - complete
+- Phase 10B-5: Web Payment Collection & Receipt Pages - complete / pending commit
 
 ## Current Status
-Phase 10B-4 implementation and verification are complete. Pending review and commit.
+Phase 10B-5 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -135,11 +136,16 @@ Phase 10B-4 implementation and verification are complete. Pending review and com
 - Dashboard money values are rendered exactly as returned by the report. No recalculation in Blade.
 - Layout navigation now links families, fee categories, fee structures, both due generators, and the dashboard.
 - No scheduler or cron entry was registered. Generation stays a manual Admin action.
+- Admin web flow exists for manual payment collection through Payment::recordManual().
+- The payment form validates receipt number, payment amount, manual allocations, family ownership, and due item balances before delegating to the final transactional guard.
+- Only outstanding due items for the selected Family are shown for allocation.
+- Payment and receipt pages display stored Payment and Receipt snapshots. Receipt values are never recalculated from live due items.
+- No automatic allocation, refund, payment edit, payment delete, receipt delete, or receipt export route exists.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 254 tests, 856 assertions
+- php artisan test --compact: 265 tests, 915 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -149,4 +155,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10B-4.
+Review git status, then commit Phase 10B-5.

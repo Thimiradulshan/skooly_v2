@@ -250,15 +250,16 @@ it('rejects a section filter without an academic year', function () {
         ->assertSessionHasErrors('section_id');
 });
 
-it('adds no payment or receipt web routes', function () {
-    $expected = collect(Route::getRoutes()->getRoutes())
-        ->map(fn ($route) => $route->uri())
-        ->filter(fn ($uri) => str_starts_with($uri, 'payments') || str_starts_with($uri, 'receipts'));
-
-    expect($expected)->toBeEmpty();
+it('keeps due dashboard routes while payment collection has no destructive route', function () {
     expect(Route::has('dues-dashboard.index'))->toBeTrue();
     expect(Route::has('due-generation.recurring.store'))->toBeTrue();
     expect(Route::has('due-generation.events.store'))->toBeTrue();
+    expect(Route::has('payments.show'))->toBeTrue();
+    expect(Route::has('receipts.show'))->toBeTrue();
+    expect(Route::has('payments.edit'))->toBeFalse();
+    expect(Route::has('payments.destroy'))->toBeFalse();
+    expect(Route::has('payments.refund'))->toBeFalse();
+    expect(Route::has('receipts.export'))->toBeFalse();
 });
 
 it('denies teacher and accountant the dues dashboard', function () {

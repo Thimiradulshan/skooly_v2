@@ -234,7 +234,7 @@ Implemented:
 - Phase 10B-3 feature tests, 15 in total.
 
 ## Phase 10B-4: Web Due Generation & Dashboard Pages
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Implemented:
 - DueGenerationController for recurring and event due generation triggers.
@@ -262,60 +262,32 @@ Deferred:
 - CSV/PDF export
 - Audit UI and export
 
-Deferred:
-- Fee structure web editing, because structures are academic-year versioned.
-- Audit entries for fee category and fee subscription workflows.
-- Accountant and Teacher web access to fee and discount pages
-- API controllers, API resources, and mobile endpoints
-- Delete and destructive web routes
-- Due generation UI, payments UI, promotion UI, reminders UI, dashboard UI
-- Automatic sibling discount rule
-- Student activation after registration payment
-- Guardian login and a Guardian-to-User link
-- Teacher section-scoped student access
-- Accountant student visibility decision
-- Promotion reversal (safety window unresolved)
-- Automatic payment allocation strategy
-- CSV/PDF export
-- Real notification channels
-- Scheduled cron setup
-- Audit UI and export
+## Phase 10B-5: Web Payment Collection & Receipt Pages
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Implemented:
+- PaymentCollectionController with create, store, and show.
+- ReceiptController with show.
+- StoreManualPaymentRequest.
+- Payment create, payment show, and receipt show Blade views.
+- Manual receipt number entry and manual allocations only.
+- Family-level outstanding due item selection.
+- Phase 10B-5 feature tests, 11 in total.
 
 Deferred:
-- Accountant and Teacher web access to registration pages
-- API auth, tokens, and mobile endpoints
-- Advanced user management, password reset, and email verification
-- Guardian login and a Guardian-to-User link
-- Teacher section-scoped student access
-- Accountant student visibility decision
-- Promotion reversal (safety window unresolved)
-- Automatic payment allocation strategy
-- Automatic sibling discount rule
-- ActivateStudentAfterRegistrationPaid
-- Delete and destructive web routes
-- Payment UI, promotion UI, reminders UI, and dashboard UI
-- CSV/PDF export
-- Real notification channels
-- Scheduled cron setup
-- Audit UI and export
-
-Deferred:
-- Authentication, login, and authorization middleware on web routes
-- API controllers, API resources, and mobile endpoints
-- Delete and destructive web routes
-- Payment UI, promotion UI, reminders UI, and dashboard UI
-- Advanced UI design, CSS framework, and dynamic guardian rows
-- Guardian login and a Guardian-to-User link
-- Teacher section-scoped student access
-- Accountant student visibility decision
-- Promotion reversal (safety window unresolved)
-- Automatic payment allocation strategy
-- Automatic sibling discount rule
-- ActivateStudentAfterRegistrationPaid
-- CSV/PDF export
-- Real notification channels
-- Scheduled cron setup
-- Audit UI and export
+- Payment edit, delete, refund, and receipt delete routes.
+- Automatic allocation, even-split allocation, and oldest-first allocation.
+- Online payment gateways and receipt PDF export.
+- Accountant and Teacher payment web access.
+- Payment UI index and reporting page.
+- API controllers, API resources, and mobile endpoints.
+- Guardian login and a Guardian-to-User link.
+- Teacher section-scoped student access.
+- Accountant student visibility decision.
+- Promotion reversal (safety window unresolved).
+- Student activation after registration payment.
+- Scheduled cron setup.
+- Audit UI and export.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

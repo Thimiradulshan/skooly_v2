@@ -33,10 +33,11 @@ Laravel modular monolith.
 - Web Layer for Core Registration Workflows (Phase 10B-1)
 - Web Auth & Route Protection (Phase 10B-2)
 - Web Fee & Discount Management (Phase 10B-3)
-- Web Due Generation & Dashboard Pages (Phase 10B-4, verified and pending commit)
+- Web Due Generation & Dashboard Pages (Phase 10B-4)
+- Web Payment Collection & Receipt Pages (Phase 10B-5, verified and pending commit)
 
 ## Current Module
-- Phase 10B-4: Web Due Generation & Dashboard Pages is complete / pending commit.
+- Phase 10B-5: Web Payment Collection & Receipt Pages is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -173,3 +174,9 @@ Laravel modular monolith.
 - DuesDashboardController renders BuildDuesDashboardReport output without recalculating any amount.
 - DuesDashboardFilterRequest mirrors the report rule that grade and section need an academic year.
 - Due generation is manual. No scheduled task or cron entry is registered.
+
+## Web Payment Collection and Receipts
+- PaymentCollectionController is a thin adapter to Payment::recordManual(). It has no allocation business logic.
+- StoreManualPaymentRequest provides user-friendly validation for totals, family ownership, and current balances; Payment::recordManual() remains authoritative.
+- ReceiptController renders the stored Receipt snapshot only.
+- The payment UI is Admin-only and supports manual collection, payment viewing, and receipt viewing without mutation routes.

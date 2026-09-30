@@ -21,7 +21,8 @@ Use this file before broad project reinspection.
 - Phase 10B-1 Web Layer for Core Registration Workflows: complete.
 - Phase 10B-2 Web Auth & Route Protection: complete.
 - Phase 10B-3 Web Fee & Discount Management: complete.
-- Phase 10B-4 Web Due Generation & Dashboard Pages: complete and verified; pending commit.
+- Phase 10B-4 Web Due Generation & Dashboard Pages: complete.
+- Phase 10B-5 Web Payment Collection & Receipt Pages: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -108,15 +109,22 @@ Use this file before broad project reinspection.
 - Both generation flows call the existing actions and pass the Admin as the audit actor.
 - The dashboard reuses BuildDuesDashboardReport and never recalculates money in Blade.
 - Due generation is manual. No scheduler or cron entry is registered.
+- Admin web payment collection calls Payment::recordManual() and supports manual allocation only.
+- Only outstanding due items for the selected Family are shown in the payment form.
+- Receipt pages render stored snapshots and never recalculate from live due items.
+- No payment edit, refund, delete, automatic allocation, or receipt export route exists.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 10B-4 Deferred Work
+## Phase 10B-5 Deferred Work
 - Scheduler and cron setup for recurring generation.
 - Event management UI.
-- Payment recording, allocation, and receipt UI.
+- Payment edit, delete, refund, receipt delete, and receipt PDF export.
+- Payment reporting/index UI.
+- Automatic allocation, even-split allocation, and oldest-first allocation.
+- Online payment gateways.
 - Promotion UI and reminder sending UI.
 - Accountant and Teacher web access.
 - API auth, API controllers, and mobile endpoints.
@@ -145,4 +153,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 254 tests / 856 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 265 tests / 915 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

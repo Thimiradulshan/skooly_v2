@@ -8,6 +8,7 @@
 
     <p><a href="{{ route('families.edit', $family) }}">Edit family</a></p>
     <p><a href="{{ route('families.students.create', $family) }}">Register student</a></p>
+    <p><a href="{{ route('families.payments.create', $family) }}">Record payment</a></p>
 
     <table>
         <tbody>

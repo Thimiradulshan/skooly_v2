@@ -128,3 +128,9 @@ Do not invent answers for these.
 - The dashboard must require academic_year_id whenever grade_id or section_id is supplied.
 - Event due generation may only target events that already exist. Event management UI stays deferred.
 - Payment recording, allocation, and receipt pages stay deferred.
+
+## Phase 10B-5 Rules
+- Payment collection is manual only. The form never selects allocations automatically.
+- Receipt numbers are entered manually because Payment::recordManual() requires a unique receipt number and no numbering rule exists.
+- The form validates allocations for a selected Family, but Payment::recordManual() remains the final transaction and balance guard.
+- Payment edits, deletes, refunds, receipt export, and online gateways remain deferred.
