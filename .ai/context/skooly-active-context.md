@@ -10,7 +10,8 @@ Use this file before broad project reinspection.
 - Phase 5 Fees, Dues & Discounts: complete.
 - Phase 6 Payments & Receipts: complete.
 - Phase 7A Recurring Fee Due Generation: complete.
-- Phase 7B Events Generating Due Items: complete and verified; pending commit.
+- Phase 7B Events Generating Due Items: complete.
+- Phase 7C Dues Dashboard / Reporting Queries: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -51,12 +52,16 @@ Use this file before broad project reinspection.
 - EventCharge amount is snapshotted into StudentDueItem and never rewritten.
 - event_due_items links each generated StudentDueItem back to its Event.
 - Event generation never creates payments or receipts.
+- BuildDuesDashboardReport is read-only and reads stored StudentDueItem snapshot balances.
+- Dashboard filters: academic year, grade, section, date range, fee category, family.
+- grade_id or section_id require academic_year_id because enrollment is year-specific.
+- Family and student balance summaries are available; no UI/controllers/routes exist yet.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 7B Deferred Work
+## Phase 7C Deferred Work
 - Participation and payment-status reporting.
 - Scheduled automation or cron command.
 - Automatic payment allocation strategies.
@@ -64,7 +69,7 @@ Use this file before broad project reinspection.
 - Payment-driven student registration activation.
 - Family combined billing aggregation.
 - Reminders.
-- Dashboards.
+- Frontend dashboards.
 - Event notifications.
 - UI/controllers/routes.
 - Promotion.
@@ -80,4 +85,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 80 tests / 235 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 97 tests / 295 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

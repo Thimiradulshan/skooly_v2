@@ -49,3 +49,10 @@ Do not invent answers for these.
 - Duplicate generation is prevented by a deterministic generation_key.
 - Event generation never creates payments, receipts, or automatic payment allocation.
 - Participation and payment-status reporting is deferred.
+
+## Phase 7C Rules
+- Reporting is strictly read-only. It must never write to due items, payments, allocations, or receipts.
+- Dashboard totals come from stored StudentDueItem snapshots, not recomputed values.
+- grade_id and section_id are only valid together with academic_year_id because enrollment is year-specific.
+- No new payment allocation strategy is introduced by reporting.
+- Frontend dashboards, reminders, and notifications remain deferred.

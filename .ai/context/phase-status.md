@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 7B: Events Generating Due Items
+Phase 7C: Dues Dashboard / Reporting Queries
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -11,10 +11,11 @@ Phase 7B: Events Generating Due Items
 - Phase 5: Fees, Dues & Discounts - complete
 - Phase 6: Payments & Receipts - complete
 - Phase 7A: Recurring Fee Due Generation - complete
-- Phase 7B: Events Generating Due Items - complete / pending commit
+- Phase 7B: Events Generating Due Items - complete
+- Phase 7C: Dues Dashboard / Reporting Queries - complete / pending commit
 
 ## Current Status
-Phase 7B implementation and verification are complete. Pending review and commit.
+Phase 7C implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -43,11 +44,17 @@ Phase 7B implementation and verification are complete. Pending review and commit
 - Mandatory events generate for all enrolled applicable students; opt-in events generate only for opted-in students.
 - EventCharge amount is snapshotted into StudentDueItem and never rewritten later.
 - Event generation is transactional and creates no payments or receipts.
+- BuildDuesDashboardReport is read-only. It adds no tables and modifies no money records.
+- Reporting reads stored StudentDueItem snapshot balances. It never recalculates discounts or re-derives payments from PaymentAllocation.
+- Supported filters: academic_year_id, grade_id, section_id, fee_category_id, family_id, due_date_from, due_date_to.
+- grade_id or section_id without academic_year_id throws InvalidArgumentException because enrollment is year-specific.
+- Report sections: summary, by_fee_category, family_balances, student_balances, outstanding_due_items.
+- Money totals are formatted as two-decimal strings without floating-point arithmetic.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 80 tests, 235 assertions
+- php artisan test --compact: 97 tests, 295 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -57,4 +64,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 7B.
+Review git status, then commit Phase 7C.

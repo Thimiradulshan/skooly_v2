@@ -90,7 +90,7 @@ Deferred:
 - Audit
 
 ## Phase 7B: Events Generating Due Items
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - Event, EventCharge, EventParticipation, and EventDueItem models and factories.
@@ -109,7 +109,31 @@ Deferred:
 - Payment-driven student registration activation
 - Family combined billing aggregation
 - Reminders
-- Dashboards
+- Frontend dashboards
+- Event notifications
+- UI/controllers/routes
+- Promotion
+- Audit
+
+## Phase 7C: Dues Dashboard / Reporting Queries
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- app/Actions/Reports/BuildDuesDashboardReport.php.
+- summary, by_fee_category, family_balances, student_balances, and outstanding_due_items sections.
+- Filters for academic year, grade, section, date range, fee category, and family.
+- Read-only guarantee: no tables added, no money records created or modified.
+- Phase 7C feature tests.
+
+Deferred:
+- Participation and payment-status reporting
+- Scheduled automation or cron command
+- Automatic payment allocation
+- Automatic sibling discount rule
+- Payment-driven student registration activation
+- Family combined billing aggregation
+- Reminders
+- Frontend dashboards
 - Event notifications
 - UI/controllers/routes
 - Promotion

@@ -22,10 +22,11 @@ Laravel modular monolith.
 - Fees, Dues and Discounts (Phase 5)
 - Payments & Receipts (Phase 6)
 - Recurring Fee Due Generation (Phase 7A)
-- Events Generating Due Items (Phase 7B, verified and pending commit)
+- Events Generating Due Items (Phase 7B)
+- Dues Dashboard / Reporting Queries (Phase 7C, verified and pending commit)
 
 ## Current Module
-- Phase 7B: Events Generating Due Items is complete / pending commit.
+- Phase 7C: Dues Dashboard / Reporting Queries is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -74,3 +75,11 @@ Laravel modular monolith.
 - app/Actions/Events/GenerateEventDueItems.php generates StudentDueItems and links them via event_due_items.
 - Event dues are StudentDueItems and participate in billing like any other fee.
 - Changing an EventCharge later never rewrites an already-generated StudentDueItem.
+
+## Dues Dashboard / Reporting Queries
+- app/Actions/Reports/BuildDuesDashboardReport.php is read-only and returns plain arrays.
+- It adds no tables and modifies no money records.
+- Totals are read from stored StudentDueItem snapshot fields.
+- Filters: academic year, grade, section, date range, fee category, family.
+- Family and student balance summaries are available, sorted by balance descending.
+- Money is normalized to two-decimal strings without floating-point arithmetic.
