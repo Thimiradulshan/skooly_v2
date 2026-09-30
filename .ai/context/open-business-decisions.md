@@ -64,3 +64,11 @@ Do not invent answers for these.
 - Reminder generation must never create payments, receipts, or allocations, and must not modify due item balances or statuses.
 - reminder_key must stay deterministic so re-running for the same as_of_date is safe.
 - Reminder timing, templates, and channels are deferred.
+
+## Phase 8 Rules
+- Promotion is draft-then-confirm. Nothing applies until ConfirmPromotionBatch runs.
+- Source-year Enrollments must never be modified. Promotion only creates target-year Enrollments.
+- Promotion must never generate next-year fee Due Items automatically.
+- Promotion confirmation must stay atomic: all target Enrollments or none.
+- Promotion reversal safety window remains unresolved, so reversal is not implemented.
+- Student.grade_id and Student.section_id must never exist; grade and section live on Enrollment.

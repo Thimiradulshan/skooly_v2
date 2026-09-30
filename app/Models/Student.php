@@ -71,6 +71,11 @@ class Student extends Model
         return $this->hasMany(StudentFeeSubscription::class);
     }
 
+    public function promotionBatchItems(): HasMany
+    {
+        return $this->hasMany(PromotionBatchItem::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

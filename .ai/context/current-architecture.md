@@ -24,10 +24,11 @@ Laravel modular monolith.
 - Recurring Fee Due Generation (Phase 7A)
 - Events Generating Due Items (Phase 7B)
 - Dues Dashboard / Reporting Queries (Phase 7C)
-- Payment Reminders / Notification Foundation (Phase 7D, verified and pending commit)
+- Payment Reminders / Notification Foundation (Phase 7D)
+- Student Promotion (Phase 8, verified and pending commit)
 
 ## Current Module
-- Phase 7D: Payment Reminders / Notification Foundation is complete / pending commit.
+- Phase 8: Student Promotion is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -92,3 +93,12 @@ Laravel modular monolith.
 - Guardian eligibility uses explicit guardian_student links only.
 - Combined billing families receive one consolidated reminder per Guardian and Family.
 - A deterministic reminder_key makes re-running for the same as_of_date safe.
+
+## Student Promotion
+- PromotionBatch is draft-then-confirm with source and target academic years.
+- CreatePromotionBatch lists active students in the selected source sections and creates editable draft items only.
+- Default target grade is the next Grade by sequence_order; the default action is graduate when none exists.
+- ConfirmPromotionBatch runs in a DB transaction and creates target-year Enrollments atomically.
+- Source-year Enrollments are never modified. Graduated students get status graduated with no target Enrollment.
+- Excluded students are marked skipped. Promotion never generates next-year fee Due Items.
+- Reversal is not implemented because the safety window is unresolved.

@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 7D: Payment Reminders / Notification Foundation
+Phase 8: Student Promotion
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -13,10 +13,11 @@ Phase 7D: Payment Reminders / Notification Foundation
 - Phase 7A: Recurring Fee Due Generation - complete
 - Phase 7B: Events Generating Due Items - complete
 - Phase 7C: Dues Dashboard / Reporting Queries - complete
-- Phase 7D: Payment Reminders / Notification Foundation - complete / pending commit
+- Phase 7D: Payment Reminders / Notification Foundation - complete
+- Phase 8: Student Promotion - complete / pending commit
 
 ## Current Status
-Phase 7D implementation and verification are complete. Pending review and commit.
+Phase 8 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -59,11 +60,21 @@ Phase 7D implementation and verification are complete. Pending review and commit
 - Non-combined families get one reminder per Guardian and StudentDueItem.
 - reminder_key is deterministic and prevents duplicate reminders for the same as_of_date.
 - Generation creates no payments, receipts, allocations, and never modifies StudentDueItem.
+- Promotion is draft-then-confirm. CreatePromotionBatch never changes Student or Enrollment records.
+- promotion_batches has status draft, confirmed, or discarded. No unique constraint on year pairs, so multiple drafts are allowed.
+- Draft items cover active students in the selected source sections and source academic year.
+- Default action is promote with target grade = next Grade by sequence_order and target section = same-named section in that grade.
+- If no next grade exists the default action becomes graduate.
+- If the target section cannot be resolved, target_section_id stays null and confirmation fails until it is valid.
+- Confirmation creates target-year Enrollments only. Source-year Enrollments are never modified.
+- Graduated students get Student status graduated and no target Enrollment. Excluded students are skipped.
+- Confirmation runs in a DB transaction, so a single invalid item rolls back every target Enrollment, status change, and item update.
+- Promotion never generates next-year fee Due Items.
 
 ## Verification Result
 Passed on 2026-09-30:
 - php artisan migrate:fresh --no-interaction
-- php artisan test --compact: 113 tests, 352 assertions
+- php artisan test --compact: 130 tests, 403 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -73,4 +84,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 7D.
+Review git status, then commit Phase 8.

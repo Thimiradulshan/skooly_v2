@@ -12,7 +12,8 @@ Use this file before broad project reinspection.
 - Phase 7A Recurring Fee Due Generation: complete.
 - Phase 7B Events Generating Due Items: complete.
 - Phase 7C Dues Dashboard / Reporting Queries: complete.
-- Phase 7D Payment Reminders / Notification Foundation: complete and verified; pending commit.
+- Phase 7D Payment Reminders / Notification Foundation: complete.
+- Phase 8 Student Promotion: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -62,24 +63,27 @@ Use this file before broad project reinspection.
 - Guardian reminder eligibility uses explicit guardian_student links, never family membership alone.
 - Combined billing families receive one consolidated reminder per Guardian and Family.
 - Reminder generation never creates payments, receipts, or allocations, and never changes due item balances.
+- Promotion is draft-then-confirm. Draft creation never modifies Student or Enrollment records.
+- Confirmation creates target-year Enrollments atomically and never modifies source-year Enrollments.
+- Graduated students get status graduated with no target Enrollment. Excluded students are skipped.
+- Promotion never generates next-year fee Due Items.
+- Promotion reversal is deferred because the safety window is unresolved.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
 - Promotion must be draft/confirm, atomic, and must not overwrite historical enrollments.
 
-## Phase 7D Deferred Work
-- Real notification channels (email, SMS, WhatsApp) and sending providers.
-- Reminder templates and rendering.
+## Phase 8 Deferred Work
+- Promotion reversal (safety window unresolved).
+- CSV/PDF export.
+- Class-in-charge reassignment.
+- Audit logs.
 - Scheduled automation or cron command.
 - Automatic payment allocation strategies.
-- Automatic sibling discount rule.
 - Payment-driven student registration activation.
 - Family combined billing aggregation.
 - Frontend dashboards.
-- Event notifications.
 - UI/controllers/routes.
-- Promotion.
-- Audit.
 
 ## Verification Command Order
 php artisan migrate:fresh
@@ -91,4 +95,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh passed; 113 tests / 352 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: migrate:fresh passed; 130 tests / 403 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

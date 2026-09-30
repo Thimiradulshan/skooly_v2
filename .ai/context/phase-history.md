@@ -83,11 +83,36 @@ Deferred:
 - Automatic sibling discount rule
 - Payment-driven student registration activation
 - Family combined billing aggregation
-- Dashboards
-- Reminders
+- Frontend dashboards
+- Event notifications
+- UI/controllers/routes
+- Audit
+
+## Phase 8: Student Promotion
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Includes:
+- PromotionBatch, PromotionBatchSection, and PromotionBatchItem models and factories.
+- promotion_batches, promotion_batch_sections, and promotion_batch_items migrations.
+- app/Actions/Promotion/CreatePromotionBatch.php for draft creation.
+- app/Actions/Promotion/ConfirmPromotionBatch.php for atomic confirmation.
+- Default next-grade and same-named target section resolution.
+- Promote, retain, graduate, and exclude actions.
+- Source-year Enrollment immutability and no next-year due generation.
+- Phase 8 feature tests.
+
+Deferred:
+- Promotion reversal (safety window unresolved)
+- CSV/PDF export
+- Class-in-charge reassignment
+- Audit logs
+- Scheduled automation or cron command
+- Automatic payment allocation
+- Payment-driven student registration activation
+- Family combined billing aggregation
+- Frontend dashboards
 - UI/controllers/routes
 - Promotion
-- Audit
 
 ## Phase 7B: Events Generating Due Items
 Status: complete. Verified on 2026-09-30.
@@ -139,7 +164,7 @@ Deferred:
 - Audit
 
 ## Phase 7D: Payment Reminders / Notification Foundation
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Includes:
 - PaymentReminder model and factory.

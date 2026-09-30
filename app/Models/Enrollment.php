@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 
 #[Fillable(['student_id', 'academic_year_id', 'grade_id', 'section_id'])]
@@ -27,6 +28,9 @@ class Enrollment extends Model
     /**
      * Get the academic year of the enrollment.
      */
+    /**
+     * @return BelongsTo<AcademicYear, $this>
+     */
     public function academicYear(): BelongsTo
     {
         return $this->belongsTo(AcademicYear::class);
@@ -34,6 +38,9 @@ class Enrollment extends Model
 
     /**
      * Get the enrollment's current grade.
+     */
+    /**
+     * @return BelongsTo<Grade, $this>
      */
     public function grade(): BelongsTo
     {
@@ -43,14 +50,35 @@ class Enrollment extends Model
     /**
      * Get the enrollment's current section.
      */
+    /**
+     * @return BelongsTo<Section, $this>
+     */
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
     }
 
     /**
-     * Get the placement history for the enrollment.
+     * Get the promotion items that use this enrollment as their source.
      *
+     * @return HasMany<PromotionBatchItem, $this>
+     */
+    public function sourcePromotionItems(): HasMany
+    {
+        return $this->hasMany(PromotionBatchItem::class, 'source_enrollment_id');
+    }
+
+    /**
+     * Get the promotion item that created this enrollment.
+     *
+     * @return HasOne<PromotionBatchItem, $this>
+     */
+    public function appliedPromotionItem(): HasOne
+    {
+        return $this->hasOne(PromotionBatchItem::class, 'applied_enrollment_id');
+    }
+
+    /**
      * @return HasMany<EnrollmentPlacement, $this>
      */
     public function placements(): HasMany
