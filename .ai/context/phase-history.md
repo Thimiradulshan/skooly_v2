@@ -565,6 +565,26 @@ Headline findings:
 
 Recommended next phase: 10D-1, academic setup plus audit viewing.
 
+## Phase 10D-1A: Academic Setup Web Pages
+Status: complete and verified on 2026-10-01.
+
+Implemented:
+- Admin-only AcademicYearController, TermController, GradeController, SectionController, and SchoolSettingController.
+- Admin-only Form Requests for academic setup validation.
+- Academic year, term, grade, and section list, create, show, edit, and update pages.
+- Active academic year settings page, sidebar navigation group, and dashboard card.
+- WebAcademicSetupTest coverage for role protection, CRUD flows, navigation, and route absence.
+
+Deferred:
+- Archive/deactivate: the existing academic setup schema has no lifecycle status and archive semantics are unresolved.
+- Hard delete: intentionally absent.
+- Audit log, user, role, teacher, API/mobile, Accountant, Teacher, and Guardian UI remain outside this phase.
+
+Verification:
+- `php artisan migrate:fresh --no-interaction` and `php artisan db:seed --class=DemoDataSeeder --no-interaction` passed.
+- `php artisan test --compact`: 410 tests / 1913 assertions passed.
+- PHPStan, Pint, Composer audit, and `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

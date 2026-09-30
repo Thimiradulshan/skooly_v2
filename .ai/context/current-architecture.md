@@ -49,7 +49,7 @@ Laravel modular monolith.
 - Backend-Frontend Feature Parity and CRUD Coverage Audit (Phase 10C-5, verified and pending commit)
 
 ## Current Module
-- Phase 10C-5: Backend-Frontend Feature Parity and CRUD Coverage Audit is complete / pending commit.
+- Phase 10D-1A: Academic Setup Web Pages is complete and verified.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -219,6 +219,14 @@ Laravel modular monolith.
 - The shared layout exposes one grouped admin navigation row plus consistent success, error, and validation flash display.
 - Cross-links reuse existing named routes only; empty states already existed on every index page.
 - No backend action, model, authorization rule, or FormRequest changed in this phase.
+
+## Web Academic Setup
+- Admin-only web pages manage AcademicYear, Term, Grade, Section, and the singleton SchoolSetting.
+- Academic setup routes provide index, create, store, show, edit, and update; SchoolSetting provides edit and update.
+- Form Requests repeat the Admin role check as defense in depth.
+- Academic year details show terms, grade details show sections, and section details show its grade.
+- SchoolSetting.active_academic_year_id is editable but no existing workflow reads it.
+- Archive/deactivate and hard delete are deliberately absent: the schema has no lifecycle status and archive semantics remain unresolved.
 
 ## Demo Data & Local Testing
 - DemoDataSeeder builds deterministic local and testing data and returns early in production.

@@ -1,6 +1,6 @@
 # CRUD and Action Coverage Matrix
 
-Phase 10C-5. What the web UI supports today, per module. Nothing was implemented.
+Phase 10C-5 audit, updated by Phase 10D-1A. What the web UI supports today.
 
 Statuses used:
 
@@ -17,11 +17,11 @@ Statuses used:
 
 | Module | List | Create | View | Edit | Update | Archive | Delete | Restore | Generate | Confirm | Export/Print | Search/Filter | Status change | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| School Setting | No | No | No | No | No | Not Applicable | No | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | Not Applicable | Singleton row. Setting the active year is the only real need |
-| Academic Year | No | No | No | No | No | Needs Decision | Needs Decision | Not Applicable | Not Applicable | Not Applicable | No | No | No | Highest-leverage gap. Every other page needs a year |
-| Term | No | No | No | No | No | Needs Decision | Needs Decision | Not Applicable | Not Applicable | Not Applicable | No | No | No | Backs fee periods |
-| Grade | No | No | No | No | No | Needs Decision | Needs Decision | Not Applicable | Not Applicable | Not Applicable | No | No | No | `sequence_order` drives promotion and must not be silently renumbered |
-| Section | No | No | No | No | No | Needs Decision | Needs Decision | Not Applicable | Not Applicable | Not Applicable | No | No | No | Referenced by enrollments and event charges |
+| School Setting | Not Applicable | Not Applicable | Yes | Yes | Yes | Not Applicable | No | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | Not Applicable | Singleton active-year setting. Its downstream behaviour is intentionally inert |
+| Academic Year | Yes | Yes | Yes | Yes | Yes | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Archive/deactivate deferred: schema has no status field |
+| Term | Yes | Yes | Yes | Yes | Yes | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Archive/deactivate deferred: schema has no status field |
+| Grade | Yes | Yes | Yes | Yes | Yes | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Archive/deactivate deferred: schema has no status field; sequence drives promotion |
+| Section | Yes | Yes | Yes | Yes | Yes | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Archive/deactivate deferred: schema has no status field |
 | User | No | No | No | No | No | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Staff cannot be created without a console |
 | Role | No | No | No | No | No | Not Applicable | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Only three fixed roles. Creating roles ad hoc is risky |
 | Subject | No | No | No | No | No | Needs Decision | Needs Decision | Not Applicable | Not Applicable | Not Applicable | No | No | No | Referenced by teacher assignments |

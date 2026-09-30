@@ -15,6 +15,16 @@
         <x-stat-card label="Payment reminders" :value="$reminderCount" hint="Internal outbox records" />
     </div>
 
+    <h2 class="section-heading">Academic setup</h2>
+    <div class="card-grid">
+        <a class="workflow-card" href="{{ route('academic-years.index') }}">
+            <span>
+                <span class="workflow-card-title">Academic setup</span>
+                <span class="workflow-card-text">Manage academic years, terms, grades, sections, and the active school year.</span>
+            </span>
+        </a>
+    </div>
+
     <h2 class="section-heading">Registration</h2>
     <div class="card-grid">
         <a class="workflow-card" href="{{ route('families.index') }}">

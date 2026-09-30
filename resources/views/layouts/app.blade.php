@@ -35,6 +35,20 @@
                 </div>
 
                 <div>
+                    <p class="sidebar-section-title">Academic Setup</p>
+                    <a class="sidebar-link {{ request()->routeIs('academic-years.*') ? 'is-active' : '' }}"
+                       href="{{ route('academic-years.index') }}">Academic Years</a>
+                    <a class="sidebar-link {{ request()->routeIs('terms.*') ? 'is-active' : '' }}"
+                       href="{{ route('terms.index') }}">Terms</a>
+                    <a class="sidebar-link {{ request()->routeIs('grades.*') ? 'is-active' : '' }}"
+                       href="{{ route('grades.index') }}">Grades</a>
+                    <a class="sidebar-link {{ request()->routeIs('sections.*') ? 'is-active' : '' }}"
+                       href="{{ route('sections.index') }}">Sections</a>
+                    <a class="sidebar-link {{ request()->routeIs('school-settings.*') ? 'is-active' : '' }}"
+                       href="{{ route('school-settings.edit') }}">School Settings</a>
+                </div>
+
+                <div>
                     <p class="sidebar-section-title">Fees &amp; Dues</p>
                     <a class="sidebar-link {{ request()->routeIs('fee-categories.*') ? 'is-active' : '' }}"
                        href="{{ route('fee-categories.index') }}">Fee Categories</a>

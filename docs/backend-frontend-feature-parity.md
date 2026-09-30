@@ -1,7 +1,7 @@
 # Backend and Frontend Feature Parity
 
-Phase 10C-5. An audit of every backend module against the web UI. This document
-records what exists on both sides and what is missing. Nothing was implemented.
+Phase 10C-5 audit, updated by Phase 10D-1A. This document records what exists on
+both sides and what remains missing.
 
 Method: read `app/Models`, `app/Actions`, `app/Http/Controllers/Web`,
 `app/Http/Requests/Web`, `routes/web.php`, `resources/views`, and `tests/Feature`,
@@ -16,11 +16,11 @@ Legend for Frontend Status: **Complete**, **Partial**, **Missing**, **Intentiona
 
 | Module | Model / Table | Backend actions | Web controller | Web routes | Views | Tests | Frontend | Missing UI | Risk / notes | Suggested phase |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| School Setting | `SchoolSetting` / `school_settings` | none | none | none | none | `AcademicFoundationTest` only (model level) | **Missing** | No way to set or view the active academic year | The column is written by the seeder and **read by nothing**. Safe to expose; no behaviour depends on it yet | 10D-1 |
-| Academic Year | `AcademicYear` / `academic_years` | none | none | none | none | `AcademicFoundationTest` | **Missing** | List, create, view, edit | Referenced by every financial record. Delete is unsafe once used | 10D-1 |
-| Term | `Term` / `terms` | none | none | none | none | `AcademicFoundationTest` | **Missing** | List, create, view, edit | Backs fee periods. Delete unsafe once fees exist | 10D-1 |
-| Grade | `Grade` / `grades` | none | none | none | none | `AcademicFoundationTest` | **Missing** | List, create, view, edit | `sequence_order` drives promotion. Delete unsafe once used | 10D-1 |
-| Section | `Section` / `sections` | none | none | none | none | `AcademicFoundationTest` | **Missing** | List, create, view, edit | Referenced by enrollments and events. Delete unsafe once used | 10D-1 |
+| School Setting | `SchoolSetting` / `school_settings` | none | `SchoolSettingController` | edit, update | edit | `AcademicFoundationTest`, `WebAcademicSetupTest` | **Partial** | Active year is still inert outside this setting | The column remains read by nothing else | Later decision |
+| Academic Year | `AcademicYear` / `academic_years` | none | `AcademicYearController` | index, create, store, show, edit, update | index, create, show, edit | `AcademicFoundationTest`, `WebAcademicSetupTest` | **Partial** | Archive/deactivate | Referenced by historical records; no status field exists | 10D-4 decision |
+| Term | `Term` / `terms` | none | `TermController` | index, create, store, show, edit, update | index, create, show, edit | `AcademicFoundationTest`, `WebAcademicSetupTest` | **Partial** | Archive/deactivate | No status field exists | 10D-4 decision |
+| Grade | `Grade` / `grades` | none | `GradeController` | index, create, store, show, edit, update | index, create, show, edit | `AcademicFoundationTest`, `WebAcademicSetupTest` | **Partial** | Archive/deactivate | `sequence_order` drives promotion; no status field exists | 10D-4 decision |
+| Section | `Section` / `sections` | none | `SectionController` | index, create, store, show, edit, update | index, create, show, edit | `AcademicFoundationTest`, `WebAcademicSetupTest` | **Partial** | Archive/deactivate | Referenced by enrollments; no status field exists | 10D-4 decision |
 | User | `User` / `users` | none | none | none | none | `IdentityAndTeacherFoundationTest` | **Missing** | No user list, create, edit, or password reset | Staff cannot be onboarded without a console | 10D-2 |
 | Role | `Role` / `roles` | none | none | none | none | `IdentityAndTeacherFoundationTest` | **Missing** | No role list or management | Only three fixed roles exist. Granting Admin is a console task | 10D-2 |
 | Teacher | `User` with teacher role | none | none | none | none | `IdentityAndTeacherFoundationTest` | **Missing** | No teacher list or profile | Same table as User; needs a role filter, not a new table | 10D-2 |
@@ -28,8 +28,8 @@ Legend for Frontend Status: **Complete**, **Partial**, **Missing**, **Intentiona
 | Teacher Assignment | `TeacherAssignment` / `teacher_assignments` | none | none | none | none | `IdentityAndTeacherFoundationTest` | **Missing** | No list, create, or view | Blocks any future teacher section scoping | 10D-2 |
 | Section-Year Assignment | `SectionYearAssignment` / `section_year_assignments` | none | none | none | none | `IdentityAndTeacherFoundationTest` | **Missing** | No list, create, or view | Same | 10D-2 |
 
-**Conclusion:** every Foundation module is backend-only. A school cannot be configured
-through the web app at all. This is the single largest parity gap.
+**Conclusion:** academic setup is now available to Admins through the web app. User,
+role, teacher, subject, and assignment setup remain backend-only.
 
 ---
 

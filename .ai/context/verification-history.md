@@ -10,6 +10,16 @@ git diff --check
 git status
 
 ## Latest Known Good
+Phase 10D-1A passed on 2026-10-01:
+- php artisan migrate:fresh --no-interaction passed.
+- php artisan db:seed --class=DemoDataSeeder --no-interaction passed.
+- 410 tests / 1913 assertions passed.
+- PHPStan passed with 0 errors.
+- Pint passed.
+- Composer audit found no vulnerabilities.
+- git diff --check passed.
+
+## Previous Known Good
 Phase 10C-5 passed on 2026-09-30:
 - 399 tests / 1867 assertions passed.
 - PHPStan passed with 0 errors.

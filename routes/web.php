@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Web\AcademicYearController;
 use App\Http\Controllers\Web\AdminDashboardController;
 use App\Http\Controllers\Web\DueGenerationController;
 use App\Http\Controllers\Web\DuesDashboardController;
@@ -10,13 +11,17 @@ use App\Http\Controllers\Web\EventParticipationController;
 use App\Http\Controllers\Web\FamilyController;
 use App\Http\Controllers\Web\FeeCategoryController;
 use App\Http\Controllers\Web\FeeStructureController;
+use App\Http\Controllers\Web\GradeController;
 use App\Http\Controllers\Web\PaymentCollectionController;
 use App\Http\Controllers\Web\PaymentReminderController;
 use App\Http\Controllers\Web\PromotionBatchController;
 use App\Http\Controllers\Web\ReceiptController;
+use App\Http\Controllers\Web\SchoolSettingController;
+use App\Http\Controllers\Web\SectionController;
 use App\Http\Controllers\Web\StudentDiscountController;
 use App\Http\Controllers\Web\StudentFeeSubscriptionController;
 use App\Http\Controllers\Web\StudentRegistrationController;
+use App\Http\Controllers\Web\TermController;
 use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +37,14 @@ Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
 Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
+    Route::resource('academic-years', AcademicYearController::class)->except('destroy');
+    Route::resource('terms', TermController::class)->except('destroy');
+    Route::resource('grades', GradeController::class)->except('destroy');
+    Route::resource('sections', SectionController::class)->except('destroy');
+    Route::get('/school-settings', [SchoolSettingController::class, 'edit'])->name('school-settings.edit');
+    Route::match(['put', 'patch'], '/school-settings', [SchoolSettingController::class, 'update'])
+        ->name('school-settings.update');
 
     Route::get('/families', [FamilyController::class, 'index'])->name('families.index');
     Route::get('/families/create', [FamilyController::class, 'create'])->name('families.create');

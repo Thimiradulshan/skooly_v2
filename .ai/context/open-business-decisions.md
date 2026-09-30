@@ -209,3 +209,9 @@ Do not invent answers for these.
 - Promotion item editing needs a decision before any backend edit action is written.
 - SchoolSetting.active_academic_year_id is inert and needs a decision on whether anything should honour it.
 - Money and history must never be hard deleted. Configuration should be archived, pending approval.
+
+## Phase 10D-1A Rules
+- Academic year, term, grade, and section web pages support list, create, view, edit, and update only.
+- Archive/deactivate remains deferred: none of the four tables has a lifecycle status, and archive semantics remain unresolved.
+- No hard delete or archive route exists for academic setup.
+- SchoolSetting.active_academic_year_id may be selected by an Admin but remains inert until a separate decision assigns downstream behaviour.

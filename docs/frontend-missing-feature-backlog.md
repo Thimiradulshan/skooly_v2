@@ -1,7 +1,7 @@
 # Frontend Missing Feature Backlog
 
-Phase 10C-5. An ordered list of frontend gaps. Nothing here is implemented. Items
-are ordered by whether they block real school use, not by effort.
+Phase 10C-5 audit, updated by Phase 10D-1A. Items are ordered by whether they block
+real school use, not by effort.
 
 ---
 
@@ -12,15 +12,16 @@ console.
 
 | Gap | Why it matters | Backend exists | Frontend exists | Decision needed | Suggested phase |
 | --- | --- | --- | --- | --- | --- |
-| Academic Year list and create | Every other screen filters by year. Staff cannot even select 2026/2027 without a shell. | Yes, `AcademicYear` | No | None. Safe to build | 10D-1 |
-| Grade list and create | Fee structures, enrollments, and promotion all need grades. | Yes, `Grade` | No | None to list and create. Renumbering `sequence_order` needs a decision | 10D-1 |
-| Section list and create | Enrollments, event charges, and class lists need sections. | Yes, `Section` | No | None to list and create | 10D-1 |
-| Term list and create | Fee periods reference terms. | Yes, `Term` | No | None | 10D-1 |
-| School Setting: set the active year | The column exists, is seeded, and **is read by nothing**. Staff have no way to see or change it. | Yes, `SchoolSetting` | No | Whether anything should *depend* on it. Setting it is safe | 10D-1 |
+| Academic setup archive/deactivate | List, create, view, edit, and update now exist for academic years, terms, grades, and sections. Old configuration cannot yet be hidden safely. | No status columns | No | Required. Define archive semantics before a migration and UI | 10D-4 |
+| Active year behaviour | School Setting can now select the active year, but no existing workflow reads the setting. | Yes, `SchoolSetting` | Edit/update | Whether anything should *depend* on it | Later decision |
 | Audit log viewing | The strongest governance feature is invisible. A payment discrepancy cannot be investigated in the app. | Yes, `AuditLog` | No | Retention period. Viewing needs no decision | 10D-1 |
 
-**Without Phase 10D-1, the application is not operable by school staff.** This is the
-single most important conclusion of this audit.
+**Phase 10D-1A removes the academic setup console dependency.** Audit log viewing
+remains a separate missing feature and is deliberately outside this phase.
+
+Completed in Phase 10D-1A: **Academic Year**, Term, **Grade**, **Section**, and
+School Setting list/create/view/edit/update web surfaces. Archive/deactivate remains
+deferred for the Academic Year, Term, Grade, and Section records.
 
 ---
 
@@ -47,7 +48,6 @@ single most important conclusion of this audit.
 
 | Gap | Why it matters | Backend exists | Frontend exists | Decision needed | Suggested phase |
 | --- | --- | --- | --- | --- | --- |
-| Archive for academic setup | Old years, terms, grades, and sections accumulate and cannot be hidden. | No | No | Required. See the policy draft | 10D-4 |
 | Discard draft promotion batches | A `discarded` status exists but no UI can use it. Abandoning a draft means creating another batch. | Status exists, action does not | No | Low risk to add | 10D-4 |
 | Cancel stale reminders | A `cancelled` status exists but a stale reminder cannot be withdrawn. | Status exists, action does not | No | Low risk to add | 10D-4 |
 | Promotion item editing | Every exception case is blocked. A single student cannot be retained, excluded, graduated, or retargeted. | No | No | Required. Backend edit action first | 10D-8 |
