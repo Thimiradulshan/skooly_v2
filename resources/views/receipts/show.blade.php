@@ -1,37 +1,51 @@
 @extends('layouts.app')
 
 @section('title', 'Receipt '.$receipt->receipt_no)
-@section('heading', 'Receipt '.$receipt->receipt_no)
 
 @section('content')
-    <p><a href="{{ route('payments.show', $receipt->payment_id) }}">Back to payment</a></p>
+    <x-page-header :title="'Receipt '.$receipt->receipt_no"
+                   subtitle="Snapshot captured when the payment was recorded." />
 
-    <table>
-        <tbody>
-        <tr><th>Receipt number</th><td>{{ $receipt->receipt_no }}</td></tr>
-        <tr><th>Issued at</th><td>{{ $receipt->issued_at->toDateString() }}</td></tr>
-        <tr><th>Total amount</th><td>{{ $receipt->total_amount }}</td></tr>
-        <tr><th>Family</th><td>{{ $receipt->family_snapshot['family_code'] ?? '' }}</td></tr>
-        <tr><th>Method</th><td>{{ $receipt->payment_snapshot['method'] ?? '' }}</td></tr>
-        <tr><th>Payment amount</th><td>{{ $receipt->payment_snapshot['amount'] ?? '' }}</td></tr>
-        </tbody>
-    </table>
+    <div class="page-actions">
+        <a class="btn btn-secondary" href="{{ route('payments.show', $receipt->payment_id) }}">Back to payment</a>
+    </div>
 
-    <h2>Allocation snapshot</h2>
-    <table>
-        <thead><tr><th>Description</th><th>Original</th><th>Discount</th><th>Allocated</th><th>Balance after</th></tr></thead>
-        <tbody>
-        @foreach ($receipt->allocation_snapshot as $allocation)
-            <tr>
-                <td>{{ $allocation['description'] }}</td>
-                <td>{{ $allocation['original_amount'] }}</td>
-                <td>{{ $allocation['discount_amount'] }}</td>
-                <td>{{ $allocation['allocation_amount'] }}</td>
-                <td>{{ $allocation['balance_amount'] }}</td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+    <x-card title="Receipt">
+        <dl class="kv">
+            <div class="kv-row"><dt>Receipt number</dt><dd>{{ $receipt->receipt_no }}</dd></div>
+            <div class="kv-row"><dt>Issued at</dt><dd>{{ $receipt->issued_at->toDateString() }}</dd></div>
+            <div class="kv-row"><dt>Total amount</dt><dd>{{ $receipt->total_amount }}</dd></div>
+            <div class="kv-row"><dt>Family</dt><dd>{{ $receipt->family_snapshot['family_code'] ?? '' }}</dd></div>
+            <div class="kv-row"><dt>Method</dt><dd>{{ $receipt->payment_snapshot['method'] ?? '' }}</dd></div>
+            <div class="kv-row"><dt>Payment amount</dt><dd>{{ $receipt->payment_snapshot['amount'] ?? '' }}</dd></div>
+        </dl>
+    </x-card>
 
-    <p>This page displays stored receipt snapshots and does not recalculate from live due items.</p>
+    <x-card title="Allocation snapshot">
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Description</th><th class="num">Original</th><th class="num">Discount</th>
+                    <th class="num">Allocated</th><th class="num">Balance after</th>
+                </tr>
+                </thead>
+                <tbody>
+                @forelse ($receipt->allocation_snapshot as $allocation)
+                    <tr>
+                        <td>{{ $allocation['description'] }}</td>
+                        <td class="num">{{ $allocation['original_amount'] }}</td>
+                        <td class="num">{{ $allocation['discount_amount'] }}</td>
+                        <td class="num">{{ $allocation['allocation_amount'] }}</td>
+                        <td class="num">{{ $allocation['balance_amount'] }}</td>
+                    </tr>
+                @empty
+                    <tr class="table-empty"><td colspan="5">No stored due item snapshot.</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </x-card>
+
+    <p class="note">This page shows stored receipt data only. It is never recalculated from live due items, and there is no PDF export yet.</p>
 @endsection

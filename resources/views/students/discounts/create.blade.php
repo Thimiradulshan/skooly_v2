@@ -1,53 +1,71 @@
 @extends('layouts.app')
 
 @section('title', 'Apply discount')
-@section('heading', 'Apply discount to '.$student->name)
 
 @section('content')
-    <form method="POST" action="{{ route('students.discounts.store', $student) }}">
-        @csrf
+    <x-page-header :title="'Apply a discount to '.$student->name"
+                   subtitle="The discount applies when due items are generated." />
 
-        <label for="fee_category_id">Fee category</label>
-        <select id="fee_category_id" name="fee_category_id" required>
-            <option value="">-- choose --</option>
-            @foreach ($feeCategories as $feeCategory)
-                <option value="{{ $feeCategory->id }}"
-                    {{ (int) old('fee_category_id') === $feeCategory->id ? 'selected' : '' }}>
-                    {{ $feeCategory->name }}
-                </option>
-            @endforeach
-        </select>
+    <x-card>
+        <form method="POST" action="{{ route('students.discounts.store', $student) }}">
+            @csrf
 
-        <label for="type">Type</label>
-        <input type="text" id="type" name="type" value="{{ old('type') }}" required>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label class="form-label" for="fee_category_id">Fee category <span class="req">*</span></label>
+                    <select class="form-control" id="fee_category_id" name="fee_category_id" required>
+                        <option value="">-- choose --</option>
+                        @foreach ($feeCategories as $feeCategory)
+                            <option value="{{ $feeCategory->id }}" {{ (int) old('fee_category_id') === $feeCategory->id ? 'selected' : '' }}>
+                                {{ $feeCategory->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <label for="value">Value</label>
-        <input type="number" step="0.01" min="0" id="value" name="value" value="{{ old('value') }}" required>
+                <div class="form-field">
+                    <label class="form-label" for="type">Type <span class="req">*</span></label>
+                    <input class="form-control" type="text" id="type" name="type" value="{{ old('type') }}" required>
+                </div>
 
-        <label for="value_type">Value type</label>
-        <select id="value_type" name="value_type">
-            <option value="">-- treat as amount --</option>
-            <option value="amount" {{ old('value_type') === 'amount' ? 'selected' : '' }}>Amount</option>
-            <option value="percentage" {{ old('value_type') === 'percentage' ? 'selected' : '' }}>Percentage</option>
-        </select>
+                <div class="form-field">
+                    <label class="form-label" for="value">Value <span class="req">*</span></label>
+                    <input class="form-control" type="number" min="0" step="0.01" id="value" name="value"
+                           value="{{ old('value') }}" required>
+                </div>
 
-        <label for="is_active">
-            <input type="checkbox" id="is_active" name="is_active" value="1"
-                   {{ old('is_active', '1') ? 'checked' : '' }}>
-            Active
-        </label>
+                <div class="form-field">
+                    <label class="form-label" for="value_type">Value type</label>
+                    <select class="form-control" id="value_type" name="value_type">
+                        <option value="">-- treat as amount --</option>
+                        <option value="amount" {{ old('value_type') === 'amount' ? 'selected' : '' }}>Amount</option>
+                        <option value="percentage" {{ old('value_type') === 'percentage' ? 'selected' : '' }}>Percentage</option>
+                    </select>
+                </div>
 
-        <label for="starts_on">Starts on</label>
-        <input type="date" id="starts_on" name="starts_on" value="{{ old('starts_on') }}">
+                <div class="form-field">
+                    <label class="form-label" for="starts_on">Starts on</label>
+                    <input class="form-control" type="date" id="starts_on" name="starts_on" value="{{ old('starts_on') }}">
+                </div>
 
-        <label for="ends_on">Ends on</label>
-        <input type="date" id="ends_on" name="ends_on" value="{{ old('ends_on') }}">
+                <div class="form-field">
+                    <label class="form-label" for="ends_on">Ends on</label>
+                    <input class="form-control" type="date" id="ends_on" name="ends_on" value="{{ old('ends_on') }}">
+                </div>
+            </div>
 
-        <p>
-            <button type="submit">Apply discount</button>
-            <a href="{{ route('families.show', $student->family_id) }}">Cancel</a>
-        </p>
-    </form>
+            <div class="checkbox-field">
+                <input type="checkbox" id="is_active" name="is_active" value="1"
+                       {{ old('is_active', '1') ? 'checked' : '' }}>
+                <label for="is_active">Active</label>
+            </div>
 
-    <p>Discounts are applied when due items are generated. Existing due items are not changed.</p>
+            <div class="btn-row">
+                <button type="submit" class="btn">Apply discount</button>
+                <a class="btn btn-secondary" href="{{ route('families.show', $student->family_id) }}">Cancel</a>
+            </div>
+        </form>
+    </x-card>
+
+    <p class="note">Existing due items are never changed. The discount is applied and snapshotted the next time dues are generated.</p>
 @endsection

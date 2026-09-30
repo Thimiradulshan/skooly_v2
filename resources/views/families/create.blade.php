@@ -1,49 +1,80 @@
 @extends('layouts.app')
 
 @section('title', 'Create family')
-@section('heading', 'Create family')
 
 @section('content')
-    <form method="POST" action="{{ route('families.store') }}">
-        @csrf
+    <x-page-header title="Create family"
+                   subtitle="A family is the household that is billed for its students." />
 
-        <label for="family_code">Family code</label>
-        <input type="text" id="family_code" name="family_code" value="{{ old('family_code') }}" required>
+    <x-card>
+        <form method="POST" action="{{ route('families.store') }}">
+            @csrf
 
-        <label for="address">Address</label>
-        <textarea id="address" name="address" rows="2">{{ old('address') }}</textarea>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label class="form-label" for="family_code">Family code <span class="req">*</span></label>
+                    <input class="form-control" type="text" id="family_code" name="family_code"
+                           value="{{ old('family_code') }}" required autofocus>
+                    <span class="form-help">Must be unique across all families.</span>
+                </div>
 
-        <label for="home_contact_no">Home contact number</label>
-        <input type="text" id="home_contact_no" name="home_contact_no" value="{{ old('home_contact_no') }}">
+                <div class="form-field">
+                    <label class="form-label" for="home_contact_no">Home contact number</label>
+                    <input class="form-control" type="text" id="home_contact_no" name="home_contact_no"
+                           value="{{ old('home_contact_no') }}">
+                </div>
 
-        <label for="combined_billing_enabled">
-            <input type="checkbox" id="combined_billing_enabled" name="combined_billing_enabled" value="1"
-                   {{ old('combined_billing_enabled', '1') ? 'checked' : '' }}>
-            Combined billing enabled
-        </label>
+                <div class="form-field form-field-full">
+                    <label class="form-label" for="address">Address</label>
+                    <textarea class="form-control" id="address" name="address" rows="2">{{ old('address') }}</textarea>
+                </div>
+            </div>
 
-        <h2>First guardian (optional)</h2>
+            <div class="checkbox-field">
+                <input type="checkbox" id="combined_billing_enabled" name="combined_billing_enabled" value="1"
+                       {{ old('combined_billing_enabled', '1') ? 'checked' : '' }}>
+                <label for="combined_billing_enabled">Combined billing enabled</label>
+            </div>
 
-        <label for="guardian_name">Guardian name</label>
-        <input type="text" id="guardian_name" name="guardians[0][name]" value="{{ old('guardians.0.name') }}">
+            <h2 class="section-heading">First guardian (optional)</h2>
+            <p class="note">Guardians are not linked to students automatically. That happens during student registration.</p>
 
-        <label for="guardian_relationship">Relationship</label>
-        <input type="text" id="guardian_relationship" name="guardians[0][relationship]"
-               value="{{ old('guardians.0.relationship') }}">
+            <div class="form-grid">
+                <div class="form-field">
+                    <label class="form-label" for="guardian_name">Guardian name</label>
+                    <input class="form-control" type="text" id="guardian_name" name="guardians[0][name]"
+                           value="{{ old('guardians.0.name') }}">
+                </div>
 
-        <label for="guardian_contact_no">Contact number</label>
-        <input type="text" id="guardian_contact_no" name="guardians[0][contact_no]"
-               value="{{ old('guardians.0.contact_no') }}">
+                <div class="form-field">
+                    <label class="form-label" for="guardian_relationship">Relationship</label>
+                    <input class="form-control" type="text" id="guardian_relationship" name="guardians[0][relationship]"
+                           value="{{ old('guardians.0.relationship') }}">
+                </div>
 
-        <label for="guardian_email">Email</label>
-        <input type="email" id="guardian_email" name="guardians[0][email]" value="{{ old('guardians.0.email') }}">
+                <div class="form-field">
+                    <label class="form-label" for="guardian_contact_no">Contact number</label>
+                    <input class="form-control" type="text" id="guardian_contact_no" name="guardians[0][contact_no]"
+                           value="{{ old('guardians.0.contact_no') }}">
+                </div>
 
-        <label for="guardian_nic">NIC</label>
-        <input type="text" id="guardian_nic" name="guardians[0][nic]" value="{{ old('guardians.0.nic') }}">
+                <div class="form-field">
+                    <label class="form-label" for="guardian_email">Email</label>
+                    <input class="form-control" type="email" id="guardian_email" name="guardians[0][email]"
+                           value="{{ old('guardians.0.email') }}">
+                </div>
 
-        <p>
-            <button type="submit">Create family</button>
-            <a href="{{ route('families.index') }}">Cancel</a>
-        </p>
-    </form>
+                <div class="form-field">
+                    <label class="form-label" for="guardian_nic">NIC</label>
+                    <input class="form-control" type="text" id="guardian_nic" name="guardians[0][nic]"
+                           value="{{ old('guardians.0.nic') }}">
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn">Create family</button>
+                <a class="btn btn-secondary" href="{{ route('families.index') }}">Cancel</a>
+            </div>
+        </form>
+    </x-card>
 @endsection

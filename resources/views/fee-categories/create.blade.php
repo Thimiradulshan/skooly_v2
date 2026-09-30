@@ -1,30 +1,37 @@
 @extends('layouts.app')
 
 @section('title', 'Create fee category')
-@section('heading', 'Create fee category')
 
 @section('content')
-    <form method="POST" action="{{ route('fee-categories.store') }}">
-        @csrf
+    <x-page-header title="Create fee category" subtitle="Define a chargeable category." />
 
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" value="{{ old('name') }}" required>
+    <x-card>
+        <form method="POST" action="{{ route('fee-categories.store') }}">
+            @csrf
 
-        <label for="is_recurring">
-            <input type="checkbox" id="is_recurring" name="is_recurring" value="1"
-                   {{ old('is_recurring') ? 'checked' : '' }}>
-            Recurring
-        </label>
+            <div class="form-field">
+                <label class="form-label" for="name">Name <span class="req">*</span></label>
+                <input class="form-control" type="text" id="name" name="name" value="{{ old('name') }}" required autofocus>
+                <span class="form-help">Must be unique across all fee categories.</span>
+            </div>
 
-        <label for="is_opt_in">
-            <input type="checkbox" id="is_opt_in" name="is_opt_in" value="1"
-                   {{ old('is_opt_in') ? 'checked' : '' }}>
-            Opt-in (requires a student subscription, for example transport)
-        </label>
+            <div class="checkbox-field">
+                <input type="checkbox" id="is_recurring" name="is_recurring" value="1"
+                       {{ old('is_recurring') ? 'checked' : '' }}>
+                <label for="is_recurring">Recurring</label>
+            </div>
 
-        <p>
-            <button type="submit">Create fee category</button>
-            <a href="{{ route('fee-categories.index') }}">Cancel</a>
-        </p>
-    </form>
+            <div class="checkbox-field">
+                <input type="checkbox" id="is_opt_in" name="is_opt_in" value="1"
+                       {{ old('is_opt_in') ? 'checked' : '' }}>
+                <label for="is_opt_in">Opt-in</label>
+                <span class="form-help">Opt-in categories require an active student subscription before they are charged.</span>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn">Create fee category</button>
+                <a class="btn btn-secondary" href="{{ route('fee-categories.index') }}">Cancel</a>
+            </div>
+        </form>
+    </x-card>
 @endsection

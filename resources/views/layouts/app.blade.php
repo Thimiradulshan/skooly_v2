@@ -3,66 +3,86 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Skooly')</title>
-    <style>
-        body { font-family: system-ui, sans-serif; margin: 2rem; color: #222; }
-        table { border-collapse: collapse; width: 100%; margin-bottom: 1.5rem; }
-        th, td { border: 1px solid #ccc; padding: 0.4rem 0.6rem; text-align: left; }
-        label { display: block; margin-top: 0.75rem; font-weight: 600; }
-        input[type=text], input[type=date], input[type=email], input[type=number], select, textarea {
-            width: 100%; max-width: 28rem; padding: 0.3rem;
-        }
-        .error { color: #b00020; }
-        .status { background: #e6f4ea; border: 1px solid #34a853; padding: 0.6rem; }
-        .alert { background: #fdecea; border: 1px solid #b00020; padding: 0.6rem; }
-        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem; }
-        .card { border: 1px solid #ccc; padding: 1rem; }
-        .card h3 { margin-top: 0; }
-        .nav a { margin-right: 0.25rem; }
-    </style>
+    <title>@yield('title', 'Skooly') &middot; Skooly</title>
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
-<h1>@yield('heading', 'Skooly')</h1>
-
 @auth
-    <p>
-        Signed in as {{ auth()->user()->email }}
-        <form method="POST" action="{{ route('logout') }}" style="display:inline">
-            @csrf
-            <button type="submit">Sign out</button>
-        </form>
-    </p>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="sidebar-brand" href="{{ route('admin.dashboard') }}">
+                Skooly
+                <span class="sidebar-tagline">School Management</span>
+            </a>
 
-    <p class="nav">
-        <a href="{{ route('admin.dashboard') }}">Dashboard</a> |
-        <a href="{{ route('families.index') }}">Families</a> |
-        <a href="{{ route('fee-categories.index') }}">Fees</a> |
-        <a href="{{ route('due-generation.recurring.create') }}">Due Generation</a> |
-        <a href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a> |
-        <a href="{{ route('events.index') }}">Events</a> |
-        <a href="{{ route('promotion-batches.index') }}">Promotion</a> |
-        <a href="{{ route('payment-reminders.index') }}">Reminders</a>
-    </p>
+            <nav class="sidebar-nav" aria-label="Main">
+                <div>
+                    <p class="sidebar-section-title">Overview</p>
+                    <a class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'is-active' : '' }}"
+                       href="{{ route('admin.dashboard') }}">Dashboard</a>
+                </div>
+
+                <div>
+                    <p class="sidebar-section-title">People</p>
+                    <a class="sidebar-link {{ request()->routeIs('families.*') ? 'is-active' : '' }}"
+                       href="{{ route('families.index') }}">Families</a>
+                </div>
+
+                <div>
+                    <p class="sidebar-section-title">Money</p>
+                    <a class="sidebar-link {{ request()->routeIs('fee-categories.*') ? 'is-active' : '' }}"
+                       href="{{ route('fee-categories.index') }}">Fee Categories</a>
+                    <a class="sidebar-link {{ request()->routeIs('fee-structures.*') ? 'is-active' : '' }}"
+                       href="{{ route('fee-structures.index') }}">Fee Structures</a>
+                </div>
+
+                <div>
+                    <p class="sidebar-section-title">Dues</p>
+                    <a class="sidebar-link {{ request()->routeIs('due-generation.*') ? 'is-active' : '' }}"
+                       href="{{ route('due-generation.recurring.create') }}">Recurring Due Generation</a>
+                    <a class="sidebar-link {{ request()->routeIs('due-generation.events.*') ? 'is-active' : '' }}"
+                       href="{{ route('due-generation.events.create') }}">Event Due Generation</a>
+                    <a class="sidebar-link {{ request()->routeIs('dues-dashboard.*') ? 'is-active' : '' }}"
+                       href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
+                </div>
+
+                <div>
+                    <p class="sidebar-section-title">School Life</p>
+                    <a class="sidebar-link {{ request()->routeIs('events.*') ? 'is-active' : '' }}"
+                       href="{{ route('events.index') }}">Events</a>
+                    <a class="sidebar-link {{ request()->routeIs('promotion-batches.*') ? 'is-active' : '' }}"
+                       href="{{ route('promotion-batches.index') }}">Promotion</a>
+                    <a class="sidebar-link {{ request()->routeIs('payment-reminders.*') ? 'is-active' : '' }}"
+                       href="{{ route('payment-reminders.index') }}">Reminders</a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p class="sidebar-user">Signed in as {{ auth()->user()->email }}</p>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-secondary btn-small">Sign out</button>
+                </form>
+            </div>
+        </aside>
+
+        <div class="app-main">
+            <main class="app-content">
+                @include('partials.flash')
+
+                @yield('content')
+            </main>
+
+            <footer class="app-footer">Skooly Stage 1 admin</footer>
+        </div>
+    </div>
 @else
-    <p><a href="{{ route('login') }}">Sign in</a></p>
+    <div class="auth-shell">
+        <div>
+            @include('partials.flash')
+            @yield('content')
+        </div>
+    </div>
 @endauth
-
-@if (session('status'))
-    <p class="status">{{ session('status') }}</p>
-@endif
-
-@if (session('error'))
-    <p class="alert">{{ session('error') }}</p>
-@endif
-
-@if ($errors->any())
-    <ul class="error">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif
-
-@yield('content')
 </body>
 </html>

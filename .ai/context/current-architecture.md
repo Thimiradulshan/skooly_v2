@@ -42,10 +42,11 @@ Laravel modular monolith.
 - Web Manual QA & Bug Fix Pass (Phase 10B-10)
 - Demo Data & Local Testing Setup (Phase 10C-1)
 - Deployment Readiness & Security Review (Phase 10C-2)
-- System Understanding, Data Flow & UX Map (Phase 10C-3, verified and pending commit)
+- System Understanding, Data Flow & UX Map (Phase 10C-3)
+- Admin UI/UX Foundation & Login Redesign (Phase 10C-4, verified and pending commit)
 
 ## Current Module
-- Phase 10C-3: System Understanding, Data Flow & UX Map is complete / pending commit.
+- Phase 10C-4: Admin UI/UX Foundation & Login Redesign is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -235,3 +236,10 @@ Laravel modular monolith.
 - docs/user-workflows.md is the reference for how staff actually operate the app.
 - docs/ui-ux-roadmap.md records interface gaps and the redesign sequence.
 - docs/production-gap-register.md is the single list of what blocks production.
+
+## Admin Interface
+- public/css/admin.css is the entire admin design system. It is plain CSS with no build step.
+- The Vite and Tailwind pipeline is present but unused, because public/build is gitignored
+  and committing a build artifact would be worse than a static stylesheet.
+- resources/views/components holds the shared UI components. Views stay free of design duplication.
+- Navigation is a grouped sidebar rendered once in the layout. Views never repeat it.

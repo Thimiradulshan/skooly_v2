@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10C-3: System Understanding, Data Flow & UX Map
+Phase 10C-4: Admin UI/UX Foundation & Login Redesign
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -31,10 +31,11 @@ Phase 10C-3: System Understanding, Data Flow & UX Map
 - Phase 10B-10: Web Manual QA & Bug Fix Pass - complete
 - Phase 10C-1: Demo Data & Local Testing Setup - complete
 - Phase 10C-2: Deployment Readiness & Security Review - complete
-- Phase 10C-3: System Understanding, Data Flow & UX Map - complete / pending commit
+- Phase 10C-3: System Understanding, Data Flow & UX Map - complete
+- Phase 10C-4: Admin UI/UX Foundation & Login Redesign - complete / pending commit
 
 ## Current Status
-Phase 10C-3 documentation and verification are complete. Pending review and commit.
+Phase 10C-4 implementation and verification are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -189,10 +190,19 @@ Phase 10C-3 documentation and verification are complete. Pending review and comm
 - docs/system-overview.md, docs/data-flow.md, and docs/user-workflows.md explain how the system works and how to use it.
 - docs/ui-ux-roadmap.md records the current interface gaps and a phased redesign plan.
 - docs/production-gap-register.md lists 27 gaps with severity and the decision each one depends on.
+- Phase 10C-4 is presentation only. No business logic, model, migration, controller, or request changed.
+- public/css/admin.css provides the whole admin design system in plain CSS. No build step, no npm packages, no CDN.
+- The admin layout is now a persistent sidebar with grouped navigation, brand, user, and logout.
+- The login page is a centred product card. The dashboard is grouped by workflow.
+- Forms, tables, detail pages, empty states, and status badges use shared classes.
+- Six reusable Blade components were added under resources/views/components.
+- Field names, route names, and queries are unchanged. The full existing suite passes untouched.
 
 ## Verification Result
 Passed on 2026-09-30:
-- php artisan test --compact: 345 tests, 1474 assertions
+- php artisan migrate:fresh --no-interaction
+- php artisan db:seed --class=DemoDataSeeder --no-interaction passed
+- php artisan test --compact: 356 tests, 1537 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
@@ -202,4 +212,4 @@ Passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10C-3.
+Review git status, then commit Phase 10C-4.

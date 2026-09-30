@@ -1,53 +1,61 @@
 @extends('layouts.app')
 
 @section('title', 'Payment reminder '.$paymentReminder->id)
-@section('heading', 'Payment reminder '.$paymentReminder->id)
 
 @section('content')
-    <p><a href="{{ route('payment-reminders.index') }}">Back to payment reminders</a></p>
+    <x-page-header :title="'Payment reminder '.$paymentReminder->id"
+                   subtitle="Stored preview of what would be sent to this guardian." />
 
-    <table>
-        <tbody>
-        <tr><th>Family</th><td>{{ $paymentReminder->family->family_code }}</td></tr>
-        <tr><th>Guardian</th><td>{{ $paymentReminder->guardian->name }}</td></tr>
-        <tr><th>Reminder type</th><td>{{ $paymentReminder->reminder_type }}</td></tr>
-        <tr><th>Status</th><td>{{ $paymentReminder->status }}</td></tr>
-        <tr><th>Scheduled for</th><td>{{ $paymentReminder->scheduled_for?->toDateString() }}</td></tr>
-        <tr><th>Sent at</th><td>{{ $paymentReminder->sent_at?->toDateTimeString() }}</td></tr>
-        <tr><th>Due item IDs</th><td>{{ implode(', ', $paymentReminder->due_item_ids) }}</td></tr>
-        </tbody>
-    </table>
+    <div class="page-actions">
+        <a class="btn btn-secondary" href="{{ route('payment-reminders.index') }}">Back to payment reminders</a>
+    </div>
 
-    <h2>Stored message snapshot</h2>
-    <table>
-        <tbody>
-        <tr><th>Family</th><td>{{ $paymentReminder->message_snapshot['family_code'] ?? '' }}</td></tr>
-        <tr><th>Guardian</th><td>{{ $paymentReminder->message_snapshot['guardian_name'] ?? '' }}</td></tr>
-        <tr><th>Type</th><td>{{ $paymentReminder->message_snapshot['reminder_type'] ?? '' }}</td></tr>
-        <tr><th>As of date</th><td>{{ $paymentReminder->message_snapshot['as_of_date'] ?? '' }}</td></tr>
-        <tr><th>Total balance</th><td>{{ $paymentReminder->message_snapshot['total_balance_amount'] ?? '' }}</td></tr>
-        <tr><th>Due item count</th><td>{{ $paymentReminder->message_snapshot['due_item_count'] ?? '' }}</td></tr>
-        </tbody>
-    </table>
+    <x-card title="Reminder">
+        <dl class="kv">
+            <div class="kv-row"><dt>Family</dt><dd>{{ $paymentReminder->family->family_code }}</dd></div>
+            <div class="kv-row"><dt>Guardian</dt><dd>{{ $paymentReminder->guardian->name }}</dd></div>
+            <div class="kv-row"><dt>Reminder type</dt><dd><x-status-badge :value="$paymentReminder->reminder_type" /></dd></div>
+            <div class="kv-row"><dt>Status</dt><dd><x-status-badge :value="$paymentReminder->status" /></dd></div>
+            <div class="kv-row"><dt>Scheduled for</dt><dd>{{ $paymentReminder->scheduled_for?->toDateString() }}</dd></div>
+            <div class="kv-row"><dt>Sent at</dt><dd>{{ $paymentReminder->sent_at?->toDateTimeString() }}</dd></div>
+            <div class="kv-row"><dt>Due item IDs</dt><dd>{{ implode(', ', $paymentReminder->due_item_ids) }}</dd></div>
+        </dl>
+    </x-card>
 
-    <h2>Stored due item snapshot</h2>
-    <table>
-        <thead><tr><th>Student</th><th>Admission no.</th><th>Description</th><th>Due date</th><th>Balance</th><th>Status</th></tr></thead>
-        <tbody>
-        @forelse ($paymentReminder->message_snapshot['due_items'] ?? [] as $dueItem)
-            <tr>
-                <td>{{ $dueItem['student_name'] }}</td>
-                <td>{{ $dueItem['admission_no'] }}</td>
-                <td>{{ $dueItem['description'] }}</td>
-                <td>{{ $dueItem['due_date'] }}</td>
-                <td>{{ $dueItem['balance_amount'] }}</td>
-                <td>{{ $dueItem['status'] }}</td>
-            </tr>
-        @empty
-            <tr><td colspan="6">No stored due item snapshot.</td></tr>
-        @endforelse
-        </tbody>
-    </table>
+    <x-card title="Stored message snapshot">
+        <dl class="kv">
+            <div class="kv-row"><dt>Family</dt><dd>{{ $paymentReminder->message_snapshot['family_code'] ?? '' }}</dd></div>
+            <div class="kv-row"><dt>Guardian</dt><dd>{{ $paymentReminder->message_snapshot['guardian_name'] ?? '' }}</dd></div>
+            <div class="kv-row"><dt>Type</dt><dd>{{ $paymentReminder->message_snapshot['reminder_type'] ?? '' }}</dd></div>
+            <div class="kv-row"><dt>As of date</dt><dd>{{ $paymentReminder->message_snapshot['as_of_date'] ?? '' }}</dd></div>
+            <div class="kv-row"><dt>Total balance</dt><dd>{{ $paymentReminder->message_snapshot['total_balance_amount'] ?? '' }}</dd></div>
+            <div class="kv-row"><dt>Due item count</dt><dd>{{ $paymentReminder->message_snapshot['due_item_count'] ?? '' }}</dd></div>
+        </dl>
+    </x-card>
 
-    <p>This page displays stored reminder data only. No message is sent from this page.</p>
+    <x-card title="Stored due item snapshot">
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr><th>Student</th><th>Admission no.</th><th>Description</th><th>Due date</th><th class="num">Balance</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                @forelse ($paymentReminder->message_snapshot['due_items'] ?? [] as $dueItem)
+                    <tr>
+                        <td>{{ $dueItem['student_name'] }}</td>
+                        <td>{{ $dueItem['admission_no'] }}</td>
+                        <td>{{ $dueItem['description'] }}</td>
+                        <td>{{ $dueItem['due_date'] }}</td>
+                        <td class="num">{{ $dueItem['balance_amount'] }}</td>
+                        <td><x-status-badge :value="$dueItem['status']" /></td>
+                    </tr>
+                @empty
+                    <tr class="table-empty"><td colspan="6">No stored due item snapshot.</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </x-card>
+
+    <p class="note">This page displays stored reminder data only. No message is sent from here.</p>
 @endsection

@@ -459,7 +459,7 @@ Deferred:
 - Receipt numbering rule.
 
 ## Phase 10C-3: System Understanding, Data Flow & UX Map
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Documentation only. No business logic, model, migration, controller, or test changed.
 
@@ -477,6 +477,25 @@ Created:
 
 Key finding: there is no web screen for academic setup, so years, terms, grades, and
 sections still require console access. This is recorded as a High severity gap.
+
+## Phase 10C-4: Admin UI/UX Foundation & Login Redesign
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Presentation only. No business logic, model, migration, controller, or FormRequest changed.
+
+Implemented:
+- public/css/admin.css, a complete admin design system in plain CSS.
+- Sidebar-based admin layout with grouped navigation, active state, brand, user, and logout.
+- Redesigned login page as a centred product card.
+- Dashboard regrouped into Registration, Fees and dues, Payments, Events and promotion, and Reminders.
+- Consistent forms, tables, detail key-value blocks, empty states, and status badges across all pages.
+- Six reusable Blade components: page-header, card, empty-state, status-badge, alert, button-link.
+- Shared flash partial for success, error, and validation messages.
+- tests/Feature/WebUiUxTest.php, 11 tests covering branding, fields, navigation, and structure.
+
+Key decision: public/build is gitignored, so the Vite and Tailwind pipeline would
+break every page on a fresh checkout. The prompt's documented fallback was used
+instead: one static CSS file linked from the layout, with no build step.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

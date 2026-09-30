@@ -1,65 +1,72 @@
 @extends('layouts.app')
 
 @section('title', $family->family_code)
-@section('heading', 'Family '.$family->family_code)
 
 @section('content')
-    <p><a href="{{ route('families.index') }}">Back to families</a></p>
+    <x-page-header :title="$family->family_code" subtitle="Family details, guardians, and students." />
 
-    <p><a href="{{ route('families.edit', $family) }}">Edit family</a></p>
-    <p><a href="{{ route('families.students.create', $family) }}">Register student</a></p>
-    <p><a href="{{ route('families.payments.create', $family) }}">Record payment</a></p>
+    <div class="page-actions">
+        <x-button-link :href="route('families.edit', $family)">Edit family</x-button-link>
+        <x-button-link :href="route('families.students.create', $family)" variant="secondary">Register student</x-button-link>
+        <x-button-link :href="route('families.payments.create', $family)" variant="secondary">Record payment</x-button-link>
+    </div>
 
-    <table>
-        <tbody>
-        <tr><th>Family code</th><td>{{ $family->family_code }}</td></tr>
-        <tr><th>Address</th><td>{{ $family->address }}</td></tr>
-        <tr><th>Home contact</th><td>{{ $family->home_contact_no }}</td></tr>
-        <tr>
-            <th>Combined billing</th>
-            <td>{{ $family->combined_billing_enabled ? 'Yes' : 'No' }}</td>
-        </tr>
-        </tbody>
-    </table>
+    <x-card title="Details">
+        <dl class="kv">
+            <div class="kv-row"><dt>Family code</dt><dd>{{ $family->family_code }}</dd></div>
+            <div class="kv-row"><dt>Address</dt><dd>{{ $family->address }}</dd></div>
+            <div class="kv-row"><dt>Home contact</dt><dd>{{ $family->home_contact_no }}</dd></div>
+            <div class="kv-row">
+                <dt>Combined billing</dt>
+                <dd>{{ $family->combined_billing_enabled ? 'Yes' : 'No' }}</dd>
+            </div>
+        </dl>
+    </x-card>
 
-    <h2>Guardians</h2>
-    <table>
-        <thead>
-        <tr><th>Name</th><th>Relationship</th><th>Contact</th><th>Email</th></tr>
-        </thead>
-        <tbody>
-        @forelse ($family->guardians as $guardian)
-            <tr>
-                <td>{{ $guardian->name }}</td>
-                <td>{{ $guardian->relationship }}</td>
-                <td>{{ $guardian->contact_no }}</td>
-                <td>{{ $guardian->email }}</td>
-            </tr>
-        @empty
-            <tr><td colspan="4">No guardians yet.</td></tr>
-        @endforelse
-        </tbody>
-    </table>
+    <x-card title="Guardians">
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr><th>Name</th><th>Relationship</th><th>Contact</th><th>Email</th></tr>
+                </thead>
+                <tbody>
+                @forelse ($family->guardians as $guardian)
+                    <tr>
+                        <td>{{ $guardian->name }}</td>
+                        <td>{{ $guardian->relationship }}</td>
+                        <td>{{ $guardian->contact_no }}</td>
+                        <td>{{ $guardian->email }}</td>
+                    </tr>
+                @empty
+                    <tr class="table-empty"><td colspan="4">No guardians yet.</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </x-card>
 
-    <h2>Students</h2>
-        <table>
-        <thead>
-        <tr><th>Name</th><th>Admission number</th><th>Status</th><th></th></tr>
-        </thead>
-        <tbody>
-        @forelse ($family->students as $student)
-            <tr>
-                <td>{{ $student->name }}</td>
-                <td>{{ $student->admission_no }}</td>
-                <td>{{ $student->status }}</td>
-                <td>
-                    <a href="{{ route('students.discounts.create', $student) }}">Discount</a>
-                    <a href="{{ route('students.fee-subscriptions.create', $student) }}">Fee subscription</a>
-                </td>
-            </tr>
-        @empty
-            <tr><td colspan="4">No students yet.</td></tr>
-        @endforelse
-        </tbody>
-    </table>
+    <x-card title="Students">
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr><th>Name</th><th>Admission number</th><th>Status</th><th class="actions">Actions</th></tr>
+                </thead>
+                <tbody>
+                @forelse ($family->students as $student)
+                    <tr>
+                        <td>{{ $student->name }}</td>
+                        <td>{{ $student->admission_no }}</td>
+                        <td><x-status-badge :value="$student->status" /></td>
+                        <td class="actions">
+                            <x-button-link :href="route('students.discounts.create', $student)" variant="quiet" size="small">Discount</x-button-link>
+                            <x-button-link :href="route('students.fee-subscriptions.create', $student)" variant="quiet" size="small">Fee subscription</x-button-link>
+                        </td>
+                    </tr>
+                @empty
+                    <tr class="table-empty"><td colspan="4">No students yet.</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </x-card>
 @endsection
