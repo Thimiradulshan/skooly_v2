@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10C-4C: Commercial UI/UX Defect Audit & Workflow Completion
+Phase 10C-5: Backend-Frontend Feature Parity & CRUD Coverage Audit
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -34,10 +34,11 @@ Phase 10C-4C: Commercial UI/UX Defect Audit & Workflow Completion
 - Phase 10C-3: System Understanding, Data Flow & UX Map - complete
 - Phase 10C-4: Admin UI/UX Foundation & Login Redesign - complete
 - Phase 10C-4B: Commercial Admin UI/UX Redesign - complete
-- Phase 10C-4C: Commercial UI/UX Defect Audit & Workflow Completion - complete / pending commit
+- Phase 10C-4C: Commercial UI/UX Defect Audit & Workflow Completion - complete
+- Phase 10C-5: Backend-Frontend Feature Parity & CRUD Coverage Audit - complete / pending commit
 
 ## Current Status
-Phase 10C-4C implementation and verification are complete. Pending review and commit.
+Phase 10C-5 audit and documentation are complete. Pending review and commit.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -216,19 +217,27 @@ Phase 10C-4C implementation and verification are complete. Pending review and co
 - Detail pages gained breadcrumbs, primary action hierarchy, and back links.
 - The receipt page was rebuilt as a printable receipt sheet with a print stylesheet.
 - Reminder screens state clearly that records are outbox previews and are never sent.
+- Phase 10C-5 is an audit and planning phase. No backend behaviour, route, controller, or model changed.
+- docs/backend-frontend-feature-parity.md compares 35 models and 24 actions against 17 web controllers and 55 routes.
+- docs/crud-coverage-matrix.md classifies List, Create, View, Edit, Update, Archive, Delete, Restore, Generate, Confirm, Export, Search, and Status for every module.
+- docs/frontend-missing-feature-backlog.md orders frontend gaps by severity with a suggested phase for each.
+- docs/destructive-action-policy-draft.md separates never-delete money and history from archive-worthy configuration.
+- Key finding: Academic Year, Term, Grade, Section, School Setting, User, Role, Subject, and both assignment types have no web UI at all.
+- Key finding: Payment and Receipt have no list page, so staff cannot find past records without an ID.
+- Key finding: Audit logs are written for every sensitive action but cannot be viewed anywhere.
+- Key finding: SchoolSetting.active_academic_year_id is seeded but read by nothing in the application.
+- Key finding: there is no correction path for a mistaken payment, which is a genuine operational blocker.
 
 ## Verification Result
 Passed on 2026-09-30:
-- php artisan migrate:fresh --no-interaction
-- php artisan db:seed --class=DemoDataSeeder --no-interaction passed
-- php artisan test --compact: 392 tests, 1829 assertions
+- php artisan test --compact: 399 tests, 1867 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --test
 - composer audit: no security vulnerability advisories
-- git diff --check passed with a CRLF warning on the stylesheet only
+- git diff --check passed
 
 ## Blockers
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10C-4C.
+Review git status, then commit Phase 10C-5.

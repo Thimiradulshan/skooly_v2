@@ -45,10 +45,11 @@ Laravel modular monolith.
 - System Understanding, Data Flow & UX Map (Phase 10C-3)
 - Admin UI/UX Foundation & Login Redesign (Phase 10C-4)
 - Commercial Admin UI/UX Redesign (Phase 10C-4B)
-- Commercial UI/UX Defect Audit and Workflow Completion (Phase 10C-4C, verified and pending commit)
+- Commercial UI/UX Defect Audit and Workflow Completion (Phase 10C-4C)
+- Backend-Frontend Feature Parity and CRUD Coverage Audit (Phase 10C-5, verified and pending commit)
 
 ## Current Module
-- Phase 10C-4C: Commercial UI/UX Defect Audit and Workflow Completion is complete / pending commit.
+- Phase 10C-5: Backend-Frontend Feature Parity and CRUD Coverage Audit is complete / pending commit.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -250,3 +251,6 @@ Laravel modular monolith.
   build step, and degrades gracefully: if it fails to load, forms still submit normally.
 - Irreversible-looking actions are marked with data-confirm. Write forms use data-loading.
 - docs/ui-ux-defect-audit.md is the record of audited screens and their remaining limits.
+- docs/backend-frontend-feature-parity.md, docs/crud-coverage-matrix.md, docs/frontend-missing-feature-backlog.md,
+  and docs/destructive-action-policy-draft.md are the planning record for what to build next.
+- Known parity rule: money and history are never deleted; configuration is archived.

@@ -519,7 +519,7 @@ Carried forward: the static CSS decision from 10C-4, because the
 Vite and Tailwind build output is gitignored.
 
 ## Phase 10C-4C: Commercial UI/UX Defect Audit and Workflow Completion
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete. Verified on 2026-09-30.
 
 Presentation and workflow navigation only. No backend behaviour changed.
 
@@ -542,6 +542,28 @@ Added:
 
 Rejected: SweetAlert2, because the Vite build output is gitignored and depending on
 it would break a fresh checkout and the test suite.
+
+## Phase 10C-5: Backend-Frontend Feature Parity and CRUD Coverage Audit
+Status: complete / pending commit. Verified on 2026-09-30.
+
+Audit and planning only. No backend behaviour, route, controller, or model changed.
+
+Created:
+- docs/backend-frontend-feature-parity.md, covering every module against the UI.
+- docs/crud-coverage-matrix.md, classifying twelve operations per module.
+- docs/frontend-missing-feature-backlog.md, ordered by severity with suggested phases.
+- docs/destructive-action-policy-draft.md.
+- tests/Feature/FeatureParityDocumentationTest.php, 7 tests.
+
+Headline findings:
+- Nine Foundation modules have no web UI, so school staff cannot configure the school.
+- Payment and Receipt have no list page.
+- Audit logs are written but cannot be viewed.
+- Guardian management, student detail, discount, and subscription screens are partial.
+- No payment correction or refund path exists.
+- SchoolSetting.active_academic_year_id is inert.
+
+Recommended next phase: 10D-1, academic setup plus audit viewing.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

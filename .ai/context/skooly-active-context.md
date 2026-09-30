@@ -33,7 +33,8 @@ Use this file before broad project reinspection.
 - Phase 10C-3 System Understanding, Data Flow & UX Map: complete.
 - Phase 10C-4 Admin UI/UX Foundation & Login Redesign: complete.
 - Phase 10C-4B Commercial Admin UI/UX Redesign: complete.
-- Phase 10C-4C Commercial UI/UX Defect Audit & Workflow Completion: complete and verified; pending commit.
+- Phase 10C-4C Commercial UI/UX Defect Audit & Workflow Completion: complete.
+- Phase 10C-5 Backend-Frontend Feature Parity & CRUD Coverage Audit: complete and verified; pending commit.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
   - innodb_large_prefix=ON
@@ -164,6 +165,10 @@ Use this file before broad project reinspection.
 - Toast, confirmation, and submit-loading behaviour lives in public/js/admin-ui.js. It has no build step and degrades gracefully.
 - Mark irreversible actions with data-confirm and every write form with data-loading.
 - docs/ui-ux-defect-audit.md records audited screens, fixes, and remaining limitations.
+- docs/backend-frontend-feature-parity.md and docs/crud-coverage-matrix.md record backend versus frontend coverage.
+- docs/frontend-missing-feature-backlog.md is the ordered plan for what to build next.
+- docs/destructive-action-policy-draft.md defines what must never be deleted.
+- The largest remaining gap: no academic setup UI, so school staff still need a console.
 - Users may have multiple roles.
 - No Spatie permissions yet.
 - Financial workflows must use DB transactions later.
@@ -217,4 +222,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-09-30: migrate:fresh and DemoDataSeeder passed; 392 tests / 1829 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-09-30: 399 tests / 1867 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.

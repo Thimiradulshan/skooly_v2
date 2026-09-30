@@ -185,3 +185,27 @@ Do not invent answers for these.
 - Do not resolve an open business decision while documenting it. Record the decision and what it blocks instead.
 - UI/UX work must not start for a screen whose shape depends on an unresolved decision.
 - Honest status reporting is required. Do not describe a partial module as complete.
+
+## Phase 10C-4 Rules
+- Presentation only. Backend logic, models, migrations, and controllers must not change for visual work.
+- Route names and submitted field names must never change for layout or styling work.
+- Visual QA may be code and test based when no browser is available, but that limitation must be stated.
+
+## Phase 10C-4B Rules
+- Do not adopt the Vite and Tailwind pipeline while public/build is gitignored, because every page would break on a fresh checkout.
+- Prefer a static stylesheet and dependency-free script over a CDN or a package that needs a build.
+- UI enhancements must degrade gracefully: forms still submit if the script fails to load.
+
+## Phase 10C-4C Rules
+- Only existing named routes may be linked. Never add a button for a route that does not exist.
+- Irreversible-looking actions must be marked with data-confirm, and every write form with data-loading.
+- Never claim a notification was sent when no delivery provider exists.
+
+## Phase 10C-5 Findings
+- Academic setup has no web UI, so school staff cannot configure the school without a console.
+- Payment correction or refund does not exist and must not be designed without approval. See docs/destructive-action-policy-draft.md.
+- Archive semantics are undefined: hidden from new selections only, or hidden from reports too.
+- Fee structure and event charge editing are unresolved because due items already reference them.
+- Promotion item editing needs a decision before any backend edit action is written.
+- SchoolSetting.active_academic_year_id is inert and needs a decision on whether anything should honour it.
+- Money and history must never be hard deleted. Configuration should be archived, pending approval.
