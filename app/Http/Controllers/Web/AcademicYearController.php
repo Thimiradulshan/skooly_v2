@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreAcademicYearRequest;
 use App\Http\Requests\Web\UpdateAcademicYearRequest;
 use App\Models\AcademicYear;
 
 class AcademicYearController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('academic-years.index', [
-            'academicYears' => AcademicYear::query()->withCount('terms')->orderByDesc('start_date')->get(),
+            'academicYears' => AcademicYear::query()
+                ->withCount('terms')
+                ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
+                ->orderByDesc('start_date')
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

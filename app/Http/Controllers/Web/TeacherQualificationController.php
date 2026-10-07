@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreTeacherQualificationRequest;
 use App\Models\Role;
 use App\Models\Subject;
@@ -11,10 +12,22 @@ use Illuminate\Validation\ValidationException;
 
 class TeacherQualificationController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('teacher-qualifications.index', [
-            'teachers' => $this->teachers()->with('qualifiedSubjects')->get(),
+            'teachers' => $this->teachers()
+                ->with('qualifiedSubjects')
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where(function ($query) use ($search): void {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhereHas('qualifiedSubjects', fn ($subject) => $subject->where('name', 'like', "%{$search}%")->orWhere('code', 'like', "%{$search}%"));
+                    });
+                })
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

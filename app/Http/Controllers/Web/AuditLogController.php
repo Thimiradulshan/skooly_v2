@@ -14,7 +14,7 @@ class AuditLogController extends Controller
                 ->with('actor')
                 ->latest('occurred_at')
                 ->latest('id')
-                ->get(),
+                ->paginate(20),
         ]);
     }
 

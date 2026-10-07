@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreTermRequest;
 use App\Http\Requests\Web\UpdateTermRequest;
 use App\Models\AcademicYear;
@@ -10,10 +11,22 @@ use App\Models\Term;
 
 class TermController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('terms.index', [
-            'terms' => Term::query()->with('academicYear')->orderBy('academic_year_id')->orderBy('start_date')->get(),
+            'terms' => Term::query()
+                ->with('academicYear')
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
+                })
+                ->orderBy('academic_year_id')
+                ->orderBy('start_date')
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

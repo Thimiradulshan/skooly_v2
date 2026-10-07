@@ -17,6 +17,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('viewAny', User::class);
+        $request->validate(['search' => ['nullable', 'string', 'max:100']]);
+        $search = $request->string('search')->trim()->toString();
 
         return view('users.index', [
             'users' => User::query()
@@ -25,8 +27,16 @@ class UserController extends Controller
                     'roles',
                     fn ($roles) => $roles->whereIn('name', [Role::ADMIN, Role::SUPERADMIN]),
                 ))
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where(function ($query) use ($search): void {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+                })
                 ->orderBy('name')
-                ->get(),
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

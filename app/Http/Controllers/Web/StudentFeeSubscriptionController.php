@@ -17,7 +17,7 @@ class StudentFeeSubscriptionController extends Controller
     {
         return view('students.fee-subscriptions.index', [
             'student' => $student,
-            'subscriptions' => $student->studentFeeSubscriptions()->with(['feeCategory', 'academicYear'])->orderByDesc('id')->get(),
+            'subscriptions' => $student->studentFeeSubscriptions()->with(['feeCategory', 'academicYear'])->orderByDesc('id')->paginate(20),
         ]);
     }
 

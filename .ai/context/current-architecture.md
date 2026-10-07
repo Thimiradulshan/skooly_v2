@@ -49,7 +49,7 @@ Laravel modular monolith.
 - Backend-Frontend Feature Parity and CRUD Coverage Audit (Phase 10C-5, committed in f63c2d5)
 
 ## Current Module
-- Phase 10D-6: Payment & Receipt History Lists is complete and verified.
+- Phase 10D-6B: Remaining List Pagination & Search is complete and verified.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -224,6 +224,7 @@ Laravel modular monolith.
 - The shared layout exposes one grouped admin navigation row plus consistent success, error, and validation flash display.
 - Cross-links reuse existing named routes only; empty states already existed on every index page.
 - No backend action, model, authorization rule, or FormRequest changed in this phase.
+- Every in-scope Admin index now paginates 20 records with query-string preservation. Identifiable configuration and operational lists support validated text search; audit logs remain unfiltered by decision.
 
 ## Web Academic Setup
 - Admin-only web pages manage AcademicYear, Term, Grade, Section, and the singleton SchoolSetting.

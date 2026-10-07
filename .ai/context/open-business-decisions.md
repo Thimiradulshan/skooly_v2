@@ -250,3 +250,9 @@ Do not invent answers for these.
 - Payment and Receipt history is read-only and Admin-only. It does not alter payments, receipts, allocations, due items, or snapshots.
 - Search is limited to family code, payment reference, and receipt number. Sort columns and directions are validated allow-lists; no client-provided SQL identifier is used.
 - Receipt PDF export, audit-log filtering/export/retention, and payment correction/refund remain deferred pending their documented decisions.
+
+## Phase 10D-6B Rules
+- Pagination is read-only and uses 20 records per page with query-string preservation across every in-scope Admin list page.
+- Text search is limited to relevant stored identifiers and names. It is validated to 100 characters and never supplies a SQL identifier.
+- AuditLog remains paginated but unfiltered; audit-log filtering, export, and retention remain deferred.
+- Student discount and subscription histories remain scoped to their selected Student and do not gain cross-student search.

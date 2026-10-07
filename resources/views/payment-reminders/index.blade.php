@@ -99,5 +99,6 @@
         </table>
     </div>
 
+    <x-pagination :paginator="$reminders" />
     <p class="note">These are internal reminder records only. Nothing is sent by email, SMS, or WhatsApp.</p>
 @endsection

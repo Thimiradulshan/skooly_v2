@@ -11,6 +11,8 @@
         <x-button-link :href="route('families.create')">Create family</x-button-link>
     </div>
 
+    <x-list-search :action="route('families.index')" label="Family code, address, or contact number" :value="$search" />
+
     <div class="table-wrap">
         <table class="table">
             <thead>
@@ -49,4 +51,5 @@
             </tbody>
         </table>
     </div>
+    <x-pagination :paginator="$families" />
 @endsection

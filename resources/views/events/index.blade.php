@@ -11,6 +11,8 @@
         <x-button-link :href="route('due-generation.events.create')" variant="secondary">Event due generation</x-button-link>
     </div>
 
+    <x-list-search :action="route('events.index')" label="Event, academic year, or fee category" :value="$search" />
+
     <div class="table-wrap">
         <table class="table">
             <thead>
@@ -45,4 +47,5 @@
             </tbody>
         </table>
     </div>
+    <x-pagination :paginator="$events" />
 @endsection

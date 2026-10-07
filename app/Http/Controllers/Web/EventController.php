@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Actions\Events\CreateEvent;
 use App\Actions\Events\UpdateEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreEventRequest;
 use App\Http\Requests\Web\UpdateEventRequest;
 use App\Models\AcademicYear;
@@ -13,14 +14,23 @@ use App\Models\FeeCategory;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('events.index', [
             'events' => Event::query()
                 ->with(['academicYear', 'feeCategory'])
                 ->withCount(['charges', 'participations', 'eventDueItems'])
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('feeCategory', fn ($feeCategory) => $feeCategory->where('name', 'like', "%{$search}%"));
+                })
                 ->orderBy('id')
-                ->get(),
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

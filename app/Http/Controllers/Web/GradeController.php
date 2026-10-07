@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreGradeRequest;
 use App\Http\Requests\Web\UpdateGradeRequest;
 use App\Models\Grade;
 
 class GradeController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('grades.index', [
-            'grades' => Grade::query()->withCount('sections')->orderBy('sequence_order')->get(),
+            'grades' => Grade::query()
+                ->withCount('sections')
+                ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
+                ->orderBy('sequence_order')
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

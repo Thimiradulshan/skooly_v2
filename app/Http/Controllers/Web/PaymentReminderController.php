@@ -25,7 +25,8 @@ class PaymentReminderController extends Controller
             ->when($request->input('reminder_type'), fn ($query, $type) => $query->where('reminder_type', $type))
             ->when($request->input('status'), fn ($query, $status) => $query->where('status', $status))
             ->orderByDesc('id')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
         return view('payment-reminders.index', [
             'reminders' => $reminders,

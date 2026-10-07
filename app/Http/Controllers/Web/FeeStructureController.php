@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Actions\Fees\CreateFeeStructure;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreFeeStructureRequest;
 use App\Models\AcademicYear;
 use App\Models\FeeCategory;
@@ -12,13 +13,24 @@ use App\Models\Grade;
 
 class FeeStructureController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('fee-structures.index', [
             'feeStructures' => FeeStructure::query()
                 ->with(['feeCategory', 'grade', 'academicYear'])
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where(function ($query) use ($search): void {
+                        $query->whereHas('feeCategory', fn ($feeCategory) => $feeCategory->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
+                    });
+                })
                 ->orderBy('id')
-                ->get(),
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

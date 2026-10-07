@@ -3,19 +3,28 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreSubjectRequest;
 use App\Http\Requests\Web\UpdateSubjectRequest;
 use App\Models\Subject;
 
 class SubjectController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('subjects.index', [
             'subjects' => Subject::query()
                 ->withCount(['qualifiedTeachers', 'teacherAssignments'])
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where('code', 'like', "%{$search}%")
+                        ->orWhere('name', 'like', "%{$search}%");
+                })
                 ->orderBy('code')
-                ->get(),
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

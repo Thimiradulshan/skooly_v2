@@ -16,7 +16,7 @@ class StudentDiscountController extends Controller
     {
         return view('students.discounts.index', [
             'student' => $student,
-            'discounts' => $student->discounts()->with('feeCategory')->orderByDesc('id')->get(),
+            'discounts' => $student->discounts()->with('feeCategory')->orderByDesc('id')->paginate(20),
         ]);
     }
 

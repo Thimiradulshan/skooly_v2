@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreSectionRequest;
 use App\Http\Requests\Web\UpdateSectionRequest;
 use App\Models\Grade;
@@ -10,10 +11,22 @@ use App\Models\Section;
 
 class SectionController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('sections.index', [
-            'sections' => Section::query()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
+            'sections' => Section::query()
+                ->with('grade')
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%"));
+                })
+                ->orderBy('grade_id')
+                ->orderBy('name')
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

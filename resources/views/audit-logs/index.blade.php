@@ -43,5 +43,6 @@
         </table>
     </div>
 
+    <x-pagination :paginator="$auditLogs" />
     <p class="note">Audit records are append-only and cannot be changed or deleted from this screen.</p>
 @endsection

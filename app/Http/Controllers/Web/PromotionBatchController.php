@@ -8,6 +8,7 @@ use App\Actions\Promotion\DiscardPromotionBatch;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ConfirmPromotionBatchRequest;
 use App\Http\Requests\Web\DiscardPromotionBatchRequest;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StorePromotionBatchRequest;
 use App\Models\AcademicYear;
 use App\Models\PromotionBatch;
@@ -17,14 +18,22 @@ use RuntimeException;
 
 class PromotionBatchController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('promotion-batches.index', [
             'promotionBatches' => PromotionBatch::query()
                 ->with(['sourceAcademicYear', 'targetAcademicYear'])
                 ->withCount('items')
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->whereHas('sourceAcademicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('targetAcademicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
+                })
                 ->orderByDesc('id')
-                ->get(),
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

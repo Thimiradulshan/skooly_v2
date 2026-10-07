@@ -12,6 +12,8 @@
         <x-button-link :href="route('fee-structures.create')" variant="secondary">Create fee structure</x-button-link>
     </div>
 
+    <x-list-search :action="route('fee-categories.index')" label="Fee category name" :value="$search" />
+
     <div class="table-wrap">
         <table class="table">
             <thead>
@@ -42,5 +44,6 @@
         </table>
     </div>
 
+    <x-pagination :paginator="$feeCategories" />
     <p class="note">Opt-in categories, such as transport, are only charged to students who have an active subscription.</p>
 @endsection

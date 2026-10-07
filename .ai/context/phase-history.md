@@ -667,6 +667,21 @@ Verification:
 - `php artisan test --compact`: 445 tests / 2073 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D-6B: Remaining List Pagination & Search
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- 20-record pagination with query-string preservation on the remaining Admin list pages.
+- Validated text search across relevant family, academic, fee, event, promotion, staff, assignment, and user lists.
+- Pagination only for AuditLog and Student-scoped discount/subscription histories, preserving their existing scope and deferred filtering decisions.
+
+Deferred:
+- Fixed sorting on the newly paginated lists, audit-log filtering/export/retention, receipt PDF export, and payment correction/refund.
+
+Verification:
+- `php artisan test --compact`: 450 tests / 2120 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

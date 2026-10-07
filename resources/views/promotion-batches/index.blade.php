@@ -10,6 +10,8 @@
         <x-button-link :href="route('promotion-batches.create')">Create promotion batch</x-button-link>
     </div>
 
+    <x-list-search :action="route('promotion-batches.index')" label="Source or target academic year" :value="$search" />
+
     <div class="table-wrap">
         <table class="table">
             <thead>
@@ -38,4 +40,5 @@
             </tbody>
         </table>
     </div>
+    <x-pagination :paginator="$promotionBatches" />
 @endsection

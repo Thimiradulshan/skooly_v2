@@ -5,16 +5,31 @@ namespace App\Http\Controllers\Web;
 use App\Actions\Families\CreateFamily;
 use App\Actions\Families\UpdateFamily;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreFamilyRequest;
 use App\Http\Requests\Web\UpdateFamilyRequest;
 use App\Models\Family;
 
 class FamilyController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('families.index', [
-            'families' => Family::query()->withCount(['guardians', 'students'])->orderBy('id')->get(),
+            'families' => Family::query()
+                ->withCount(['guardians', 'students'])
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where(function ($query) use ($search): void {
+                        $query->where('family_code', 'like', "%{$search}%")
+                            ->orWhere('address', 'like', "%{$search}%")
+                            ->orWhere('home_contact_no', 'like', "%{$search}%");
+                    });
+                })
+                ->orderBy('id')
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

@@ -11,6 +11,8 @@
         <x-button-link :href="route('fee-categories.index')" variant="secondary">Fee categories</x-button-link>
     </div>
 
+    <x-list-search :action="route('fee-structures.index')" label="Category, grade, or academic year" :value="$search" />
+
     <div class="table-wrap">
         <table class="table">
             <thead>
@@ -40,5 +42,6 @@
         </table>
     </div>
 
+    <x-pagination :paginator="$feeStructures" />
     <p class="note">Fee structures are configuration and are never edited or deleted once created. Changing them never rewrites an existing due item.</p>
 @endsection

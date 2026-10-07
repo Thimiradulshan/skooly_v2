@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreSectionYearAssignmentRequest;
 use App\Models\AcademicYear;
 use App\Models\Role;
@@ -14,14 +15,25 @@ use Illuminate\Validation\ValidationException;
 
 class SectionYearAssignmentController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('section-year-assignments.index', [
             'assignments' => SectionYearAssignment::query()
                 ->with(['academicYear', 'section.grade', 'classInCharge'])
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where(function ($query) use ($search): void {
+                        $query->whereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('section', fn ($section) => $section->where('name', 'like', "%{$search}%")->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%")))
+                            ->orWhereHas('classInCharge', fn ($teacher) => $teacher->where('name', 'like', "%{$search}%"));
+                    });
+                })
                 ->orderByDesc('academic_year_id')
                 ->orderBy('section_id')
-                ->get(),
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 

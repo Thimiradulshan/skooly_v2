@@ -5,16 +5,24 @@ namespace App\Http\Controllers\Web;
 use App\Actions\Fees\CreateFeeCategory;
 use App\Actions\Fees\UpdateFeeCategory;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreFeeCategoryRequest;
 use App\Http\Requests\Web\UpdateFeeCategoryRequest;
 use App\Models\FeeCategory;
 
 class FeeCategoryController extends Controller
 {
-    public function index()
+    public function index(ListSearchRequest $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
         return view('fee-categories.index', [
-            'feeCategories' => FeeCategory::query()->orderBy('id')->get(),
+            'feeCategories' => FeeCategory::query()
+                ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
+                ->orderBy('id')
+                ->paginate(20)
+                ->withQueryString(),
+            'search' => $search,
         ]);
     }
 
