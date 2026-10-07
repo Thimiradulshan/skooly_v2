@@ -9,16 +9,18 @@
         <span>{{ $family->family_code }}</span>
     </div>
 
-    <x-page-header :title="$family->family_code" subtitle="Family details, guardians, and students." eyebrow="Registration" />
+    <div class="print-record">
+        <x-page-header :title="$family->family_code" subtitle="Family details, guardians, and students." eyebrow="Registration" />
 
-    <div class="page-actions">
-        <x-button-link :href="route('families.edit', $family)">Edit family</x-button-link>
-        <x-button-link :href="route('families.students.create', $family)" variant="secondary">Register student</x-button-link>
-        <x-button-link :href="route('families.guardians.create', $family)" variant="secondary">Add guardian</x-button-link>
-        <x-button-link :href="route('families.payments.create', $family)" variant="secondary">Record payment</x-button-link>
-    </div>
+        <div class="page-actions">
+            <button class="btn btn-secondary" type="button" onclick="window.print()" data-testid="family-print-button">Print family details</button>
+            <x-button-link :href="route('families.edit', $family)">Edit family</x-button-link>
+            <x-button-link :href="route('families.students.create', $family)" variant="secondary">Register student</x-button-link>
+            <x-button-link :href="route('families.guardians.create', $family)" variant="secondary">Add guardian</x-button-link>
+            <x-button-link :href="route('families.payments.create', $family)" variant="secondary">Record payment</x-button-link>
+        </div>
 
-    <x-card title="Details">
+        <x-card title="Details">
         <dl class="kv">
             <div class="kv-row"><dt>Family code</dt><dd>{{ $family->family_code }}</dd></div>
             <div class="kv-row"><dt>Address</dt><dd>{{ $family->address }}</dd></div>
@@ -28,9 +30,9 @@
                 <dd>{{ $family->combined_billing_enabled ? 'Yes' : 'No' }}</dd>
             </div>
         </dl>
-    </x-card>
+        </x-card>
 
-    <x-card title="Guardians">
+        <x-card title="Guardians">
         <div class="table-wrap">
             <table class="table">
                 <thead>
@@ -51,9 +53,9 @@
                 </tbody>
             </table>
         </div>
-    </x-card>
+        </x-card>
 
-    <x-card title="Students">
+        <x-card title="Students">
         <div class="table-wrap">
             <table class="table">
                 <thead>
@@ -77,5 +79,6 @@
                 </tbody>
             </table>
         </div>
-    </x-card>
+        </x-card>
+    </div>
 @endsection

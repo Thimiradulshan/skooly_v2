@@ -70,7 +70,7 @@ deferred for the Academic Year, Term, Grade, and Section records.
 | Charts and widgets | Visual summaries of collections. | No | No | None | 10D-9 |
 | Status badges and density polish | Mostly done in 10C-4B and 10C-4C. | n/a | Yes | None | Later |
 | Remove the dead `welcome.blade.php` | Unreachable since `/` redirects. | n/a | Dead file | None | 10D-4 |
-| Print stylesheet for the family and student pages | Only the receipt currently prints cleanly. | n/a | Partial | None | 10D-9 |
+| Print stylesheet for the family and student pages | Family and Student detail pages have browser print controls and scoped print output that retains record details and omits the admin shell and mutation controls. | n/a | Yes | None | Complete in 10D-9 |
 
 ---
 
@@ -89,4 +89,4 @@ deferred for the Academic Year, Term, Grade, and Section records.
    that cannot be deferred indefinitely.
 7. **10D-5 — Fee structure and event charge editing: complete.** Prices lock after due generation; snapshots are never changed.
 8. **10D-8 — Promotion item editing and Accountant access.** Both need decisions.
-9. **10D-9 — Exports, prints, and dashboard refinements.**
+9. **10D-9 — Print-friendly Family and Student detail pages are complete.** Exports and dashboard refinements remain deferred.

@@ -53,6 +53,36 @@ it('exposes edit, register student, and record payment on a family', function ()
         ->assertSee(route('students.fee-subscriptions.create', $student, false), false);
 });
 
+it('renders printable family and student detail records', function () {
+    $family = Family::factory()->create();
+    $student = Student::factory()->for($family)->create();
+
+    $this->actingAs(adminUser())
+        ->get(route('families.show', $family))
+        ->assertOk()
+        ->assertSee('Print family details')
+        ->assertSee('data-testid="family-print-button"', false)
+        ->assertSee('onclick="window.print()"', false)
+        ->assertSee('print-record', false);
+
+    $this->actingAs(adminUser())
+        ->get(route('students.show', $student))
+        ->assertOk()
+        ->assertSee('Print student details')
+        ->assertSee('data-testid="student-print-button"', false)
+        ->assertSee('onclick="window.print()"', false)
+        ->assertSee('print-record', false)
+        ->assertSee('print-hide', false);
+
+    $printStylesheet = file_get_contents(public_path('css/admin.css'));
+
+    expect($printStylesheet)
+        ->toContain('@media print')
+        ->toContain('.print-record .actions')
+        ->toContain('.print-record .print-hide')
+        ->toContain('.sidebar-toggle-control');
+});
+
 it('gives the fee category index a create action and edit rows', function () {
     $this->actingAs(adminUser())
         ->get(route('fee-categories.index'))

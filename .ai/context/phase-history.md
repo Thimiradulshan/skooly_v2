@@ -750,6 +750,21 @@ Verification:
 - `php artisan test --compact`: 474 tests / 2273 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D-9: Print-Friendly Family and Student Detail Pages
+Status: unblocked presentation-only sub-scope complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Family and Student detail pages have clear browser print buttons using local `window.print()` only.
+- Scoped `print-record` styles hide the admin shell, page actions, table actions, and mutation controls while retaining displayed record fields.
+- No route, query, controller, model, migration, export, chart, report, or domain behavior changed.
+
+Deferred:
+- Report export, dashboard charts, and dashboard/report refinement remain outside this print-only sub-scope.
+
+Verification:
+- `php artisan test --compact`: 475 tests / 2288 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

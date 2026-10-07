@@ -285,6 +285,8 @@ Laravel modular monolith.
 - The commercial shell is dark sidebar plus light workspace, with a CSS-only mobile drawer.
 - public/js/admin-ui.js provides toasts, confirmations, and submit loading. It is local, has no
   build step, and degrades gracefully: if it fails to load, forms still submit normally.
+- Family and Student detail pages use local `window.print()` controls and a `print-record` boundary.
+  Scoped print styles remove the admin shell and mutation controls without changing routes, queries, or fields.
 - Irreversible-looking actions are marked with data-confirm. Write forms use data-loading.
 - docs/ui-ux-defect-audit.md is the record of audited screens and their remaining limits.
 - docs/backend-frontend-feature-parity.md, docs/crud-coverage-matrix.md, docs/frontend-missing-feature-backlog.md,

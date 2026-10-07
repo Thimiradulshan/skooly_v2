@@ -1682,7 +1682,13 @@ textarea.form-control {
 }
 
 @media print {
+    @page {
+        margin: 14mm;
+    }
+
     .sidebar,
+    .sidebar-toggle-control,
+    .sidebar-backdrop,
     .topbar,
     .app-footer,
     .page-actions,
@@ -1705,6 +1711,57 @@ textarea.form-control {
     .card,
     .table-wrap {
         box-shadow: none;
+    }
+
+    .print-record {
+        color: #000000;
+    }
+
+    .print-record .page-header {
+        margin-bottom: 1.1rem;
+    }
+
+    .print-record .page-header-title,
+    .print-record .card-title {
+        color: #000000;
+    }
+
+    .print-record .panel-frame {
+        margin-bottom: 0.85rem;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        break-inside: avoid;
+    }
+
+    .print-record .card,
+    .print-record .table-wrap {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .print-record .table-wrap {
+        overflow: visible;
+    }
+
+    .print-record .table th {
+        color: #000000;
+        background: #f2f2f2;
+    }
+
+    .print-record .actions,
+    .print-record .print-hide {
+        display: none !important;
+    }
+
+    .print-record .badge {
+        min-height: auto;
+        padding: 0;
+        color: #000000;
+        background: transparent;
     }
 }
 

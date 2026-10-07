@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-8: Promotion Draft Editing & Accountant Read Access
+Phase 10D-9: Print-Friendly Family and Student Detail Pages
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -49,7 +49,7 @@ Phase 10D-8: Promotion Draft Editing & Accountant Read Access
 - Phase 10D-8: Promotion Draft Editing & Accountant Read Access - complete / pending commit
 
 ## Current Status
-Phase 10D-8 is complete and verified. It adds draft-only, audited promotion-item editing through a transactional action and grants Accountant read-only access to the Dues Dashboard and payment-reminder history/detail pages while preserving every Admin-only mutation and non-finance boundary.
+The unblocked, presentation-only print sub-scope of Phase 10D-9 is complete and verified. Family and Student detail pages have browser print buttons and scoped print styles; exports, dashboard charts, and reports remain deferred.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -266,6 +266,14 @@ Phase 10D-8 is complete and verified. It adds draft-only, audited promotion-item
 
 ## Verification Result
 Passed on 2026-10-07:
+- php artisan test --compact: 475 tests, 2288 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (non-blocking optional Fontaine font-fallback warning)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
+Passed on 2026-10-07:
 - php artisan migrate:fresh --no-interaction
 - php artisan test --compact: 474 tests, 2273 assertions
 - php vendor/bin/phpstan analyse: 0 errors
@@ -335,4 +343,5 @@ None.
 
 ## Next Exact Step
 1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, 10D-7, and 10D-8 if approved.
-2. Audit-log filtering/export/retention, receipt PDF export, partial reversals, and refunds remain deferred.
+2. Do not implement Phase 10D-9 report exports, dashboard charts, or reports without their outstanding product decisions.
+3. Audit-log filtering/export/retention, receipt PDF export, partial reversals, and refunds remain deferred.
