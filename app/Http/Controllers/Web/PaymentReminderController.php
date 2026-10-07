@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\Notifications\CancelPaymentReminder;
 use App\Actions\Notifications\GeneratePaymentReminders;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\CancelPaymentReminderRequest;
 use App\Http\Requests\Web\GeneratePaymentRemindersRequest;
 use App\Http\Requests\Web\PaymentReminderFilterRequest;
 use App\Models\AcademicYear;
 use App\Models\Family;
 use App\Models\Guardian;
 use App\Models\PaymentReminder;
+use RuntimeException;
 
 class PaymentReminderController extends Controller
 {
@@ -59,5 +62,21 @@ class PaymentReminderController extends Controller
         $paymentReminder->load(['family', 'guardian', 'studentDueItem.student']);
 
         return view('payment-reminders.show', ['paymentReminder' => $paymentReminder]);
+    }
+
+    public function cancel(
+        CancelPaymentReminderRequest $request,
+        PaymentReminder $paymentReminder,
+        CancelPaymentReminder $cancelPaymentReminder,
+    ) {
+        try {
+            $cancelPaymentReminder->handle($paymentReminder);
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['payment_reminder' => $exception->getMessage()]);
+        }
+
+        return redirect()
+            ->route('payment-reminders.show', $paymentReminder)
+            ->with('status', 'Payment reminder cancelled. No message was sent.');
     }
 }

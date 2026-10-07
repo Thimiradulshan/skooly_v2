@@ -238,3 +238,10 @@ Do not invent answers for these.
 - Discount withdrawal sets is_active false and never changes existing due-item snapshots.
 - Fee subscription ending sets is_active false plus ends_on and never changes existing due-item snapshots.
 - Guardian login, photo upload/storage, discount/subscription lifecycle auditing, and standalone link/enrollment reports remain deferred.
+
+## Phase 10D-4 Rules
+- A PromotionBatch may be discarded only while it is draft. Discarding changes only its status and discarded_at; it never changes Students, Enrollments, promotion items, or fees.
+- A PaymentReminder may be cancelled only while it is pending. Cancellation changes only its status; it never sends a message or changes its stored snapshot, due items, payments, receipts, or allocations.
+- Both workflows are Admin-only, confirmed in the web UI, and preserve history rather than deleting records.
+- No audit action constants exist for discard or cancellation, so neither transition writes a new audit entry in this phase.
+- Archive/deactivate remains blocked pending the module-specific business decisions documented in docs/destructive-action-policy-draft.md.

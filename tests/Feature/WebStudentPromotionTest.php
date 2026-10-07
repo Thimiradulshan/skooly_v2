@@ -160,6 +160,37 @@ it('rejects a second confirmation without duplicating enrollments', function () 
     expect(Enrollment::where('academic_year_id', $target->id)->count())->toBe(1);
 });
 
+it('lets an admin discard a draft promotion batch without changing students or enrollments', function () {
+    $source = AcademicYear::factory()->create();
+    $target = AcademicYear::factory()->create();
+    $grade = Grade::factory()->create(['sequence_order' => 1]);
+    $section = Section::factory()->for($grade)->create();
+    $student = promotedWebStudent($source, $grade, $section);
+    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$section->id]);
+
+    $this->actingAs(adminUser())
+        ->post(route('promotion-batches.discard', $batch))
+        ->assertRedirect(route('promotion-batches.show', $batch));
+
+    expect($batch->refresh()->status)->toBe(PromotionBatch::STATUS_DISCARDED);
+    expect($batch->discarded_at)->not->toBeNull();
+    expect($student->refresh()->status)->toBe(Student::STATUS_ACTIVE);
+    expect(Enrollment::where('academic_year_id', $target->id)->count())->toBe(0);
+});
+
+it('does not discard a confirmed promotion batch', function () {
+    $batch = PromotionBatch::factory()->create([
+        'status' => PromotionBatch::STATUS_CONFIRMED,
+        'confirmed_at' => now(),
+    ]);
+
+    $this->actingAs(adminUser())
+        ->post(route('promotion-batches.discard', $batch))
+        ->assertSessionHasErrors('promotion_batch');
+
+    expect($batch->refresh()->status)->toBe(PromotionBatch::STATUS_CONFIRMED);
+});
+
 it('adds no promotion reversal or destructive route', function () {
     expect(Route::has('promotion-batches.destroy'))->toBeFalse();
     expect(Route::has('promotion-batches.reverse'))->toBeFalse();

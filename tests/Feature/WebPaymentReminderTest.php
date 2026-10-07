@@ -198,6 +198,31 @@ it('does not duplicate reminder records when generation runs twice', function ()
     expect(PaymentReminder::count())->toBe(1);
 });
 
+it('lets an admin cancel a pending payment reminder without changing its stored snapshot', function () {
+    $reminder = PaymentReminder::factory()->create([
+        'due_item_ids' => [11, 12],
+        'message_snapshot' => ['guardian_name' => 'Amina Guardian'],
+    ]);
+    $before = $reminder->only(['due_item_ids', 'message_snapshot', 'sent_at']);
+
+    $this->actingAs(adminUser())
+        ->post(route('payment-reminders.cancel', $reminder))
+        ->assertRedirect(route('payment-reminders.show', $reminder));
+
+    expect($reminder->refresh()->status)->toBe(PaymentReminder::STATUS_CANCELLED);
+    expect($reminder->only(array_keys($before)))->toBe($before);
+});
+
+it('does not cancel a reminder that is no longer pending', function () {
+    $reminder = PaymentReminder::factory()->create(['status' => PaymentReminder::STATUS_CANCELLED]);
+
+    $this->actingAs(adminUser())
+        ->post(route('payment-reminders.cancel', $reminder))
+        ->assertSessionHasErrors('payment_reminder');
+
+    expect($reminder->refresh()->status)->toBe(PaymentReminder::STATUS_CANCELLED);
+});
+
 it('adds no send edit or delete reminder route', function () {
     expect(Route::has('payment-reminders.send'))->toBeFalse();
     expect(Route::has('payment-reminders.edit'))->toBeFalse();

@@ -586,7 +586,7 @@ Verification:
 - PHPStan, Pint, Composer audit, and `git diff --check` passed.
 
 ## Phase 10D-1B: Audit Log Viewing
-Status: complete and verified on 2026-10-07; pending commit.
+Status: complete and verified on 2026-10-07; committed in dab9034.
 
 Implemented:
 - Admin-only AuditLogController index and show actions.
@@ -603,7 +603,7 @@ Verification:
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 10D-2: Identity, Teacher, Subject & Assignment Management
-Status: complete and verified on 2026-10-07; pending commit.
+Status: complete and verified on 2026-10-07; committed in deef8f5.
 
 Implemented:
 - Fixed Superadmin role plus `users:make-superadmin {email}` bootstrap command.
@@ -621,7 +621,7 @@ Verification:
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 10D-3: Student & Guardian Management
-Status: complete and verified on 2026-10-07; pending commit.
+Status: complete and verified on 2026-10-07; committed in 60007d9.
 
 Implemented:
 - Guardian create, view, and edit pages under existing Families.
@@ -634,6 +634,22 @@ Deferred:
 
 Verification:
 - `php artisan test --compact`: 438 tests / 2035 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
+## Phase 10D-4: Draft Discard & Reminder Cancellation
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Admin-only discard of draft promotion batches, retaining every batch item and making no Student or Enrollment change.
+- Admin-only cancellation of pending payment reminders, retaining their stored snapshots and making no financial or delivery change.
+- Confirmed UI forms, status guards, and feature coverage for success and invalid-state paths.
+
+Deferred:
+- Archive/deactivate flows remain blocked by unresolved archive semantics.
+- Audit entries for these transitions remain deferred because no AuditLog action constants exist.
+
+Verification:
+- `php artisan test --compact`: 442 tests / 2055 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 8: Student Promotion

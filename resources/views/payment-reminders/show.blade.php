@@ -15,6 +15,16 @@
 
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('payment-reminders.index') }}">Back to payment reminders</a>
+        @if ($paymentReminder->status === \App\Models\PaymentReminder::STATUS_PENDING)
+            <form method="POST" action="{{ route('payment-reminders.cancel', $paymentReminder) }}"
+                  data-confirm="Cancel this reminder record? No message has been sent."
+                  data-confirm-title="Cancel payment reminder"
+                  data-confirm-action="Cancel reminder"
+                  data-loading>
+                @csrf
+                <button type="submit" class="btn btn-secondary">Cancel reminder</button>
+            </form>
+        @endif
     </div>
 
     <div class="callout" data-testid="reminder-not-sent">

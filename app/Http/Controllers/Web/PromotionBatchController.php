@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Web;
 
 use App\Actions\Promotion\ConfirmPromotionBatch;
 use App\Actions\Promotion\CreatePromotionBatch;
+use App\Actions\Promotion\DiscardPromotionBatch;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ConfirmPromotionBatchRequest;
+use App\Http\Requests\Web\DiscardPromotionBatchRequest;
 use App\Http\Requests\Web\StorePromotionBatchRequest;
 use App\Models\AcademicYear;
 use App\Models\PromotionBatch;
@@ -78,5 +80,21 @@ class PromotionBatchController extends Controller
         return redirect()
             ->route('promotion-batches.show', $promotionBatch)
             ->with('status', 'Promotion batch confirmed.');
+    }
+
+    public function discard(
+        DiscardPromotionBatchRequest $request,
+        PromotionBatch $promotionBatch,
+        DiscardPromotionBatch $discardPromotionBatch,
+    ) {
+        try {
+            $discardPromotionBatch->handle($promotionBatch);
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['promotion_batch' => $exception->getMessage()]);
+        }
+
+        return redirect()
+            ->route('promotion-batches.show', $promotionBatch)
+            ->with('status', 'Promotion batch discarded. No student enrollments were changed.');
     }
 }

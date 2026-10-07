@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-3: Student & Guardian Management
+Phase 10D-4: Draft Discard & Reminder Cancellation
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -37,10 +37,13 @@ Phase 10D-3: Student & Guardian Management
 - Phase 10C-4C: Commercial UI/UX Defect Audit & Workflow Completion - complete
 - Phase 10C-5: Backend-Frontend Feature Parity & CRUD Coverage Audit - complete (committed in f63c2d5)
 - Phase 10D-1A: Academic Setup Web Pages - complete (committed in 1891bf6)
-- Phase 10D-1B: Audit Log Viewing - complete / pending commit
+- Phase 10D-1B: Audit Log Viewing - complete (committed in dab9034)
+- Phase 10D-2: Identity, Teacher, Subject & Assignment Management - complete (committed in deef8f5)
+- Phase 10D-3: Student & Guardian Management - complete (committed in 60007d9)
+- Phase 10D-4: Draft Discard & Reminder Cancellation - complete / pending commit
 
 ## Current Status
-Phase 10D-3 is complete and verified. It adds Guardian and Student management, explicit audited Guardian-Student link revocation, history-preserving enrollment placement, and discount/subscription lifecycle controls.
+Phase 10D-4 is complete and verified. It adds Admin-only discard of draft promotion batches and cancellation of pending payment reminder records, without deleting history or changing student enrollments, due items, payments, or receipts.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -241,10 +244,13 @@ Phase 10D-3 is complete and verified. It adds Guardian and Student management, e
 - Guardian-Student unlinking is transactional and writes guardian_student_unlinked audit data. It never changes Family membership.
 - Student updates never change Family membership or historical Enrollments. Enrollment placement uses Enrollment::placeIn() to append history.
 - Discount deactivation and subscription ending affect future due generation only; existing StudentDueItems and snapshots remain unchanged.
+- Only draft PromotionBatches can be discarded. Discarding sets status to discarded and records discarded_at; it never changes promotion items, Students, or Enrollments.
+- Only pending PaymentReminders can be cancelled. Cancellation sets status to cancelled and never sends a message or changes stored snapshots, due items, payments, receipts, or allocations.
+- Discard and cancellation are Admin-only. They are not separately audited because no AuditLog action constants exist for them.
 
 ## Verification Result
 Passed on 2026-10-07:
-- php artisan test --compact: 438 tests, 2035 assertions
+- php artisan test --compact: 442 tests, 2055 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --dirty --format agent
 - npm run build passed (non-blocking optional Fontaine font-fallback warning)
@@ -286,5 +292,5 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Review and commit Phase 10D-1B if approved.
-2. Pick the next phase from docs/frontend-missing-feature-backlog.md; user/role/teacher/subject/assignment management is next in the documented sequence.
+1. Review and commit Phase 10D-4 if approved.
+2. Archive/deactivate work remains blocked on archive semantics; otherwise continue with Phase 10D-6 payment/receipt lists, search, and pagination.

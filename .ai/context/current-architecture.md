@@ -46,10 +46,10 @@ Laravel modular monolith.
 - Admin UI/UX Foundation & Login Redesign (Phase 10C-4)
 - Commercial Admin UI/UX Redesign (Phase 10C-4B)
 - Commercial UI/UX Defect Audit and Workflow Completion (Phase 10C-4C)
-- Backend-Frontend Feature Parity and CRUD Coverage Audit (Phase 10C-5, verified and pending commit)
+- Backend-Frontend Feature Parity and CRUD Coverage Audit (Phase 10C-5, committed in f63c2d5)
 
 ## Current Module
-- Phase 10D-1A: Academic Setup Web Pages is complete and verified.
+- Phase 10D-4: Draft Discard & Reminder Cancellation is complete and verified.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -208,12 +208,14 @@ Laravel modular monolith.
 - Draft items remain derived and read-only in the web layer; confirmation uses their existing backend targets and actions.
 - Source enrollments are never modified. Target enrollments are created only on confirmation, within the existing transaction.
 - No promotion reversal, export, destructive route, or next-year due generation exists.
+- Admins may discard a draft PromotionBatch, which changes only its status and discarded_at. Confirmed and discarded batches cannot be discarded again.
 
 ## Web Payment Reminders
 - PaymentReminderController lists and previews internal reminder records and delegates generation to GeneratePaymentReminders.
 - Reminder generation can be limited by academic year or family, the exact action-supported filters.
 - The detail page renders due_item_ids and message_snapshot without recalculating content or sending a channel message.
 - No send, edit, delete, status-transition, queue, scheduler, or Guardian web workflow exists.
+- Admins may cancel a pending PaymentReminder. Cancellation changes only its status and does not send a message or modify stored reminder snapshots or financial records.
 
 ## Web Admin Usability & Navigation
 - AdminDashboardController serves a read-only /admin landing page with COUNT summaries and workflow link cards.

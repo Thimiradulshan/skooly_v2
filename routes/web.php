@@ -174,6 +174,8 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('payment-reminders.store');
     Route::get('/payment-reminders/{paymentReminder}', [PaymentReminderController::class, 'show'])
         ->name('payment-reminders.show');
+    Route::post('/payment-reminders/{paymentReminder}/cancel', [PaymentReminderController::class, 'cancel'])
+        ->name('payment-reminders.cancel');
 
     Route::get('/promotion-batches', [PromotionBatchController::class, 'index'])
         ->name('promotion-batches.index');
@@ -185,4 +187,6 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('promotion-batches.show');
     Route::post('/promotion-batches/{promotionBatch}/confirm', [PromotionBatchController::class, 'confirm'])
         ->name('promotion-batches.confirm');
+    Route::post('/promotion-batches/{promotionBatch}/discard', [PromotionBatchController::class, 'discard'])
+        ->name('promotion-batches.discard');
 });

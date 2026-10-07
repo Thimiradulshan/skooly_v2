@@ -69,5 +69,14 @@
             @csrf
             <button type="submit" class="btn btn-danger">Confirm promotion batch</button>
         </form>
+
+        <form method="POST" action="{{ route('promotion-batches.discard', $promotionBatch) }}"
+              data-confirm="Discard this draft? No student enrollments will be created or changed."
+              data-confirm-title="Discard promotion batch"
+              data-confirm-action="Discard draft"
+              data-loading>
+            @csrf
+            <button type="submit" class="btn btn-secondary">Discard draft</button>
+        </form>
     @endif
 @endsection

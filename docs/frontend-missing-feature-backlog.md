@@ -49,8 +49,8 @@ deferred for the Academic Year, Term, Grade, and Section records.
 
 | Gap | Why it matters | Backend exists | Frontend exists | Decision needed | Suggested phase |
 | --- | --- | --- | --- | --- | --- |
-| Discard draft promotion batches | A `discarded` status exists but no UI can use it. Abandoning a draft means creating another batch. | Status exists, action does not | No | Low risk to add | 10D-4 |
-| Cancel stale reminders | A `cancelled` status exists but a stale reminder cannot be withdrawn. | Status exists, action does not | No | Low risk to add | 10D-4 |
+| Discard draft promotion batches | Drafts can now be discarded without changing Students or Enrollments. | Yes | Yes | None | Complete in 10D-4 |
+| Cancel stale reminders | Pending reminder records can now be cancelled without sending a message or changing snapshots. | Yes | Yes | None | Complete in 10D-4 |
 | Promotion item editing | Every exception case is blocked. A single student cannot be retained, excluded, graduated, or retargeted. | No | No | Required. Backend edit action first | 10D-8 |
 | Fee structure editing | A price cannot be corrected after creation. | No | No | Whether editing may affect already-generated dues | 10D-5 |
 | Event charge editing | Same problem, smaller blast radius. | No | No | Same | 10D-5 |
@@ -82,8 +82,8 @@ deferred for the Academic Year, Term, Grade, and Section records.
    onboarding depends on it.
 3. **10D-3 — Student and guardian management.** Fixes the one-guardian-per-family
    limitation and the missing student record pages.
-4. **10D-4 — Archive, discard, and cancel workflows.** Applies the draft policy in
-   `docs/destructive-action-policy-draft.md`.
+4. **10D-4 — Discard and cancel workflows are complete.** Archive/deactivate remains
+   blocked by the business decisions in `docs/destructive-action-policy-draft.md`.
 5. **10D-6 — Lists, search, and pagination.** Makes the existing screens usable at scale.
 6. **10D-7 — Payment correction or refund.** The only genuinely missing capability
    that cannot be deferred indefinitely.
