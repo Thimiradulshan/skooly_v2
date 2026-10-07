@@ -652,6 +652,22 @@ Verification:
 - `php artisan test --compact`: 442 tests / 2055 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D-5: Fee Structure & Event Charge Editing
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Admin-only FeeStructure amount and frequency editing before a StudentDueItem directly references the structure.
+- Admin-only EventCharge amount editing before the Event has any EventDueItem; event-level locking is conservative because EventCharge provenance is unavailable.
+- Transactional update actions, Form Requests, scoped event-charge routes, locked-status UI, and no-delete coverage.
+
+Preserved:
+- FeeStructure category, grade, and academic year identity; EventCharge event and grade identity; and all generated due snapshots.
+- No new schema, deletion, or audit workflow.
+
+Verification:
+- `php artisan test --compact`: 467 tests / 2223 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 10D-6: Payment & Receipt History Lists
 Status: complete and verified on 2026-10-07; committed in 4cf641f.
 

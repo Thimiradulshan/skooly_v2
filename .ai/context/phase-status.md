@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-7: Payment Reversal Workflow
+Phase 10D-5: Fee Structure & Event Charge Editing
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -41,13 +41,14 @@ Phase 10D-7: Payment Reversal Workflow
 - Phase 10D-2: Identity, Teacher, Subject & Assignment Management - complete (committed in deef8f5)
 - Phase 10D-3: Student & Guardian Management - complete (committed in 60007d9)
 - Phase 10D-4: Draft Discard & Reminder Cancellation - complete (committed in bb27137)
+- Phase 10D-5: Fee Structure & Event Charge Editing - complete / pending commit
 - Phase 10D-6: Payment & Receipt History Lists - complete (committed in 4cf641f)
 - Phase 10D-6B: Remaining List Pagination & Search - complete / pending commit
 - Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists - complete / pending commit
 - Phase 10D-7: Payment Reversal Workflow - complete / pending commit
 
 ## Current Status
-Phase 10D-7 is complete and verified. It adds an append-only full-payment reversal workflow with Accountant requests, independent Admin approval, correction receipts, atomic due-item reopening, and explicit audit history.
+Phase 10D-5 is complete and verified. It adds Admin-only edits for future FeeStructure and EventCharge prices, with authoritative guards that lock FeeStructures after a direct StudentDueItem reference and every EventCharge after its Event has an EventDueItem.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -142,7 +143,7 @@ Phase 10D-7 is complete and verified. It adds an append-only full-payment revers
 - Teacher, Accountant, and role-less authenticated users receive 403 on those routes.
 - No auth package was installed. No API auth, API routes, or mobile endpoints exist.
 - Admin web pages exist for FeeCategory list, create, and edit, and for FeeStructure list and create.
-- Fee structures are create-only in the web layer. Editing an existing structure is deferred because it is academic-year versioned.
+- Fee structures may edit amount and frequency only before a StudentDueItem directly references them. Fee category, grade, academic year, and generated due snapshots remain unchanged.
 - Admin web flow exists for applying a Student discount through the existing ApplyStudentDiscount action.
 - Admin web flow exists for adding a Student fee subscription, and only opt-in categories are accepted.
 - New actions added: CreateFeeCategory, UpdateFeeCategory, CreateStudentFeeSubscription.
@@ -164,7 +165,7 @@ Phase 10D-7 is complete and verified. It adds an append-only full-payment revers
 - No automatic allocation, refund, payment edit, payment delete, receipt delete, or receipt export route exists.
 - Admin web pages exist for event list, create, show, edit, event charges, and event participation.
 - Event fields use only existing schema: academic year, fee category, name, date, description, and is_mandatory.
-- Event charges are create-only in this phase. Existing generated due item snapshots are never rewritten.
+- Event charges may edit amount only before their Event has any EventDueItem. Event and grade identity, and generated due item snapshots, remain unchanged.
 - Event participation uses only opted_in and opted_out and is duplicate-safe through updateOrCreate.
 - Event management creates no StudentDueItems, Payments, Receipts, or PaymentAllocations.
 - Event due generation remains a separate existing flow through GenerateEventDueItems.
@@ -261,6 +262,14 @@ Phase 10D-7 is complete and verified. It adds an append-only full-payment revers
 
 ## Verification Result
 Passed on 2026-10-07:
+- php artisan test --compact: 467 tests, 2223 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (non-blocking optional Fontaine font-fallback warning)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
+Previously passed on 2026-10-07:
 - php artisan migrate:fresh --no-interaction
 - php artisan test --compact: 458 tests, 2176 assertions
 - php vendor/bin/phpstan analyse: 0 errors
@@ -320,5 +329,5 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Review and commit Phases 10D-6B, 10D-6C, and 10D-7 if approved.
+1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, and 10D-7 if approved.
 2. Audit-log filtering/export/retention, receipt PDF export, partial reversals, and refunds remain deferred.

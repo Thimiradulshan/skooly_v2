@@ -182,8 +182,8 @@ Laravel modular monolith.
 - No auth package, API auth, or token scheme exists.
 
 ## Web Fee and Discount Management
-- Admin web pages cover FeeCategory list, create, and edit, plus FeeStructure list and create.
-- FeeStructure web editing is deliberately absent because structures are academic-year versioned.
+- Admin web pages cover FeeCategory list, create, and edit, plus FeeStructure list, create, and edit.
+- FeeStructure editing changes only amount and frequency before a StudentDueItem directly references the structure. Its category, grade, academic year identity and every generated due snapshot remain fixed.
 - Student discounts and opt-in fee subscriptions are managed per student from the family page.
 - Discount application reuses ApplyStudentDiscount, so discount_applied auditing still works.
 - CreateFeeStructure and CreateStudentFeeSubscription never create or modify StudentDueItems.
@@ -206,7 +206,7 @@ Laravel modular monolith.
 
 ## Web Event Management
 - EventController uses CreateEvent and UpdateEvent; it does not confirm or generate dues.
-- EventChargeController creates per-grade charges only; editing is deliberately absent.
+- EventChargeController creates and updates per-grade charges. It changes only amount, and locks every charge for an Event once any EventDueItem exists because charge-level provenance is unavailable.
 - EventParticipationController uses SetEventParticipation and preserves the existing opted_in and opted_out statuses.
 - GenerateEventDueItems remains the only creator of EventDueItem and StudentDueItem records.
 - No event management deletion, payment, receipt, or audit workflow exists.

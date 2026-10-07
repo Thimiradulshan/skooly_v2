@@ -228,8 +228,6 @@ it('adds no event, charge, or participation delete route', function () {
     expect(Route::has('events.destroy'))->toBeFalse();
     expect(Route::has('events.charges.destroy'))->toBeFalse();
     expect(Route::has('events.participation.destroy'))->toBeFalse();
-    expect(Route::has('events.charges.edit'))->toBeFalse();
-    expect(Route::has('events.charges.update'))->toBeFalse();
 
     $event = Event::factory()->create();
 

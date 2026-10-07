@@ -52,8 +52,8 @@ deferred for the Academic Year, Term, Grade, and Section records.
 | Discard draft promotion batches | Drafts can now be discarded without changing Students or Enrollments. | Yes | Yes | None | Complete in 10D-4 |
 | Cancel stale reminders | Pending reminder records can now be cancelled without sending a message or changing snapshots. | Yes | Yes | None | Complete in 10D-4 |
 | Promotion item editing | Every exception case is blocked. A single student cannot be retained, excluded, graduated, or retargeted. | No | No | Required. Backend edit action first | 10D-8 |
-| Fee structure editing | A price cannot be corrected after creation. | No | No | Whether editing may affect already-generated dues | 10D-5 |
-| Event charge editing | Same problem, smaller blast radius. | No | No | Same | 10D-5 |
+| Fee structure editing | Amount and frequency can be corrected before a due item directly references the structure. | Yes | Yes | Approved: lock after direct due generation | Complete in 10D-5 |
+| Event charge editing | Amount can be corrected before the Event has any due item. | Yes | Yes | Approved: conservatively lock every charge after event due generation | Complete in 10D-5 |
 | Event participation management | Only students in charge grades can be opted in. | Partial | Partial | Whether wider opt-in is valid | Later |
 | Report export | The dashboard cannot be shared or filed. | `BuildDuesDashboardReport` | No | Export format | 10D-9 |
 | Enrollment reporting refinement | Enrollment placement can be viewed and moved with preserved history, but no standalone enrollment list exists. | Yes | Student detail/placement | None | Later |
@@ -87,6 +87,6 @@ deferred for the Academic Year, Term, Grade, and Section records.
 5. **10D-6 — Lists, search, pagination, and safe sorting.** Makes the existing screens usable at scale.
 6. **10D-7 — Payment correction or refund.** The only genuinely missing capability
    that cannot be deferred indefinitely.
-7. **10D-5 — Fee structure and event charge editing.** Requires a re-pricing decision.
+7. **10D-5 — Fee structure and event charge editing: complete.** Prices lock after due generation; snapshots are never changed.
 8. **10D-8 — Promotion item editing and Accountant access.** Both need decisions.
 9. **10D-9 — Exports, prints, and dashboard refinements.**

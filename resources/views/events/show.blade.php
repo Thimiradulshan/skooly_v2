@@ -33,16 +33,22 @@
         <x-card title="Charges">
         <div class="table-wrap">
             <table class="table">
-                <thead><tr><th>Grade</th><th class="num">Amount</th></tr></thead>
+                <thead><tr><th>Grade</th><th class="num">Amount</th><th>Status</th><th></th></tr></thead>
                 <tbody>
                 @forelse ($event->charges as $charge)
                     <tr>
                         <td>{{ $charge->grade->name }}</td>
                         <td class="num">{{ $charge->amount }}</td>
+                        <td>{{ $event->event_due_items_count > 0 ? 'Price locked' : 'Editable' }}</td>
+                        <td>
+                            @if ($event->event_due_items_count === 0)
+                                <a class="table-action" href="{{ route('events.charges.edit', [$event, $charge]) }}">Edit</a>
+                            @endif
+                        </td>
                     </tr>
                 @empty
                     <tr class="table-empty">
-                        <td colspan="2">
+                        <td colspan="4">
                             <span class="empty-state-title">No charges yet</span>
                             Add a charge so the event can generate dues.
                             <div class="empty-actions">
@@ -54,7 +60,7 @@
                 </tbody>
             </table>
         </div>
-        <p class="note">Charges cannot be edited or deleted once added, because they may already have produced due items.</p>
+        <p class="note">Amounts can be edited until this event generates a due item. Grade is fixed, and every charge locks once any event due exists. Generated due item snapshots are never changed.</p>
     </x-card>
 
     <x-card title="Participation">

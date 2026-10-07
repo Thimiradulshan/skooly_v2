@@ -115,7 +115,7 @@ Use this file before broad project reinspection.
 - Admin is the only role allowed on those routes. Teacher, Accountant, and role-less users get 403.
 - Web Form Requests repeat the Admin check as defense in depth.
 - Admin web pages exist for fee categories, fee structures, student discounts, and opt-in fee subscriptions.
-- Fee structure web editing is deferred. Fee structures stay academic-year versioned.
+- Fee structure amount and frequency can be edited only before a StudentDueItem directly references the structure. Its academic-year identity and generated snapshots remain fixed.
 - No fee, discount, or subscription delete route exists.
 - Only opt-in fee categories can be subscribed, enforced in the form request and the action.
 - Admin web pages exist for recurring due generation, event due generation, and the dues dashboard.
@@ -129,7 +129,7 @@ Use this file before broad project reinspection.
 - Admin web pages exist for event management, charges, and participation.
 - Event management only creates or updates Event, EventCharge, and EventParticipation records.
 - Event due generation remains separate through GenerateEventDueItems.
-- Event charges are create-only in the web layer, and no event deletion route exists.
+- Event charge amounts can be edited only before the Event has any EventDueItem; event-level locking is conservative because charge-level provenance is unavailable. No event deletion route exists.
 - Admin web pages exist for promotion batch list, draft creation, detail, and confirmation.
 - Promotion pages only call CreatePromotionBatch and ConfirmPromotionBatch.
 - Draft target mappings are derived by the backend action and are read-only in the web layer.
@@ -186,7 +186,7 @@ Use this file before broad project reinspection.
 - Scheduler and cron setup for recurring generation.
 - Payment edit, delete, refund, receipt delete, and receipt PDF export.
 - Payment reporting/index UI.
-- Event charge editing and destructive event, charge, and participation routes.
+- Destructive event, charge, and participation routes.
 - Event management audit entries, no existing audit constant covers them.
 - Event management API and mobile endpoints.
 - Draft item target/action editing in the web layer.
@@ -203,7 +203,6 @@ Use this file before broad project reinspection.
 - API auth, API controllers, and mobile endpoints.
 - Advanced user management, password reset, and email verification.
 - Delete and destructive web routes.
-- Fee structure web editing (structures are academic-year versioned).
 - Audit entries for fee category and fee subscription workflows.
 - Automatic sibling discount rule.
 - Automatic payment allocation strategy.

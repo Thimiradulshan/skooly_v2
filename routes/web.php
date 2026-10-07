@@ -113,6 +113,9 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::get('/fee-structures', [FeeStructureController::class, 'index'])->name('fee-structures.index');
     Route::get('/fee-structures/create', [FeeStructureController::class, 'create'])->name('fee-structures.create');
     Route::post('/fee-structures', [FeeStructureController::class, 'store'])->name('fee-structures.store');
+    Route::get('/fee-structures/{feeStructure}/edit', [FeeStructureController::class, 'edit'])->name('fee-structures.edit');
+    Route::match(['put', 'patch'], '/fee-structures/{feeStructure}', [FeeStructureController::class, 'update'])
+        ->name('fee-structures.update');
 
     Route::get('/students/{student}/discounts/create', [StudentDiscountController::class, 'create'])
         ->name('students.discounts.create');
@@ -154,6 +157,12 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('events.charges.create');
     Route::post('/events/{event}/charges', [EventChargeController::class, 'store'])
         ->name('events.charges.store');
+    Route::get('/events/{event}/charges/{charge}/edit', [EventChargeController::class, 'edit'])
+        ->scopeBindings()
+        ->name('events.charges.edit');
+    Route::match(['put', 'patch'], '/events/{event}/charges/{charge}', [EventChargeController::class, 'update'])
+        ->scopeBindings()
+        ->name('events.charges.update');
 
     Route::get('/events/{event}/participation/create', [EventParticipationController::class, 'create'])
         ->name('events.participation.create');

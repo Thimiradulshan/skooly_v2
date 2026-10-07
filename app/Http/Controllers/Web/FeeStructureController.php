@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Web;
 
 use App\Actions\Fees\CreateFeeStructure;
+use App\Actions\Fees\UpdateFeeStructure;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreFeeStructureRequest;
+use App\Http\Requests\Web\UpdateFeeStructureRequest;
 use App\Models\AcademicYear;
 use App\Models\FeeCategory;
 use App\Models\FeeStructure;
 use App\Models\Grade;
+use RuntimeException;
 
 class FeeStructureController extends Controller
 {
@@ -22,6 +25,7 @@ class FeeStructureController extends Controller
 
         $feeStructures = FeeStructure::query()
             ->with(['feeCategory', 'grade', 'academicYear'])
+            ->withCount('studentDueItems')
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->whereHas('feeCategory', fn ($feeCategory) => $feeCategory->where('name', 'like', "%{$search}%"))
@@ -67,5 +71,35 @@ class FeeStructureController extends Controller
         return redirect()
             ->route('fee-structures.index')
             ->with('status', 'Fee structure created.');
+    }
+
+    public function edit(FeeStructure $feeStructure)
+    {
+        $feeStructure->load(['feeCategory', 'grade', 'academicYear']);
+
+        return view('fee-structures.edit', [
+            'feeStructure' => $feeStructure,
+            'isLocked' => $feeStructure->studentDueItems()->exists(),
+        ]);
+    }
+
+    public function update(
+        UpdateFeeStructureRequest $request,
+        FeeStructure $feeStructure,
+        UpdateFeeStructure $updateFeeStructure,
+    ) {
+        try {
+            $updateFeeStructure->handle(
+                $feeStructure,
+                (string) $request->input('amount'),
+                $request->string('frequency')->toString(),
+            );
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['fee_structure' => $exception->getMessage()]);
+        }
+
+        return redirect()
+            ->route('fee-structures.index')
+            ->with('status', 'Fee structure updated. Existing due item snapshots were not changed.');
     }
 }

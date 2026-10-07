@@ -205,7 +205,7 @@ Do not invent answers for these.
 - Academic setup has no web UI, so school staff cannot configure the school without a console.
 - Payment correction or refund does not exist and must not be designed without approval. See docs/destructive-action-policy-draft.md.
 - Archive semantics are undefined: hidden from new selections only, or hidden from reports too.
-- Fee structure and event charge editing are unresolved because due items already reference them.
+- Fee structure and event charge editing were resolved in Phase 10D-5: their price may change only before due generation. FeeStructure locks when a StudentDueItem directly references it; EventCharge locks conservatively when any EventDueItem exists for its Event.
 - Promotion item editing needs a decision before any backend edit action is written.
 - SchoolSetting.active_academic_year_id is inert and needs a decision on whether anything should honour it.
 - Money and history must never be hard deleted. Configuration should be archived, pending approval.

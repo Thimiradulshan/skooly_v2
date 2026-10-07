@@ -16,7 +16,7 @@
     <div class="table-wrap">
         <table class="table">
             <thead>
-            <tr><th>Category</th><th>Grade</th><th>Academic year</th><th class="num">Amount</th><th>Frequency</th></tr>
+            <tr><th>Category</th><th>Grade</th><th>Academic year</th><th class="num">Amount</th><th>Frequency</th><th>Status</th><th></th></tr>
             </thead>
             <tbody>
             @forelse ($feeStructures as $feeStructure)
@@ -26,10 +26,16 @@
                     <td>{{ $feeStructure->academicYear?->name }}</td>
                     <td class="num">{{ $feeStructure->amount }}</td>
                     <td>{{ $feeStructure->frequency }}</td>
+                    <td>{{ $feeStructure->student_due_items_count > 0 ? 'Price locked' : 'Editable' }}</td>
+                    <td>
+                        @if ($feeStructure->student_due_items_count === 0)
+                            <a class="table-action" href="{{ route('fee-structures.edit', $feeStructure) }}">Edit</a>
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr class="table-empty">
-                    <td colspan="5">
+                    <td colspan="7">
                         <span class="empty-state-title">No fee structures yet</span>
                         Set an amount per grade and academic year to enable due generation.
                         <div class="empty-actions">
@@ -43,5 +49,5 @@
     </div>
 
     <x-pagination :paginator="$feeStructures" />
-    <p class="note">Fee structures are configuration and are never edited or deleted once created. Changing them never rewrites an existing due item.</p>
+    <p class="note">Amount and frequency can be edited until this structure produces a due item. Category, grade, and academic year are fixed. Generated due item snapshots are never changed.</p>
 @endsection
