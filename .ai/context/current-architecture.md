@@ -82,6 +82,14 @@ Laravel modular monolith.
 - Receipt snapshots payment, family, and allocation details immutably.
 - Payment recording uses DB transaction for atomicity.
 
+## Payment Reversals
+- PaymentReversal is append-only and has a unique original_payment_id, so only one full reversal can exist for a Payment.
+- Accountants request with a required reason; Admins approve, except a dual-role requester cannot approve their own reversal.
+- ApprovePaymentReversal locks the reversal, original payment, original allocations, and due items inside one transaction before reopening every original allocation.
+- Approval never mutates or deletes the original payment, receipt, or allocations. It creates a CorrectionReceipt with the original receipt snapshot and reversal snapshot.
+- Payment reversal request and approval use explicit append-only audit entries.
+- Accountant web access is limited to payment/receipt history and payment-reversal visibility/requesting; collection, families, and approval remain Admin-only.
+
 ## Recurring Fee Due Generation
 - app/Actions/Fees/GenerateRecurringDueItems.php generates StudentDueItems for a cycle.
 - Source of truth is recurring FeeStructures for the academic year, matched to students enrolled in the same year and grade.

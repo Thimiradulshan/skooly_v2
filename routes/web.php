@@ -17,6 +17,7 @@ use App\Http\Controllers\Web\GradeController;
 use App\Http\Controllers\Web\GuardianController;
 use App\Http\Controllers\Web\PaymentCollectionController;
 use App\Http\Controllers\Web\PaymentReminderController;
+use App\Http\Controllers\Web\PaymentReversalController;
 use App\Http\Controllers\Web\PromotionBatchController;
 use App\Http\Controllers\Web\ReceiptController;
 use App\Http\Controllers\Web\SchoolSettingController;
@@ -163,11 +164,6 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('families.payments.create');
     Route::post('/families/{family}/payments', [PaymentCollectionController::class, 'store'])
         ->name('families.payments.store');
-    Route::get('/payments', [PaymentCollectionController::class, 'index'])->name('payments.index');
-    Route::get('/payments/{payment}', [PaymentCollectionController::class, 'show'])->name('payments.show');
-    Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
-    Route::get('/receipts/{receipt}', [ReceiptController::class, 'show'])->name('receipts.show');
-
     Route::get('/payment-reminders', [PaymentReminderController::class, 'index'])
         ->name('payment-reminders.index');
     Route::get('/payment-reminders/generate', [PaymentReminderController::class, 'create'])
@@ -191,4 +187,26 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('promotion-batches.confirm');
     Route::post('/promotion-batches/{promotionBatch}/discard', [PromotionBatchController::class, 'discard'])
         ->name('promotion-batches.discard');
+});
+
+Route::middleware(['auth', 'role:'.Role::ADMIN.','.Role::ACCOUNTANT])->group(function (): void {
+    Route::get('/payments', [PaymentCollectionController::class, 'index'])->name('payments.index');
+    Route::get('/payments/{payment}', [PaymentCollectionController::class, 'show'])->name('payments.show');
+    Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
+    Route::get('/receipts/{receipt}', [ReceiptController::class, 'show'])->name('receipts.show');
+    Route::get('/payment-reversals', [PaymentReversalController::class, 'index'])->name('payment-reversals.index');
+    Route::get('/payment-reversals/{paymentReversal}', [PaymentReversalController::class, 'show'])
+        ->name('payment-reversals.show');
+});
+
+Route::middleware(['auth', 'role:'.Role::ACCOUNTANT])->group(function (): void {
+    Route::get('/payments/{payment}/reversals/create', [PaymentReversalController::class, 'create'])
+        ->name('payments.reversals.create');
+    Route::post('/payments/{payment}/reversals', [PaymentReversalController::class, 'store'])
+        ->name('payments.reversals.store');
+});
+
+Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
+    Route::post('/payment-reversals/{paymentReversal}/approve', [PaymentReversalController::class, 'approve'])
+        ->name('payment-reversals.approve');
 });

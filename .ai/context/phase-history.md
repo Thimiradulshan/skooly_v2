@@ -699,6 +699,21 @@ Verification:
 - `php artisan test --compact`: 452 tests / 2124 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D-7: Payment Reversal Workflow
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Append-only PaymentReversal and CorrectionReceipt models, factories, and migrations.
+- Accountant-only reversal requests with required reasons, one request per original Payment.
+- Admin-only independent approval with dual-role self-approval prevention.
+- Transactional row locking and full original-allocation reopening with invalid-state rollback.
+- Immutable correction-receipt snapshots plus explicit requested and approved audit entries.
+- Finance-only Accountant access to payment/receipt history and reversal views; no collection, family, or approval access.
+- PaymentReversalTest coverage for success, exact reopening, immutability, correction receipt, audit actions, duplicate prevention, self approval, roles, validation, and rollback.
+
+Deferred:
+- Partial reversals, refunds, payment edits/deletes, receipt PDF export, and broader Accountant operational permissions.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

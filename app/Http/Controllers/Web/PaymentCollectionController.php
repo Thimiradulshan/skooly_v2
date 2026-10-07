@@ -78,7 +78,7 @@ class PaymentCollectionController extends Controller
 
     public function show(Payment $payment)
     {
-        $payment->load(['family', 'allocations.studentDueItem.student', 'receipt']);
+        $payment->load(['family', 'allocations.studentDueItem.student', 'receipt', 'reversal']);
 
         return view('payments.show', ['payment' => $payment]);
     }

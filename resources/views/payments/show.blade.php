@@ -4,18 +4,25 @@
 
 @section('content')
     <div class="breadcrumb">
+        @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
         <a href="{{ route('families.index') }}">Families</a>
         <span class="breadcrumb-sep">/</span>
         <a href="{{ route('families.show', $payment->family) }}">{{ $payment->family->family_code }}</a>
         <span class="breadcrumb-sep">/</span>
+        @endif
         <span>Payment {{ $payment->id }}</span>
     </div>
 
     <x-page-header :title="'Payment '.$payment->id" subtitle="Recorded payment and its allocations." eyebrow="Payments" />
 
+    @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('families.show', $payment->family) }}">Back to family</a>
     </div>
+    @endif
+    @if (auth()->user()->hasRole(\App\Models\Role::ACCOUNTANT) && ! $payment->reversal)
+        <div class="page-actions"><a class="btn btn-secondary" href="{{ route('payments.reversals.create', $payment) }}">Request reversal</a></div>
+    @endif
 
     <x-card title="Payment details">
         <dl class="kv">
@@ -53,5 +60,9 @@
                 View receipt {{ $payment->receipt->receipt_no }}
             </x-button-link>
         </div>
+    @endif
+
+    @if ($payment->reversal)
+        <div class="page-actions"><a class="btn btn-secondary" href="{{ route('payment-reversals.show', $payment->reversal) }}">View reversal</a></div>
     @endif
 @endsection

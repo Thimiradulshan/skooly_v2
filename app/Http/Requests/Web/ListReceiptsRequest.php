@@ -9,7 +9,7 @@ class ListReceiptsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasRole(Role::ADMIN) ?? false;
+        return $this->user()?->hasAnyRole([Role::ADMIN, Role::ACCOUNTANT]) ?? false;
     }
 
     /** @return array<string, mixed> */

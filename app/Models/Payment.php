@@ -41,6 +41,12 @@ class Payment extends Model
         return $this->hasOne(Receipt::class);
     }
 
+    /** @return HasOne<PaymentReversal, $this> */
+    public function reversal(): HasOne
+    {
+        return $this->hasOne(PaymentReversal::class, 'original_payment_id');
+    }
+
     /**
      * @param  array<int, array{student_due_item_id: int, amount: string}>  $allocations
      */

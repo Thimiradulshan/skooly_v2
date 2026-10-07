@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists
+Phase 10D-7: Payment Reversal Workflow
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -44,9 +44,10 @@ Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists
 - Phase 10D-6: Payment & Receipt History Lists - complete (committed in 4cf641f)
 - Phase 10D-6B: Remaining List Pagination & Search - complete / pending commit
 - Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists - complete / pending commit
+- Phase 10D-7: Payment Reversal Workflow - complete / pending commit
 
 ## Current Status
-Phase 10D-6C is complete and verified. It adds validated fixed sorting and direction controls to every in-scope Admin list page, while preserving search, pagination, and each page's default ordering.
+Phase 10D-7 is complete and verified. It adds an append-only full-payment reversal workflow with Accountant requests, independent Admin approval, correction receipts, atomic due-item reopening, and explicit audit history.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -253,8 +254,22 @@ Phase 10D-6C is complete and verified. It adds validated fixed sorting and direc
 - Payment and Receipt history lists are read-only and Admin-only. They search family code, payment reference, and receipt number, sort only through validated allow-lists, paginate 20 records per page, and preserve query strings across pages.
 - In-scope Admin list pages now paginate 20 records per page. General text search is validated and applied only where the screen has an appropriate searchable identifier; audit-log filtering remains deliberately deferred and student-scoped discount/subscription lists remain scoped to their Student.
 - In-scope Admin list sorting uses controller-owned allow-lists, validated `asc` or `desc` directions, and stable `id` tie-breakers. User list sorting preserves its Gate/policy authorization. Audit logs, reminders, payments, receipts, and Student-scoped discount/subscription histories remain unchanged.
+- PaymentReversal is one-to-one with the original Payment and supports requested then approved states only. Original payment, receipt, and allocations remain immutable.
+- Approval locks the reversal, original payment, payment allocations, and due items. It validates reopening before changing every due item in one transaction.
+- CorrectionReceipt is one-to-one with PaymentReversal and stores the original receipt and reversal snapshots under a unique manual correction receipt number.
+- Accountants may browse payment/receipt history and create/view reversals only. Admins approve, but not their own requests.
 
 ## Verification Result
+Passed on 2026-10-07:
+- php artisan migrate:fresh --no-interaction
+- php artisan test --compact: 458 tests, 2176 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (non-blocking optional Fontaine font-fallback warning)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
+Previously passed on 2026-10-07:
 Passed on 2026-10-07:
 - php artisan test --compact: 452 tests, 2124 assertions
 - php vendor/bin/phpstan analyse: 0 errors
@@ -305,5 +320,5 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Review and commit Phases 10D-6B and 10D-6C if approved.
-2. Audit-log filtering/export/retention and payment correction/refund remain deferred; payment correction/refund still requires product decisions.
+1. Review and commit Phases 10D-6B, 10D-6C, and 10D-7 if approved.
+2. Audit-log filtering/export/retention, receipt PDF export, partial reversals, and refunds remain deferred.

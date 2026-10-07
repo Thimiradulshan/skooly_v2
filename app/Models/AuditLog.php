@@ -24,6 +24,10 @@ class AuditLog extends Model
 
     public const ACTION_PAYMENT_ALLOCATION_RECORDED = 'payment_allocation_recorded';
 
+    public const ACTION_PAYMENT_REVERSAL_REQUESTED = 'payment_reversal_requested';
+
+    public const ACTION_PAYMENT_REVERSAL_APPROVED = 'payment_reversal_approved';
+
     public const ACTION_PROMOTION_BATCH_CREATED = 'promotion_batch_created';
 
     public const ACTION_PROMOTION_BATCH_CONFIRMED = 'promotion_batch_confirmed';

@@ -125,6 +125,7 @@ it('protects every admin route with auth and the role middleware', function () {
         ->filter(fn ($route) => str_starts_with($route->uri(), 'admin')
             || str_starts_with($route->uri(), 'families')
             || str_starts_with($route->uri(), 'payments')
+            || str_starts_with($route->uri(), 'payment-reversals')
             || str_starts_with($route->uri(), 'receipts')
             || str_starts_with($route->uri(), 'promotion-batches')
             || str_starts_with($route->uri(), 'payment-reminders')
@@ -140,6 +141,10 @@ it('protects every admin route with auth and the role middleware', function () {
         $middleware = $route->gatherMiddleware();
 
         expect($middleware)->toContain('auth');
-        expect(implode(',', $middleware))->toContain('role:Admin');
+        expect(implode(',', $middleware))->toContain(
+            str_starts_with($route->uri(), 'payments/') && str_contains($route->uri(), '/reversals')
+                ? 'role:Accountant'
+                : 'role:Admin',
+        );
     }
 });

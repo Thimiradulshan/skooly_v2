@@ -251,6 +251,15 @@ Do not invent answers for these.
 - Search is limited to family code, payment reference, and receipt number. Sort columns and directions are validated allow-lists; no client-provided SQL identifier is used.
 - Receipt PDF export, audit-log filtering/export/retention, and payment correction/refund remain deferred pending their documented decisions.
 
+## Phase 10D-7 Rules
+- Payment correction is an append-only, full-payment reversal only; the original Payment, Receipt, and PaymentAllocation records are never changed or deleted.
+- Exactly one PaymentReversal may exist per original Payment, enforced by a unique original_payment_id.
+- Accountant requests require a reason. Admin approval is required, and a dual-role requester may not approve their own request.
+- Approval reopens each original allocation atomically: paid_amount decreases, balance_amount increases, and status becomes unpaid at zero paid or partially_paid otherwise.
+- Admin enters a unique correction receipt number on approval. CorrectionReceipt snapshots the original Receipt and reversal details; the original receipt stays immutable.
+- Request and approval are explicitly audited inside their respective transactions.
+- Accountants receive only payment/receipt history and reversal request/list/detail access. Payment collection, family access, and approval remain Admin-only.
+
 ## Phase 10D-6B Rules
 - Pagination is read-only and uses 20 records per page with query-string preservation across every in-scope Admin list page.
 - Text search is limited to relevant stored identifiers and names. It is validated to 100 characters and never supplies a SQL identifier.

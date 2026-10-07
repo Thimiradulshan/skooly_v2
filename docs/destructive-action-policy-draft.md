@@ -108,19 +108,22 @@ history may already reference them.
 2. What audit entry a delete writes. Deleting something should leave a trace.
 3. Whether confirmation is required and what it says.
 
-### Required before implementing payment correction
+### Approved payment-reversal rule (Phase 10D-7)
 
-This is the most important open question and has no draft rule yet.
+- A reversal is a new append-only record linked to exactly one original payment; the
+  original payment, receipt, and allocations are never changed or deleted.
+- Only one full reversal may exist per original payment. Partial reversals and refunds
+  are not implemented.
+- An Accountant requests a reversal with a required reason. An Admin approves it, but an
+  account holding both roles cannot approve its own request.
+- Approval atomically reopens every original allocation on its due item. It subtracts the
+  allocation from `paid_amount`, adds it to `balance_amount`, and sets status to `unpaid`
+  when paid reaches zero or `partially_paid` otherwise.
+- An Admin enters a unique correction receipt number. The correction receipt stores the
+  original receipt snapshot and reversal snapshot; the original receipt remains immutable.
+- Request and approval produce explicit append-only audit entries.
 
-1. Is a refund a new negative payment, a reversal entry, or a state on the payment?
-2. What is the maximum refundable amount? The full payment amount, or only the
-   unallocated remainder?
-3. What happens to due items the original payment settled? Do they reopen to unpaid, or
-   does the refund create an offsetting balance?
-4. Does a refund require a receipt, and is one issued to the parent?
-5. Does anyone approve a refund? Accountant, Admin, or both?
-6. Is a refund itself audited, and against which action constant?
-7. Can a receipt be cancelled, and does cancelling one require a refund?
+Refunds, partial reversals, and payment edits or deletes remain out of scope.
 
 ## 6. What must not be built
 

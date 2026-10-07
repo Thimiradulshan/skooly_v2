@@ -22,6 +22,7 @@
             </a>
 
             <nav class="sidebar-nav" aria-label="Main navigation">
+                @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
                 <div>
                     <p class="sidebar-section-title">Overview</p>
                     <a class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'is-active' : '' }}"
@@ -73,17 +74,21 @@
                     <a class="sidebar-link {{ request()->routeIs('due-generation.events.*') ? 'is-active' : '' }}"
                        href="{{ route('due-generation.events.create') }}">Event Generation</a>
                     <a class="sidebar-link {{ request()->routeIs('dues-dashboard.*') ? 'is-active' : '' }}"
-                       href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
+                        href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
                 </div>
+                @endif
 
                 <div>
                     <p class="sidebar-section-title">Payments</p>
                     <a class="sidebar-link {{ request()->routeIs('payments.*') ? 'is-active' : '' }}"
                        href="{{ route('payments.index') }}">Payment History</a>
                     <a class="sidebar-link {{ request()->routeIs('receipts.*') ? 'is-active' : '' }}"
-                       href="{{ route('receipts.index') }}">Receipts</a>
+                        href="{{ route('receipts.index') }}">Receipts</a>
+                    <a class="sidebar-link {{ request()->routeIs('payment-reversals.*') ? 'is-active' : '' }}"
+                        href="{{ route('payment-reversals.index') }}">Reversals</a>
                 </div>
 
+                @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
                 <div>
                     <p class="sidebar-section-title">School Life</p>
                     <a class="sidebar-link {{ request()->routeIs('events.*') ? 'is-active' : '' }}"
@@ -101,8 +106,9 @@
                 <div>
                     <p class="sidebar-section-title">Governance</p>
                     <a class="sidebar-link {{ request()->routeIs('audit-logs.*') ? 'is-active' : '' }}"
-                       href="{{ route('audit-logs.index') }}">Audit Log</a>
+                        href="{{ route('audit-logs.index') }}">Audit Log</a>
                 </div>
+                @endif
             </nav>
 
             <div class="sidebar-footer">
