@@ -17,7 +17,10 @@
 
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('payments.show', $receipt->payment_id) }}">Back to payment</a>
-        <a class="btn btn-secondary" href="{{ route('dues-dashboard.index')">View dashboard</a>
+        <a class="btn btn-secondary" href="{{ route('dues-dashboard.index') }}">View dashboard</a>
+        @if (auth()->user()?->hasRole(\App\Models\Role::ADMIN))
+            <a class="btn btn-secondary" href="{{ route('receipts.pdf', $receipt) }}">Download PDF</a>
+        @endif
     </div>
 
     <x-card>
@@ -82,7 +85,7 @@
 
             <p class="receipt-foot">
                 This receipt reproduces the stored snapshot from the time of payment. It is not recalculated from live due items.
-                Use your browser print action for a paper copy; PDF export is not implemented.
+                Use your browser print action for a paper copy or download the stored snapshot as a PDF.
             </p>
         </div>
     </x-card>

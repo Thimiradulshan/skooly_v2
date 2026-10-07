@@ -204,6 +204,7 @@ Laravel modular monolith.
 - ReceiptController renders the stored Receipt snapshot only.
 - The payment UI is Admin-only and supports manual collection, payment viewing, and receipt viewing without mutation routes.
 - Admin-only payment and receipt history lists support family-code, payment-reference, and receipt-number search, validated fixed sorting, and 20-record pagination.
+- ReceiptController provides an Admin-only Dompdf download that renders only the stored Receipt snapshots and uses the existing manual receipt number as its filename. Accountants retain receipt list/detail access but cannot download the PDF.
 
 ## Web Event Management
 - EventController uses CreateEvent and UpdateEvent; it does not confirm or generate dues.

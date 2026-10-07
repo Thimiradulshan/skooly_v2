@@ -31,7 +31,7 @@ and Section archive/restore are complete; the active academic year cannot be arc
 | Gap | Why it matters | Backend exists | Frontend exists | Decision needed | Suggested phase |
 | --- | --- | --- | --- | --- | --- |
 | Payment list | Staff can now browse, search, sort, and paginate payment history. | Yes, `Payment` | Yes | None | Complete in 10D-6 |
-| Receipt list and PDF export | Receipts can now be browsed, searched, sorted, and paginated. Browser print works today; PDF does not. | Yes, `Receipt` | List, show, print | Receipt numbering rule, which also affects export | PDF deferred |
+| Receipt list and PDF export | Admins can browse, search, sort, paginate, browser-print, and download immutable receipt snapshots as PDFs. Accountants may view receipts but cannot download PDFs. | Yes, `Receipt` | List, show, print, Admin PDF | Receipt numbering remains manual | Complete in 10D-9 |
 | User lifecycle and authorization expansion | Fixed-role user management and archiving now exist, but Accountant and Teacher operational permissions remain Admin-only. | Yes, `User`, `Role` | List/create/view/edit/archive | Per-resource role permissions | 10D-8 |
 | Teacher profile refinement | Teachers can be managed as Users and their qualifications can be viewed, but no dedicated profile beyond the staff account exists. | Yes, `User` with teacher role | Partial | None | Later |
 | Subject and assignment corrections | Subjects have CRUD and qualifications/assignments have list/create/view, but teaching configuration cannot yet be corrected or withdrawn. | Yes, `Subject`, `TeacherAssignment`, `SectionYearAssignment` | Partial | Correction/history rule | Later |
@@ -89,4 +89,4 @@ and Section archive/restore are complete; the active academic year cannot be arc
    that cannot be deferred indefinitely.
 7. **10D-5 — Fee structure and event charge editing: complete.** Prices lock after due generation; snapshots are never changed.
 8. **10D-8 — Promotion item editing and Accountant access.** Both need decisions.
-9. **10D-9 — Print-friendly Family and Student detail pages are complete.** Exports and dashboard refinements remain deferred.
+9. **10D-9 — Print-friendly Family and Student detail pages and Admin-only immutable receipt PDF downloads are complete.** Dashboard/report exports and refinements remain deferred.

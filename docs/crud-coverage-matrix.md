@@ -62,7 +62,7 @@ Statuses used:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Payment | **No** | Yes | Yes | **Needs Decision** | **Needs Decision** | Not Applicable | **Not Recommended** | Not Applicable | Not Applicable | Not Applicable | No | No | Not Applicable | No index page exists. No correction path exists |
 | Payment Allocation | No | No | Partial | Not Applicable | Not Applicable | Not Applicable | Not Recommended | Not Applicable | Yes | Not Applicable | No | No | Not Applicable | Immutable, shown on the payment page |
-| Receipt | **No** | No | Yes | Not Applicable | Not Applicable | Not Applicable | **Not Recommended** | Not Applicable | Yes | Not Applicable | **Partial** | No | Not Applicable | No index. Print stylesheet exists; PDF is absent |
+| Receipt | **Yes** | No | Yes | Not Applicable | Not Applicable | Not Applicable | **Not Recommended** | Not Applicable | Yes | Not Applicable | **Browser print / Admin PDF** | **Yes** | Not Applicable | Admin-only PDF renders stored receipt snapshots; Accountants retain list/detail access but cannot download |
 
 ---
 

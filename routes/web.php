@@ -181,6 +181,7 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('families.payments.create');
     Route::post('/families/{family}/payments', [PaymentCollectionController::class, 'store'])
         ->name('families.payments.store');
+    Route::get('/receipts/{receipt}/pdf', [ReceiptController::class, 'downloadPdf'])->name('receipts.pdf');
     Route::get('/payment-reminders/generate', [PaymentReminderController::class, 'create'])
         ->name('payment-reminders.create');
     Route::post('/payment-reminders/generate', [PaymentReminderController::class, 'store'])

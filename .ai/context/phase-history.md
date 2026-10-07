@@ -765,19 +765,22 @@ Verification:
 - `php artisan test --compact`: 474 tests / 2273 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
-## Phase 10D-9: Print-Friendly Family and Student Detail Pages
-Status: unblocked presentation-only sub-scope complete and verified on 2026-10-07; pending commit.
+## Phase 10D-9: Print-Friendly Detail Pages & Receipt PDF Download
+Status: complete and verified on 2026-10-08; pending commit.
 
 Implemented:
 - Family and Student detail pages have clear browser print buttons using local `window.print()` only.
 - Scoped `print-record` styles hide the admin shell, page actions, table actions, and mutation controls while retaining displayed record fields.
-- No route, query, controller, model, migration, export, chart, report, or domain behavior changed.
+- Admin-only Receipt PDF download uses local Dompdf with the existing manual receipt number as its filename.
+- The PDF reads only Receipt family, payment, and allocation snapshots. It never creates, renumbers, or changes receipts, payments, allocations, or due items.
+- Accountant receipt list/detail access is unchanged; Accountant PDF download access is deliberately absent.
 
 Deferred:
-- Report export, dashboard charts, and dashboard/report refinement remain outside this print-only sub-scope.
+- Report export, dashboard charts, and dashboard/report refinement remain deferred.
 
 Verification:
-- `php artisan test --compact`: 475 tests / 2288 assertions passed.
+- `php artisan test tests/Feature/WebPaymentCollectionTest.php tests/Feature/WebCommercialWorkflowUiTest.php --compact`: 37 tests / 267 assertions passed.
+- `php artisan test --compact`: 496 tests / 2395 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 10D Archive/Deactivate Workflow

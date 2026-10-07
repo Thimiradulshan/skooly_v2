@@ -53,6 +53,18 @@ it('denies guests the payment collection page', function () {
 it('denies guests the payment and receipt history pages', function () {
     $this->get(route('payments.index'))->assertRedirect(route('login'));
     $this->get(route('receipts.index'))->assertRedirect(route('login'));
+    $this->get(route('receipts.pdf', Receipt::factory()->create()))->assertRedirect(route('login'));
+});
+
+it('denies teachers and accountants receipt PDF downloads', function () {
+    $receipt = Receipt::factory()->create();
+
+    $this->actingAs(userWithRole(Role::TEACHER))
+        ->get(route('receipts.pdf', $receipt))
+        ->assertForbidden();
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->get(route('receipts.pdf', $receipt))
+        ->assertForbidden();
 });
 
 it('denies teachers and accountants the payment collection page', function () {
@@ -213,6 +225,48 @@ it('shows a receipt snapshot without recalculating changed due items', function 
         ->assertSee('100.00');
 });
 
+it('downloads an immutable receipt snapshot as a PDF for an admin', function () {
+    $family = Family::factory()->create(['family_code' => 'FAM-PDF-SNAPSHOT']);
+    $dueItem = paymentDueItem(Student::factory()->for($family)->create(['name' => 'Snapshot student']), [
+        'description' => 'Original PDF tuition',
+    ]);
+    $payment = Payment::recordManual($family, 'RCT-PDF-SNAPSHOT', 'cash', '100.00', [
+        ['student_due_item_id' => $dueItem->id, 'amount' => '100.00'],
+    ]);
+    $receipt = $payment->receipt;
+    $snapshot = $receipt->only([
+        'receipt_no', 'issued_at', 'family_snapshot', 'payment_snapshot', 'allocation_snapshot', 'total_amount',
+    ]);
+    $dueItem->update(['description' => 'Changed PDF tuition', 'original_amount' => 200]);
+    $pdfHtml = view('receipts.pdf', ['receipt' => $receipt])->render();
+
+    $response = $this->actingAs(adminUser())->get(route('receipts.pdf', $receipt));
+
+    $response
+        ->assertOk()
+        ->assertDownload('RCT-PDF-SNAPSHOT.pdf')
+        ->assertHeader('Content-Type', 'application/pdf');
+
+    expect($response->getContent())
+        ->toStartWith('%PDF');
+    expect($pdfHtml)
+        ->toContain('RCT-PDF-SNAPSHOT')
+        ->toContain('FAM-PDF-SNAPSHOT')
+        ->toContain('Original PDF tuition')
+        ->not->toContain('Changed PDF tuition');
+    expect($receipt->refresh()->only([
+        'receipt_no', 'issued_at', 'family_snapshot', 'payment_snapshot', 'allocation_snapshot', 'total_amount',
+    ]))->toEqual($snapshot);
+
+    $this->actingAs(adminUser())
+        ->get(route('receipts.show', $receipt))
+        ->assertSee('Download PDF')
+        ->assertSee(route('receipts.pdf', $receipt, false), false);
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->get(route('receipts.show', $receipt))
+        ->assertDontSee('Download PDF');
+});
+
 it('shows payment details with a receipt link', function () {
     $family = Family::factory()->create();
     $dueItem = paymentDueItem(Student::factory()->for($family)->create());
@@ -262,13 +316,17 @@ it('rejects invalid list sorting input', function () {
         ->assertSessionHasErrors('sort');
 });
 
-it('adds no automatic allocation, edit, delete, or refund route', function () {
+it('adds no automatic allocation, receipt mutation, payment edit, delete, or refund route', function () {
     expect(Route::has('payments.index'))->toBeTrue();
     expect(Route::has('receipts.index'))->toBeTrue();
     expect(Route::has('payments.edit'))->toBeFalse();
     expect(Route::has('payments.update'))->toBeFalse();
     expect(Route::has('payments.destroy'))->toBeFalse();
     expect(Route::has('payments.refund'))->toBeFalse();
+    expect(Route::has('receipts.create'))->toBeFalse();
+    expect(Route::has('receipts.store'))->toBeFalse();
+    expect(Route::has('receipts.edit'))->toBeFalse();
+    expect(Route::has('receipts.update'))->toBeFalse();
     expect(Route::has('receipts.destroy'))->toBeFalse();
 
     $family = Family::factory()->create();

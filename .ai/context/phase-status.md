@@ -47,11 +47,12 @@ Phase 10D Audit Log Workflow
 - Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists - complete / pending commit
 - Phase 10D-7: Payment Reversal Workflow - complete / pending commit
 - Phase 10D-8: Promotion Draft Editing & Accountant Read Access - complete / pending commit
+- Phase 10D-9: Print-Friendly Detail Pages & Receipt PDF Download - complete / pending commit
 - Phase 10D Archive/Deactivate Workflow - complete / pending commit
 - Phase 10D Audit Log Workflow - complete / pending commit
 
 ## Current Status
-Admin-only audit-log filtering and CSV/PDF export are complete. Logs remain append-only and retained forever; no archive, purge, mutation, or polymorphic-source follow-up route exists. The completed AcademicYear, Term, Grade, and Section archive workflow preserves every record and foreign reference, excludes archived records only from new configuration selectors, and writes explicit audit logs.
+Admin-only downloadable PDFs now render existing immutable Receipt snapshots with the manual receipt number as the filename. Accountant receipt list/detail access is unchanged and does not include PDF download. Browser print remains available; no receipt, payment, allocation, or due-item mutation route was added.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -271,8 +272,17 @@ Admin-only audit-log filtering and CSV/PDF export are complete. Logs remain appe
 - SchoolSetting lists and accepts only active academic years. Historical indexes, detail views, reports, and existing associations stay unfiltered.
 - Audit logs are Admin-only and read-only. They filter by stored action, actor, auditable type, and occurred-at date range; CSV and local-Dompdf PDF exports use the same stored-row query and include a filter summary.
 - Audit logs are retained forever. No audit-log archive, purge, update, delete, or polymorphic auditable lookup route exists.
+- Receipt PDFs are Admin-only, downloadable local-Dompdf documents generated from stored Receipt snapshots only. The existing manual receipt_no remains unchanged and is used as the download filename. Accountant history/detail access does not include download access.
 
 ## Verification Result
+Passed on 2026-10-08:
+- php artisan test tests/Feature/WebPaymentCollectionTest.php tests/Feature/WebCommercialWorkflowUiTest.php --compact: 37 tests, 267 assertions
+- php artisan test --compact: 496 tests, 2395 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (optional Fontaine font-fallback warning only)
+- composer audit: no security vulnerability advisories
+
 Passed on 2026-10-07:
 - php artisan test --compact: 490 tests, 2363 assertions
 - php vendor/bin/phpstan analyse: 0 errors
@@ -367,6 +377,6 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, 10D-7, and 10D-8 if approved.
+1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, 10D-7, 10D-8, and 10D-9 if approved.
 2. Do not implement Phase 10D-9 report exports, dashboard charts, or reports without their outstanding product decisions.
-3. Receipt PDF export, partial reversals, and refunds remain deferred.
+3. Partial reversals and refunds remain deferred.

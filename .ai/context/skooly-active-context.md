@@ -126,7 +126,8 @@ Use this file before broad project reinspection.
 - Admin web payment collection calls Payment::recordManual() and supports manual allocation only.
 - Only outstanding due items for the selected Family are shown in the payment form.
 - Receipt pages render stored snapshots and never recalculate from live due items.
-- No payment edit, refund, delete, automatic allocation, or receipt export route exists.
+- Admin may download an existing Receipt PDF rendered from stored snapshots only, using its manual receipt number as the filename. Accountants may view receipt history/details but cannot download PDFs.
+- No payment edit, refund, delete, automatic allocation, or receipt mutation route exists.
 - Admin web pages exist for event management, charges, and participation.
 - Event management only creates or updates Event, EventCharge, and EventParticipation records.
 - Event due generation remains separate through GenerateEventDueItems.
@@ -225,4 +226,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-10-07: `migrate:fresh --no-interaction` passed; 481 tests / 2324 assertions passed; PHPStan and Pint passed; npm build passed with only the optional Fontaine warning; Composer audit found no advisories; git diff --check passed.
+- 2026-10-08: receipt PDF scope focused tests passed (37 tests / 267 assertions); full suite passed (496 tests / 2395 assertions); PHPStan and Pint passed; npm build passed with only the optional Fontaine warning; Composer audit found no advisories; git diff --check passed.

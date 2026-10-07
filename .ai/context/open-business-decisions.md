@@ -252,7 +252,12 @@ Do not invent answers for these.
 ## Phase 10D-6 Rules
 - Payment and Receipt history is read-only and Admin-only. It does not alter payments, receipts, allocations, due items, or snapshots.
 - Search is limited to family code, payment reference, and receipt number. Sort columns and directions are validated allow-lists; no client-provided SQL identifier is used.
-- Receipt PDF export and payment correction/refund remain deferred pending their documented decisions.
+- Payment correction/refund remains deferred pending its documented decisions.
+
+## Phase 10D-9 Receipt PDF Rules
+- Only Admin may download an existing Receipt PDF. Accountant receipt list/detail access does not include download access.
+- The PDF renders only Receipt family_snapshot, payment_snapshot, allocation_snapshot, issued_at, total_amount, and the existing manual receipt_no.
+- Receipt PDF download never creates, renumbers, updates, or otherwise mutates a Receipt, Payment, PaymentAllocation, or StudentDueItem.
 
 ## Phase 10D-7 Rules
 - Payment correction is an append-only, full-payment reversal only; the original Payment, Receipt, and PaymentAllocation records are never changed or deleted.

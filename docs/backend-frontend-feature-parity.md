@@ -65,7 +65,7 @@ role, teacher, subject, and assignment setup remain backend-only.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Payments | `Payment` | `Payment::recordManual()` | `PaymentCollectionController` | create, store, **show only** | create, show | `PaymentReceiptTest`, `WebPaymentCollectionTest` | **Partial** | **No payment list or index.** The only way to find a past payment is to know the ID | Highest-value finance gap. Staff cannot answer "did this family pay?" | 10D-6 |
 | Payment Allocations | `PaymentAllocation` | created inside `recordManual()` | shown on payment show | none | payment show | `PaymentReceiptTest` | **Intentionally absent** | None | Allocations are immutable. A list would be read-only noise | Not needed |
-| Receipts | `Receipt` | created inside `recordManual()` | `ReceiptController` | show only | show | `PaymentReceiptTest`, `WebCommercialWorkflowUiTest` | **Partial** | No receipt list, no PDF export | Print stylesheet exists, so a browser print is a real PDF path today | 10D-6 |
+| Receipts | `Receipt` | created inside `recordManual()` | `ReceiptController` | index, show, Admin PDF download | index, show, print, Admin PDF | `PaymentReceiptTest`, `WebPaymentCollectionTest`, `WebCommercialWorkflowUiTest` | **Complete** | None | PDF reads only stored family, payment, and allocation snapshots; manual receipt number remains the download filename; Accountant download access is deliberately absent | Complete in 10D-9 |
 | Payment edit / refund | none | none | none | none | none | none | **Intentionally absent** | none | **Needs business decision.** There is no correction path for a mistaken payment at all. This is a genuine operational blocker, not a missing feature | 10D-7 |
 
 ---

@@ -172,7 +172,7 @@ it('links a payment to its receipt and back to the family', function () {
         ->assertSee(route('families.show', $family, false), false);
 });
 
-it('renders a receipt preview with a clear total and no export claim', function () {
+it('renders a receipt preview with a clear total and PDF download link', function () {
     $family = Family::factory()->create();
     $student = Student::factory()->for($family)->create();
     $dueItem = StudentDueItem::factory()->for($student)->create([
@@ -196,7 +196,8 @@ it('renders a receipt preview with a clear total and no export claim', function 
         ->assertSee('Total received')
         ->assertSee('Skooly')
         ->assertSee('not recalculated from live due items', false)
-        ->assertSee('PDF export is not implemented', false)
+        ->assertSee('Download PDF')
+        ->assertSee(route('receipts.pdf', $receipt, false), false)
         ->assertSee(route('payments.show', $payment, false), false);
 });
 

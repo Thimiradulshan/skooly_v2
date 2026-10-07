@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ListReceiptsRequest;
 use App\Models\Receipt;
+use Dompdf\Dompdf;
 
 class ReceiptController extends Controller
 {
@@ -34,5 +35,18 @@ class ReceiptController extends Controller
     public function show(Receipt $receipt)
     {
         return view('receipts.show', ['receipt' => $receipt]);
+    }
+
+    public function downloadPdf(Receipt $receipt)
+    {
+        $dompdf = new Dompdf;
+        $dompdf->loadHtml(view('receipts.pdf', ['receipt' => $receipt])->render());
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+
+        return response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$receipt->receipt_no.'.pdf"',
+        ]);
     }
 }
