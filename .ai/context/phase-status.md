@@ -273,6 +273,7 @@ Admin-only downloadable PDFs now render existing immutable Receipt snapshots wit
 - Audit logs are Admin-only and read-only. They filter by stored action, actor, auditable type, and occurred-at date range; CSV and local-Dompdf PDF exports use the same stored-row query and include a filter summary.
 - Audit logs are retained forever. No audit-log archive, purge, update, delete, or polymorphic auditable lookup route exists.
 - Receipt PDFs are Admin-only, downloadable local-Dompdf documents generated from stored Receipt snapshots only. The existing manual receipt_no remains unchanged and is used as the download filename. Accountant history/detail access does not include download access.
+- The unreachable welcome Blade view was removed; the root route remains a redirect for every user.
 
 ## Verification Result
 Passed on 2026-10-08:

@@ -69,7 +69,7 @@ and Section archive/restore are complete; the active academic year cannot be arc
 | Attention queue on the dashboard | Shows what needs action today rather than only counts. | Would need new queries | No | What counts as needing attention | 10D-9 |
 | Charts and widgets | Visual summaries of collections. | No | No | None | 10D-9 |
 | Status badges and density polish | Mostly done in 10C-4B and 10C-4C. | n/a | Yes | None | Later |
-| Remove the dead `welcome.blade.php` | Unreachable since `/` redirects. | n/a | Dead file | None | 10D-4 |
+| Remove the dead `welcome.blade.php` | Removed; `/` redirects and no longer has an unused fallback view. | n/a | n/a | None | Complete |
 | Print stylesheet for the family and student pages | Family and Student detail pages have browser print controls and scoped print output that retains record details and omits the admin shell and mutation controls. | n/a | Yes | None | Complete in 10D-9 |
 
 ---
