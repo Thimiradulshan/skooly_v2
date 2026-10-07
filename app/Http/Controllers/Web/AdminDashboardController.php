@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Family;
 use App\Models\PaymentReminder;
 use App\Models\PromotionBatch;
@@ -19,6 +20,12 @@ class AdminDashboardController extends Controller
             'outstandingCount' => StudentDueItem::query()->where('balance_amount', '>', 0)->count(),
             'draftBatchCount' => PromotionBatch::query()->where('status', PromotionBatch::STATUS_DRAFT)->count(),
             'reminderCount' => PaymentReminder::query()->count(),
+            'recentAuditLogs' => AuditLog::query()
+                ->with('actor')
+                ->latest('occurred_at')
+                ->latest('id')
+                ->limit(8)
+                ->get(),
         ]);
     }
 }

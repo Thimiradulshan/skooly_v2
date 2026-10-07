@@ -104,4 +104,26 @@
             </span>
         </a>
     </div>
+
+    <h2 class="section-heading">Recent activity</h2>
+    <x-card>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>Occurred at</th><th>Action</th><th>Actor</th><th>Record</th></tr></thead>
+                <tbody>
+                @forelse ($recentAuditLogs as $auditLog)
+                    <tr>
+                        <td>{{ $auditLog->occurred_at->toDateTimeString() }}</td>
+                        <td>{{ str($auditLog->action)->headline() }}</td>
+                        <td>{{ $auditLog->actor?->name ?? 'System' }}</td>
+                        <td>{{ $auditLog->auditable_type ? class_basename($auditLog->auditable_type).' #'.$auditLog->auditable_id : '—' }}</td>
+                    </tr>
+                @empty
+                    <tr class="table-empty"><td colspan="4">No audit activity has been recorded yet.</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="page-actions"><x-button-link :href="route('audit-logs.index')" variant="secondary">View audit log</x-button-link></div>
+    </x-card>
 @endsection

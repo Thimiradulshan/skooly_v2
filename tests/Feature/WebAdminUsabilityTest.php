@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AuditLog;
 use App\Models\Family;
 use App\Models\Guardian;
 use App\Models\Role;
@@ -53,6 +54,20 @@ it('shows cheap workflow counts on the dashboard', function () {
         ->assertSee('Outstanding due items')
         ->assertSee('Draft promotion batches')
         ->assertSee('Payment reminders');
+});
+
+it('shows recent stored audit activity on the dashboard', function () {
+    $family = Family::factory()->create();
+    AuditLog::factory()->for(adminUser(), 'actor')->for($family, 'auditable')->create([
+        'action' => AuditLog::ACTION_FAMILY_CREATED,
+    ]);
+
+    $this->actingAs(adminUser())
+        ->get(route('admin.dashboard'))
+        ->assertOk()
+        ->assertSee('Recent activity')
+        ->assertSee('Family Created')
+        ->assertSee(route('audit-logs.index', [], false));
 });
 
 it('renders the main workflow links in the admin layout navigation', function () {
