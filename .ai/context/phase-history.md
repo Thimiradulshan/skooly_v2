@@ -653,7 +653,7 @@ Verification:
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 10D-6: Payment & Receipt History Lists
-Status: complete and verified on 2026-10-07; pending commit.
+Status: complete and verified on 2026-10-07; committed in 4cf641f.
 
 Implemented:
 - Admin-only payment and receipt history index pages with links to their existing detail pages.

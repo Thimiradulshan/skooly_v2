@@ -41,7 +41,7 @@ Phase 10D-6: Payment & Receipt History Lists
 - Phase 10D-2: Identity, Teacher, Subject & Assignment Management - complete (committed in deef8f5)
 - Phase 10D-3: Student & Guardian Management - complete (committed in 60007d9)
 - Phase 10D-4: Draft Discard & Reminder Cancellation - complete (committed in bb27137)
-- Phase 10D-6: Payment & Receipt History Lists - complete / pending commit
+- Phase 10D-6: Payment & Receipt History Lists - complete (committed in 4cf641f)
 
 ## Current Status
 Phase 10D-6 is complete and verified. It adds Admin-only payment and receipt history lists with safe search, fixed sorting, pagination, and detail links, without modifying any financial record.
