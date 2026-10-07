@@ -10,6 +10,16 @@ git diff --check
 git status
 
 ## Latest Known Good
+Accountant payment collection passed on 2026-10-08:
+- `php artisan test tests/Feature/WebPaymentCollectionTest.php tests/Feature/WebAccountantAuthorizationTest.php tests/Feature/PaymentReversalTest.php --compact`: 25 tests / 198 assertions passed.
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 499 tests / 2444 assertions passed.
+- PHPStan passed with 0 errors.
+- Pint passed.
+- `npm run build` passed; Vite reported only the optional Fontaine font-fallback warning.
+- Composer audit found no vulnerabilities.
+- `git diff --check` passed before the final context-only verification record.
+
 Partial payment reversals passed on 2026-10-08:
 - `php artisan migrate:fresh --no-interaction` passed.
 - `php artisan test tests/Feature/PaymentReversalTest.php tests/Feature/WebAccountantAuthorizationTest.php --compact`: 8 tests / 85 assertions passed.

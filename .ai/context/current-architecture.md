@@ -88,7 +88,7 @@ Laravel modular monolith.
 - Request and approval lock the payment and original allocations. Requested amounts must be positive and no more than the remaining amount after approved reversal allocations; approval rechecks that cap and due-item paid/balance/net safety under locks.
 - Approval never mutates or deletes the original payment, receipt, or allocations. It reopens only approved selected amounts and creates a CorrectionReceipt with immutable original-receipt and itemized reversal snapshots.
 - Payment reversal request and approval use explicit append-only audit entries.
-- Accountant web access is limited to payment/receipt history and detail, payment-reversal visibility/requesting, the Dues Dashboard, and payment-reminder list/detail. Collection, reminder mutations, families, students, guardians, academic setup, staff, events, promotion, approval, and the admin dashboard remain Admin-only.
+- Accountant web access is limited to finance-only payment collection through an exact family-code lookup, payment/receipt history and detail, payment-reversal visibility/requesting, the Dues Dashboard, and payment-reminder list/detail. Collection exposes only the selected Family's outstanding due-item allocation data; family browsing, reminder mutations, students, guardians, academic setup, staff, events, promotion, approval, and the admin dashboard remain Admin-only.
 
 ## Recurring Fee Due Generation
 - app/Actions/Fees/GenerateRecurringDueItems.php generates StudentDueItems for a cycle.
@@ -202,7 +202,7 @@ Laravel modular monolith.
 - PaymentCollectionController is a thin adapter to Payment::recordManual(). It has no allocation business logic.
 - StoreManualPaymentRequest provides user-friendly validation for totals, family ownership, and current balances; Payment::recordManual() remains authoritative.
 - ReceiptController renders the stored Receipt snapshot only.
-- The payment UI is Admin-only and supports manual collection, payment viewing, and receipt viewing without mutation routes.
+- The payment UI supports Admin collection from a Family page and Accountant collection only through `/payments/collect`, which resolves an exact family code to the existing allocation form and stores that selected Family in the session. Accountant create/store requests are denied unless they match the selected Family. The collection form exposes only selected-Family due items and the existing payment-recording POST remains the only collection mutation route.
 - Admin-only payment and receipt history lists support family-code, payment-reference, and receipt-number search, validated fixed sorting, and 20-record pagination.
 - ReceiptController provides an Admin-only Dompdf download that renders only the stored Receipt snapshots and uses the existing manual receipt number as its filename. Accountants retain receipt list/detail access but cannot download the PDF.
 

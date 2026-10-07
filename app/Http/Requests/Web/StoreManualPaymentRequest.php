@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Web;
 
 use App\Models\Family;
-use App\Models\Role;
+use App\Models\Payment;
 use App\Models\StudentDueItem;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -13,9 +13,7 @@ class StoreManualPaymentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $user = $this->user();
-
-        return $user !== null && $user->hasAnyRole([Role::ADMIN]);
+        return $this->user()?->can('create', Payment::class) ?? false;
     }
 
     /**

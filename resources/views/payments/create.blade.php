@@ -8,16 +8,18 @@
                    eyebrow="Payments" />
 
     <div class="page-actions">
-        <x-button-link :href="route('families.show', $family)" variant="secondary">Back to family</x-button-link>
+        <x-button-link :href="auth()->user()->hasRole(\App\Models\Role::ADMIN) ? route('families.show', $family) : route('payments.collect')" variant="secondary">Back</x-button-link>
     </div>
 
     @if ($dueItems->isEmpty())
         <x-empty-state title="No outstanding due items"
                        description="Generate due items before recording a payment for this family." />
 
-        <div class="page-actions">
-            <x-button-link :href="route('due-generation.recurring.create')">Generate recurring dues</x-button-link>
-        </div>
+        @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
+            <div class="page-actions">
+                <x-button-link :href="route('due-generation.recurring.create')">Generate recurring dues</x-button-link>
+            </div>
+        @endif
     @else
         <div class="callout">
             <span class="callout-mark" aria-hidden="1">1</span>
@@ -99,7 +101,7 @@
 
                 <div class="btn-row">
                     <button type="submit" class="btn">Record manual payment</button>
-                    <a class="btn btn-secondary" href="{{ route('families.show', $family) }}">Cancel</a>
+                    <a class="btn btn-secondary" href="{{ auth()->user()->hasRole(\App\Models\Role::ADMIN) ? route('families.show', $family) : route('payments.collect') }}">Cancel</a>
                 </div>            </form>
         </x-card>
     @endif

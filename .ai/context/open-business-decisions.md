@@ -266,14 +266,14 @@ Do not invent answers for these.
 - Request and approval lock the original Payment and allocations. Approval rechecks reversal caps plus paid, balance, and net safety, then atomically reopens only selected amounts: paid_amount decreases, balance_amount increases, and status becomes unpaid at zero paid or partially_paid otherwise.
 - Admin enters a unique correction receipt number on approval. CorrectionReceipt snapshots the original Receipt, reversal total, and itemized selected entries; the original receipt stays immutable.
 - Request and approval are explicitly audited inside their respective transactions with totals and itemized entries.
-- Accountants receive only payment/receipt history and reversal request/list/detail access. Payment collection, family access, and approval remain Admin-only.
+- Accountants may select a Family by its exact family code only within payment collection, then view that Family's outstanding due-item allocation data and record a manual payment. Family browsing, reversal approval, and all other non-finance access remain Admin-only.
 
 ## Phase 10D-8 Rules
 - Draft promotion items are individually editable only by Admin. Confirmed and discarded batches, including their items, are immutable.
 - Promotion item updates are transactional and audited as promotion_batch_item_updated. They never create or modify Enrollments, Students, due items, payments, or receipts.
 - Promote and retain require a target grade and a target section belonging to that grade. Exclude and graduate always persist null target IDs.
 - Accountant read access includes payment/receipt history and details, reversal history/detail/request pages, the Dues Dashboard, and payment-reminder list/detail pages only.
-- Accountant cannot collect payments, approve reversals, generate/cancel reminders, view family/student/guardian pages, or access academic setup, staff, events, promotion, or the admin dashboard.
+- Accountant may collect a manual payment only through the finance-only family-code entry flow. Accountant cannot approve reversals, generate/cancel reminders, view family/student/guardian pages, or access academic setup, staff, events, promotion, or the admin dashboard.
 
 ## Phase 10D-6B Rules
 - Pagination is read-only and uses 20 records per page with query-string preservation across every in-scope Admin list page.

@@ -80,6 +80,8 @@
 
                 <div>
                     <p class="sidebar-section-title">Payments</p>
+                    <a class="sidebar-link {{ request()->routeIs('payments.collect', 'families.payments.*') ? 'is-active' : '' }}"
+                       href="{{ route('payments.collect') }}">Collect Payment</a>
                     <a class="sidebar-link {{ request()->routeIs('payments.*') ? 'is-active' : '' }}"
                        href="{{ route('payments.index') }}">Payment History</a>
                     <a class="sidebar-link {{ request()->routeIs('receipts.*') ? 'is-active' : '' }}"

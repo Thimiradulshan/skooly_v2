@@ -5,6 +5,10 @@
 @section('content')
     <x-page-header title="Payment history" subtitle="Recorded payments and their issued receipts." eyebrow="Payments" />
 
+    <div class="page-actions">
+        <x-button-link :href="route('payments.collect')">Collect payment</x-button-link>
+    </div>
+
     <x-card title="Search and sort">
         <form method="GET" action="{{ route('payments.index') }}">
             <div class="form-grid">
@@ -20,7 +24,7 @@
         @forelse ($payments as $payment)
             <tr><td>{{ $payment->family->family_code }}</td><td><a href="{{ route('payments.show', $payment) }}">{{ $payment->payment_reference ?: 'Payment '.$payment->id }}</a></td><td>{{ $payment->method }}</td><td>{{ $payment->paid_at->toDateString() }}</td><td class="num">{{ $payment->amount }}</td><td>@if ($payment->receipt)<a href="{{ route('receipts.show', $payment->receipt) }}">{{ $payment->receipt->receipt_no }}</a>@endif</td></tr>
         @empty
-            <tr class="table-empty"><td colspan="6"><span class="empty-state-title">No payments found</span>Record a payment from a family page to create history.</td></tr>
+            <tr class="table-empty"><td colspan="6"><span class="empty-state-title">No payments found</span>Collect a payment by entering its family code.</td></tr>
         @endforelse
     </tbody></table></div>
     <x-pagination :paginator="$payments" />

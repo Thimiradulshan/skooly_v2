@@ -204,7 +204,7 @@ it('rolls back approval when a due item can no longer be safely reopened', funct
     expect(AuditLog::query()->where('action', AuditLog::ACTION_PAYMENT_REVERSAL_APPROVED)->count())->toBe(0);
 });
 
-it('limits accountant web access to finance history and reversal requesting', function () {
+it('limits accountant web access to finance workflows', function () {
     $family = Family::factory()->create();
     $payment = reversalPayment($family, [['due_item' => reversalDueItem(Student::factory()->for($family)->create(), 100), 'amount' => 100]]);
     $accountant = userWithRole(Role::ACCOUNTANT);
@@ -220,7 +220,11 @@ it('limits accountant web access to finance history and reversal requesting', fu
     $reversal = PaymentReversal::query()->sole();
     $this->actingAs($accountant)->get(route('payment-reversals.index'))->assertOk();
     $this->actingAs($accountant)->get(route('families.index'))->assertForbidden();
-    $this->actingAs($accountant)->get(route('families.payments.create', $family))->assertForbidden();
+    $this->actingAs($accountant)->get(route('payments.collect'))->assertOk();
+    $this->actingAs($accountant)
+        ->get(route('payments.collect', ['family_code' => $family->family_code]))
+        ->assertRedirect(route('families.payments.create', $family));
+    $this->actingAs($accountant)->get(route('families.payments.create', $family))->assertOk();
     $this->actingAs($accountant)->post(route('payment-reversals.approve', $reversal), ['receipt_no' => 'CRR-REV-ROLE'])->assertForbidden();
 });
 

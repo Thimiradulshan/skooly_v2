@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
-it('lets an accountant read only the approved finance pages and navigation', function () {
+it('lets an accountant use approved finance pages and payment collection without family access', function () {
     $accountant = userWithRole(Role::ACCOUNTANT);
     $family = Family::factory()->create();
     $student = Student::factory()->for($family)->create();
@@ -23,6 +23,7 @@ it('lets an accountant read only the approved finance pages and navigation', fun
     $reminder = PaymentReminder::factory()->for($family)->for($guardian)->create();
 
     $this->actingAs($accountant)->get(route('payments.index'))->assertOk()
+        ->assertSee('Collect Payment')
         ->assertSee('Dues Dashboard')
         ->assertSee('Payment Reminders')
         ->assertDontSee('Families & Students')
@@ -40,13 +41,18 @@ it('lets an accountant read only the approved finance pages and navigation', fun
 
     $this->actingAs($accountant)->get(route('admin.dashboard'))->assertForbidden();
     $this->actingAs($accountant)->get(route('families.index'))->assertForbidden();
+    $this->actingAs($accountant)->get(route('families.show', $family))->assertForbidden();
     $this->actingAs($accountant)->get(route('students.show', $student))->assertForbidden();
     $this->actingAs($accountant)->get(route('guardians.show', $guardian))->assertForbidden();
     $this->actingAs($accountant)->get(route('academic-years.index'))->assertForbidden();
     $this->actingAs($accountant)->get(route('users.index'))->assertForbidden();
     $this->actingAs($accountant)->get(route('events.index'))->assertForbidden();
     $this->actingAs($accountant)->get(route('promotion-batches.index'))->assertForbidden();
-    $this->actingAs($accountant)->get(route('families.payments.create', $family))->assertForbidden();
+    $this->actingAs($accountant)->get(route('payments.collect'))->assertOk();
+    $this->actingAs($accountant)
+        ->get(route('payments.collect', ['family_code' => $family->family_code]))
+        ->assertRedirect(route('families.payments.create', $family));
+    $this->actingAs($accountant)->get(route('families.payments.create', $family))->assertOk();
     $this->actingAs($accountant)->get(route('due-generation.recurring.create'))->assertForbidden();
     $this->actingAs($accountant)->get(route('payment-reminders.create'))->assertForbidden();
     $this->actingAs($accountant)->post(route('payment-reminders.store'), [])->assertForbidden();

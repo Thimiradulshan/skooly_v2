@@ -52,7 +52,7 @@ Phase 10D Audit Log Workflow
 - Phase 10D Audit Log Workflow - complete / pending commit
 
 ## Current Status
-User-approved partial payment reversals are implemented. Accountants select exact original-allocation amounts, independent Admins approve under locks, and correction receipts/audit entries retain immutable itemized snapshots. Refunds remain deferred.
+User-approved Accountant payment collection is implemented. An Accountant starts at a finance-only exact family-code lookup, sees only the selected Family's student due-item allocation data, and records the existing manual payment transaction. Family browsing, reversal approval, reminder mutation, and all non-finance pages remain denied. Refunds remain deferred.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -265,7 +265,7 @@ User-approved partial payment reversals are implemented. Accountants select exac
 - Accountants may browse payment/receipt history and create/view reversals only. Admins approve, but not their own requests.
 - Admins may edit an individual PromotionBatchItem only while its batch is draft. Promote and retain require a target grade and a target section in that grade; exclude and graduate clear both target IDs.
 - UpdatePromotionBatchItem locks the batch and item, validates the draft state and target relation, then writes promotion_batch_item_updated inside its transaction. ConfirmPromotionBatch now locks and rechecks the batch draft state before applying items.
-- Accountants may read payment/receipt history and details, reversal history/detail/request pages, the Dues Dashboard, and payment-reminder list/detail pages. They cannot collect payments, approve reversals, generate/cancel reminders, or enter family, student, guardian, academic, staff, event, promotion, or admin-dashboard pages.
+- Accountants may enter a finance-only family-code payment collection flow, which exposes the selected Family's due-item allocation data only, and may read payment/receipt history and details, reversal history/detail/request pages, the Dues Dashboard, and payment-reminder list/detail pages. They cannot browse families or enter family, student, guardian, academic, staff, event, promotion, or admin-dashboard pages; they also cannot approve reversals or generate/cancel reminders.
 
 - AcademicYear, Term, Grade, and Section use a local `active()` scope for new configuration selectors only; there is no global lifecycle scope.
 - Archive and restore are Admin-only, explicitly confirmed in the UI, and audit each transition. Archiving an AcademicYear never archives Terms or other children.
@@ -276,6 +276,14 @@ User-approved partial payment reversals are implemented. Accountants select exac
 - The unreachable welcome Blade view was removed; the root route remains a redirect for every user.
 
 ## Verification Result
+Passed on 2026-10-08:
+- php artisan migrate:fresh --no-interaction
+- php artisan test --compact: 499 tests, 2444 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (optional Fontaine font-fallback warning only)
+- composer audit: no security vulnerability advisories
+
 Passed on 2026-10-08:
 - php artisan migrate:fresh --no-interaction
 - php artisan test --compact: 498 tests, 2413 assertions

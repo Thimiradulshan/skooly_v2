@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\FindPaymentFamilyRequest;
 use App\Http\Requests\Web\ListPaymentsRequest;
 use App\Http\Requests\Web\StoreManualPaymentRequest;
 use App\Models\Family;
 use App\Models\Payment;
+use App\Models\Role;
 use App\Models\StudentDueItem;
 use Carbon\Carbon;
 
@@ -37,6 +39,8 @@ class PaymentCollectionController extends Controller
 
     public function create(Family $family)
     {
+        $this->ensureAccountantSelectedFamily($family);
+
         return view('payments.create', [
             'family' => $family,
             'dueItems' => StudentDueItem::query()
@@ -49,8 +53,33 @@ class PaymentCollectionController extends Controller
         ]);
     }
 
+    public function collect(FindPaymentFamilyRequest $request)
+    {
+        if (! $request->filled('family_code')) {
+            $request->session()->forget('payment_collection_family_id');
+
+            return view('payments.collect');
+        }
+
+        $request->session()->forget('payment_collection_family_id');
+
+        $family = Family::query()
+            ->where('family_code', $request->string('family_code')->trim()->toString())
+            ->first();
+
+        if ($family === null) {
+            return back()->withErrors(['family_code' => 'No family matches that code.'])->withInput();
+        }
+
+        $request->session()->put('payment_collection_family_id', $family->id);
+
+        return redirect()->route('families.payments.create', $family);
+    }
+
     public function store(StoreManualPaymentRequest $request, Family $family)
     {
+        $this->ensureAccountantSelectedFamily($family);
+
         $allocations = array_values(array_filter(
             $request->input('allocations'),
             fn (array $allocation): bool => filled($allocation['amount'] ?? null),
@@ -81,5 +110,14 @@ class PaymentCollectionController extends Controller
         $payment->load(['family', 'allocations.studentDueItem.student', 'receipt', 'reversals']);
 
         return view('payments.show', ['payment' => $payment]);
+    }
+
+    private function ensureAccountantSelectedFamily(Family $family): void
+    {
+        $user = auth()->user();
+
+        if ($user?->hasRole(Role::ACCOUNTANT) && ! $user->hasRole(Role::ADMIN)) {
+            abort_unless(session('payment_collection_family_id') === $family->id, 403);
+        }
     }
 }

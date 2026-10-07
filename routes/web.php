@@ -32,6 +32,7 @@ use App\Http\Controllers\Web\TeacherAssignmentController;
 use App\Http\Controllers\Web\TeacherQualificationController;
 use App\Http\Controllers\Web\TermController;
 use App\Http\Controllers\Web\UserController;
+use App\Models\Payment;
 use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
@@ -177,10 +178,6 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::post('/events/{event}/participation', [EventParticipationController::class, 'store'])
         ->name('events.participation.store');
 
-    Route::get('/families/{family}/payments/create', [PaymentCollectionController::class, 'create'])
-        ->name('families.payments.create');
-    Route::post('/families/{family}/payments', [PaymentCollectionController::class, 'store'])
-        ->name('families.payments.store');
     Route::get('/receipts/{receipt}/pdf', [ReceiptController::class, 'downloadPdf'])->name('receipts.pdf');
     Route::get('/payment-reminders/generate', [PaymentReminderController::class, 'create'])
         ->name('payment-reminders.create');
@@ -207,6 +204,15 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
 
 Route::middleware(['auth', 'role:'.Role::ADMIN.','.Role::ACCOUNTANT])->group(function (): void {
     Route::get('/dues-dashboard', [DuesDashboardController::class, 'index'])->name('dues-dashboard.index');
+    Route::get('/payments/collect', [PaymentCollectionController::class, 'collect'])
+        ->can('create', Payment::class)
+        ->name('payments.collect');
+    Route::get('/families/{family}/payments/create', [PaymentCollectionController::class, 'create'])
+        ->can('create', Payment::class)
+        ->name('families.payments.create');
+    Route::post('/families/{family}/payments', [PaymentCollectionController::class, 'store'])
+        ->can('create', Payment::class)
+        ->name('families.payments.store');
     Route::get('/payments', [PaymentCollectionController::class, 'index'])->name('payments.index');
     Route::get('/payments/{payment}', [PaymentCollectionController::class, 'show'])->name('payments.show');
     Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');

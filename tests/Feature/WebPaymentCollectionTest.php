@@ -67,14 +67,56 @@ it('denies teachers and accountants receipt PDF downloads', function () {
         ->assertForbidden();
 });
 
-it('denies teachers and accountants the payment collection page', function () {
+it('lets an accountant select a family by code and record its payment', function () {
+    $family = Family::factory()->create();
+    $dueItem = paymentDueItem(Student::factory()->for($family)->create(['name' => 'Collection student']));
+
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->get(route('payments.collect'))
+        ->assertOk()
+        ->assertSee('Family code');
+
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->get(route('families.payments.create', $family))
+        ->assertForbidden();
+
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->get(route('payments.collect', ['family_code' => $family->family_code]))
+        ->assertRedirect(route('families.payments.create', $family));
+
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->get(route('families.payments.create', $family))
+        ->assertOk()
+        ->assertSee('Collection student')
+        ->assertSee('100.00')
+        ->assertDontSee('Back to family')
+        ->assertDontSee('Generate recurring dues');
+
+    $otherFamily = Family::factory()->create();
+
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->get(route('families.payments.create', $otherFamily))
+        ->assertForbidden();
+
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->post(route('families.payments.store', $family), manualPaymentPayload($dueItem))
+        ->assertRedirect();
+
+    expect(Payment::query()->sole()->family_id)->toBe($family->id);
+    expect($dueItem->refresh()->balance_amount)->toBe('60.00');
+});
+
+it('denies teachers the payment collection entry and recording routes', function () {
     $family = Family::factory()->create();
 
     $this->actingAs(userWithRole(Role::TEACHER))
+        ->get(route('payments.collect'))
+        ->assertForbidden();
+    $this->actingAs(userWithRole(Role::TEACHER))
         ->get(route('families.payments.create', $family))
         ->assertForbidden();
-    $this->actingAs(userWithRole(Role::ACCOUNTANT))
-        ->get(route('families.payments.create', $family))
+    $this->actingAs(userWithRole(Role::TEACHER))
+        ->post(route('families.payments.store', $family), [])
         ->assertForbidden();
 });
 
@@ -318,6 +360,8 @@ it('rejects invalid list sorting input', function () {
 
 it('adds no automatic allocation, receipt mutation, payment edit, delete, or refund route', function () {
     expect(Route::has('payments.index'))->toBeTrue();
+    expect(Route::has('payments.collect'))->toBeTrue();
+    expect(Route::has('payments.collect.store'))->toBeFalse();
     expect(Route::has('receipts.index'))->toBeTrue();
     expect(Route::has('payments.edit'))->toBeFalse();
     expect(Route::has('payments.update'))->toBeFalse();
@@ -341,5 +385,8 @@ it('adds no automatic allocation, receipt mutation, payment edit, delete, or ref
 
     $this->actingAs(adminUser())
         ->delete(route('payments.show', $payment))
+        ->assertMethodNotAllowed();
+    $this->actingAs(adminUser())
+        ->post(route('payments.collect'), [])
         ->assertMethodNotAllowed();
 });

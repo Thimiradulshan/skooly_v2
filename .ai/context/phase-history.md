@@ -789,6 +789,24 @@ Verification:
 - `php artisan test --compact`: 496 tests / 2395 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Accountant Payment Collection
+Status: complete and verified on 2026-10-08; pending commit.
+
+Implemented:
+- Finance-only `/payments/collect` entry page that resolves an exact Family code, stores the selected Family in session, and prevents Accountant allocation URLs from bypassing that selection.
+- Accountant access to the existing selected-Family allocation page and manual payment-recording transaction through `PaymentPolicy::create`.
+- Accountant-only view behavior on the allocation page so it never links to Family or due-generation pages.
+- Coverage for Accountant entry, selected-Family allocation data, recording, family/non-finance denial, Teacher denial, and the GET-only collection selector.
+
+Preserved:
+- The existing transactional family-ownership and balance guards remain authoritative.
+- No collection mutation route was added beyond the existing payment-recording POST; reversal approval and reminder mutation remain Admin-only.
+
+Verification:
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 499 tests / 2444 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 10D Archive/Deactivate Workflow
 Status: complete and verified on 2026-10-07; pending commit.
 
