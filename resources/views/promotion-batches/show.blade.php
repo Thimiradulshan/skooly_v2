@@ -33,6 +33,7 @@
                 <tr>
                     <th>Student</th><th>Source section</th><th>Action</th>
                     <th>Target grade</th><th>Target section</th><th>Status</th><th>Applied enrollment</th>
+                    @if ($promotionBatch->status === \App\Models\PromotionBatch::STATUS_DRAFT)<th class="actions">Edit</th>@endif
                 </tr>
                 </thead>
                 <tbody>
@@ -45,9 +46,44 @@
                         <td>{{ $item->targetSection?->name }}</td>
                         <td><x-status-badge :value="$item->status" /></td>
                         <td>{{ $item->applied_enrollment_id }}</td>
+                        @if ($promotionBatch->status === \App\Models\PromotionBatch::STATUS_DRAFT)
+                            <td class="actions">
+                                <form method="POST" action="{{ route('promotion-batches.items.update', [$promotionBatch, $item]) }}" data-loading>
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="form-field">
+                                        <label class="sr-only" for="action-{{ $item->id }}">Action</label>
+                                        <select class="form-control" id="action-{{ $item->id }}" name="action">
+                                            @foreach ([\App\Models\PromotionBatchItem::ACTION_PROMOTE, \App\Models\PromotionBatchItem::ACTION_RETAIN, \App\Models\PromotionBatchItem::ACTION_EXCLUDE, \App\Models\PromotionBatchItem::ACTION_GRADUATE] as $action)
+                                                <option value="{{ $action }}" @selected($item->action === $action)>{{ ucfirst($action) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-field">
+                                        <label class="sr-only" for="target-grade-{{ $item->id }}">Target grade</label>
+                                        <select class="form-control" id="target-grade-{{ $item->id }}" name="target_grade_id">
+                                            <option value="">-- target grade --</option>
+                                            @foreach ($grades as $grade)
+                                                <option value="{{ $grade->id }}" @selected($item->target_grade_id === $grade->id)>{{ $grade->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-field">
+                                        <label class="sr-only" for="target-section-{{ $item->id }}">Target section</label>
+                                        <select class="form-control" id="target-section-{{ $item->id }}" name="target_section_id">
+                                            <option value="">-- target section --</option>
+                                            @foreach ($sections as $section)
+                                                <option value="{{ $section->id }}" @selected($item->target_section_id === $section->id)>{{ $section->grade->name }} - {{ $section->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-small">Save</button>
+                                </form>
+                            </td>
+                        @endif
                     </tr>
                 @empty
-                    <tr class="table-empty"><td colspan="7">No eligible active students were found.</td></tr>
+                    <tr class="table-empty"><td colspan="{{ $promotionBatch->status === \App\Models\PromotionBatch::STATUS_DRAFT ? 8 : 7 }}">No eligible active students were found.</td></tr>
                 @endforelse
                 </tbody>
             </table>

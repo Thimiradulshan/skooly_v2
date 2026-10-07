@@ -6,11 +6,13 @@
     <x-page-header title="Dues dashboard"
                    subtitle="Total due, collected, and outstanding balances from stored snapshots." />
 
-    <div class="page-actions">
-        <x-button-link :href="route('due-generation.recurring.create')" variant="secondary">Recurring due generation</x-button-link>
-        <x-button-link :href="route('payment-reminders.index')" variant="secondary">Payment reminders</x-button-link>
-        <x-button-link :href="route('admin.dashboard')" variant="secondary">Dashboard</x-button-link>
-    </div>
+    @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
+        <div class="page-actions">
+            <x-button-link :href="route('due-generation.recurring.create')" variant="secondary">Recurring due generation</x-button-link>
+            <x-button-link :href="route('payment-reminders.index')" variant="secondary">Payment reminders</x-button-link>
+            <x-button-link :href="route('admin.dashboard')" variant="secondary">Dashboard</x-button-link>
+        </div>
+    @endif
 
     <x-card title="Filters">
         <form method="GET" action="{{ route('dues-dashboard.index') }}">

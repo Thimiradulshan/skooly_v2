@@ -144,8 +144,6 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::post('/due-generation/events', [DueGenerationController::class, 'eventStore'])
         ->name('due-generation.events.store');
 
-    Route::get('/dues-dashboard', [DuesDashboardController::class, 'index'])->name('dues-dashboard.index');
-
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
@@ -173,14 +171,10 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('families.payments.create');
     Route::post('/families/{family}/payments', [PaymentCollectionController::class, 'store'])
         ->name('families.payments.store');
-    Route::get('/payment-reminders', [PaymentReminderController::class, 'index'])
-        ->name('payment-reminders.index');
     Route::get('/payment-reminders/generate', [PaymentReminderController::class, 'create'])
         ->name('payment-reminders.create');
     Route::post('/payment-reminders/generate', [PaymentReminderController::class, 'store'])
         ->name('payment-reminders.store');
-    Route::get('/payment-reminders/{paymentReminder}', [PaymentReminderController::class, 'show'])
-        ->name('payment-reminders.show');
     Route::post('/payment-reminders/{paymentReminder}/cancel', [PaymentReminderController::class, 'cancel'])
         ->name('payment-reminders.cancel');
 
@@ -196,9 +190,12 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('promotion-batches.confirm');
     Route::post('/promotion-batches/{promotionBatch}/discard', [PromotionBatchController::class, 'discard'])
         ->name('promotion-batches.discard');
+    Route::put('/promotion-batches/{promotionBatch}/items/{promotionBatchItem}', [PromotionBatchController::class, 'updateItem'])
+        ->name('promotion-batches.items.update');
 });
 
 Route::middleware(['auth', 'role:'.Role::ADMIN.','.Role::ACCOUNTANT])->group(function (): void {
+    Route::get('/dues-dashboard', [DuesDashboardController::class, 'index'])->name('dues-dashboard.index');
     Route::get('/payments', [PaymentCollectionController::class, 'index'])->name('payments.index');
     Route::get('/payments/{payment}', [PaymentCollectionController::class, 'show'])->name('payments.show');
     Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
@@ -206,6 +203,10 @@ Route::middleware(['auth', 'role:'.Role::ADMIN.','.Role::ACCOUNTANT])->group(fun
     Route::get('/payment-reversals', [PaymentReversalController::class, 'index'])->name('payment-reversals.index');
     Route::get('/payment-reversals/{paymentReversal}', [PaymentReversalController::class, 'show'])
         ->name('payment-reversals.show');
+    Route::get('/payment-reminders', [PaymentReminderController::class, 'index'])
+        ->name('payment-reminders.index');
+    Route::get('/payment-reminders/{paymentReminder}', [PaymentReminderController::class, 'show'])
+        ->name('payment-reminders.show');
 });
 
 Route::middleware(['auth', 'role:'.Role::ACCOUNTANT])->group(function (): void {

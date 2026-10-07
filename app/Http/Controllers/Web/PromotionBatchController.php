@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Web;
 use App\Actions\Promotion\ConfirmPromotionBatch;
 use App\Actions\Promotion\CreatePromotionBatch;
 use App\Actions\Promotion\DiscardPromotionBatch;
+use App\Actions\Promotion\UpdatePromotionBatchItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ConfirmPromotionBatchRequest;
 use App\Http\Requests\Web\DiscardPromotionBatchRequest;
 use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StorePromotionBatchRequest;
+use App\Http\Requests\Web\UpdatePromotionBatchItemRequest;
 use App\Models\AcademicYear;
+use App\Models\Grade;
 use App\Models\PromotionBatch;
+use App\Models\PromotionBatchItem;
 use App\Models\Section;
 use InvalidArgumentException;
 use RuntimeException;
@@ -84,7 +88,11 @@ class PromotionBatchController extends Controller
             'items.appliedEnrollment',
         ]);
 
-        return view('promotion-batches.show', ['promotionBatch' => $promotionBatch]);
+        return view('promotion-batches.show', [
+            'promotionBatch' => $promotionBatch,
+            'grades' => Grade::query()->orderBy('sequence_order')->get(),
+            'sections' => Section::query()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
+        ]);
     }
 
     public function confirm(
@@ -117,5 +125,29 @@ class PromotionBatchController extends Controller
         return redirect()
             ->route('promotion-batches.show', $promotionBatch)
             ->with('status', 'Promotion batch discarded. No student enrollments were changed.');
+    }
+
+    public function updateItem(
+        UpdatePromotionBatchItemRequest $request,
+        PromotionBatch $promotionBatch,
+        PromotionBatchItem $promotionBatchItem,
+        UpdatePromotionBatchItem $updatePromotionBatchItem,
+    ) {
+        try {
+            $updatePromotionBatchItem->handle(
+                $promotionBatch,
+                $promotionBatchItem,
+                $request->string('action')->toString(),
+                $request->integer('target_grade_id') ?: null,
+                $request->integer('target_section_id') ?: null,
+                $request->user(),
+            );
+        } catch (InvalidArgumentException|RuntimeException $exception) {
+            return back()->withErrors(['promotion_batch_item' => $exception->getMessage()]);
+        }
+
+        return redirect()
+            ->route('promotion-batches.show', $promotionBatch)
+            ->with('status', 'Promotion item updated. No enrollment has been changed.');
     }
 }

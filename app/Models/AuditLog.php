@@ -32,6 +32,8 @@ class AuditLog extends Model
 
     public const ACTION_PROMOTION_BATCH_CONFIRMED = 'promotion_batch_confirmed';
 
+    public const ACTION_PROMOTION_BATCH_ITEM_UPDATED = 'promotion_batch_item_updated';
+
     public const ACTION_RECURRING_DUES_GENERATED = 'recurring_dues_generated';
 
     public const ACTION_EVENT_DUES_GENERATED = 'event_dues_generated';

@@ -13,7 +13,7 @@ class PaymentReminderFilterRequest extends FormRequest
     {
         $user = $this->user();
 
-        return $user !== null && $user->hasAnyRole([Role::ADMIN]);
+        return $user !== null && $user->hasAnyRole([Role::ADMIN, Role::ACCOUNTANT]);
     }
 
     /**

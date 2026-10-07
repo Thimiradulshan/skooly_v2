@@ -6,9 +6,11 @@
     <x-page-header title="Payment reminders"
                    subtitle="Internal records of which guardians need telling about balances." />
 
-    <div class="page-actions">
-        <x-button-link :href="route('payment-reminders.create')">Generate reminder records</x-button-link>
-    </div>
+    @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
+        <div class="page-actions">
+            <x-button-link :href="route('payment-reminders.create')">Generate reminder records</x-button-link>
+        </div>
+    @endif
 
     <x-card title="Filters">
         <form method="GET" action="{{ route('payment-reminders.index') }}">
@@ -89,9 +91,11 @@
                     <td colspan="7">
                         <span class="empty-state-title">No reminder records yet</span>
                         Generate reminders for guardians linked to students with outstanding balances.
-                        <div class="empty-actions">
-                            <x-button-link :href="route('payment-reminders.create')" size="small">Generate reminders</x-button-link>
-                        </div>
+                        @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
+                            <div class="empty-actions">
+                                <x-button-link :href="route('payment-reminders.create')" size="small">Generate reminders</x-button-link>
+                            </div>
+                        @endif
                     </td>
                 </tr>
             @endforelse

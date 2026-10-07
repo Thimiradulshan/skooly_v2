@@ -23,11 +23,13 @@ class ConfirmPromotionBatch
      */
     public function handle(PromotionBatch $batch, ?User $actor = null): PromotionBatch
     {
-        if ($batch->status !== PromotionBatch::STATUS_DRAFT) {
-            throw new RuntimeException('Only a draft promotion batch can be confirmed.');
-        }
-
         return DB::transaction(function () use ($batch, $actor): PromotionBatch {
+            $batch = PromotionBatch::query()->lockForUpdate()->findOrFail($batch->id);
+
+            if ($batch->status !== PromotionBatch::STATUS_DRAFT) {
+                throw new RuntimeException('Only a draft promotion batch can be confirmed.');
+            }
+
             foreach ($batch->items()->orderBy('id')->get() as $item) {
                 $this->applyItem($batch, $item);
             }

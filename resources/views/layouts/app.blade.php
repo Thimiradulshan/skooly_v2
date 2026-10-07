@@ -86,6 +86,10 @@
                         href="{{ route('receipts.index') }}">Receipts</a>
                     <a class="sidebar-link {{ request()->routeIs('payment-reversals.*') ? 'is-active' : '' }}"
                         href="{{ route('payment-reversals.index') }}">Reversals</a>
+                    <a class="sidebar-link {{ request()->routeIs('dues-dashboard.*') ? 'is-active' : '' }}"
+                       href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
+                    <a class="sidebar-link {{ request()->routeIs('payment-reminders.*') ? 'is-active' : '' }}"
+                       href="{{ route('payment-reminders.index') }}">Payment Reminders</a>
                 </div>
 
                 @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
@@ -99,8 +103,6 @@
 
                 <div>
                     <p class="sidebar-section-title">Communication</p>
-                    <a class="sidebar-link {{ request()->routeIs('payment-reminders.*') ? 'is-active' : '' }}"
-                       href="{{ route('payment-reminders.index') }}">Payment Reminders</a>
                 </div>
 
                 <div>

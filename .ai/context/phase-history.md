@@ -730,6 +730,26 @@ Implemented:
 Deferred:
 - Partial reversals, refunds, payment edits/deletes, receipt PDF export, and broader Accountant operational permissions.
 
+## Phase 10D-8: Promotion Draft Editing & Accountant Read Access
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Admin-only per-item PromotionBatch editing while a batch is draft, using transactional row locks and an authoritative draft-state check.
+- Promote and retain require a matching target grade and target section; exclude and graduate clear both target IDs.
+- promotion_batch_item_updated audit entries capture the before and after item target/action values inside the transaction.
+- ConfirmPromotionBatch locks and rechecks draft status before applying changes, preserving atomic confirmation against concurrent item edits.
+- Accountant read-only access to Dues Dashboard and payment-reminder list/detail, alongside the existing payment, receipt, and reversal history/detail/request access.
+- Accountant-only finance navigation and authorization coverage for prohibited Admin, family, student, guardian, academic, staff, event, promotion, collection, reminder-mutation, and approval pages.
+
+Preserved:
+- Source Enrollments remain immutable, confirmation remains atomic, and no next-year due item is generated.
+- Guardian visibility is unchanged and no Accountant access to family, student, or guardian pages was introduced.
+
+Verification:
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 474 tests / 2273 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

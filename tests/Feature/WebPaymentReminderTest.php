@@ -49,9 +49,9 @@ it('denies guests the payment reminders index', function () {
     $this->get(route('payment-reminders.index'))->assertRedirect(route('login'));
 });
 
-it('denies teachers and accountants the payment reminders index', function () {
+it('allows accountants to read payment reminders but denies teachers', function () {
     $this->actingAs(userWithRole(Role::TEACHER))->get(route('payment-reminders.index'))->assertForbidden();
-    $this->actingAs(userWithRole(Role::ACCOUNTANT))->get(route('payment-reminders.index'))->assertForbidden();
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))->get(route('payment-reminders.index'))->assertOk();
 });
 
 it('lets an admin access the payment reminder index and generation form', function () {

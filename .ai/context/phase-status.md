@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-5: Fee Structure & Event Charge Editing
+Phase 10D-8: Promotion Draft Editing & Accountant Read Access
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -46,9 +46,10 @@ Phase 10D-5: Fee Structure & Event Charge Editing
 - Phase 10D-6B: Remaining List Pagination & Search - complete / pending commit
 - Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists - complete / pending commit
 - Phase 10D-7: Payment Reversal Workflow - complete / pending commit
+- Phase 10D-8: Promotion Draft Editing & Accountant Read Access - complete / pending commit
 
 ## Current Status
-Phase 10D-5 is complete and verified. It adds Admin-only edits for future FeeStructure and EventCharge prices, with authoritative guards that lock FeeStructures after a direct StudentDueItem reference and every EventCharge after its Event has an EventDueItem.
+Phase 10D-8 is complete and verified. It adds draft-only, audited promotion-item editing through a transactional action and grants Accountant read-only access to the Dues Dashboard and payment-reminder history/detail pages while preserving every Admin-only mutation and non-finance boundary.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -259,10 +260,14 @@ Phase 10D-5 is complete and verified. It adds Admin-only edits for future FeeStr
 - Approval locks the reversal, original payment, payment allocations, and due items. It validates reopening before changing every due item in one transaction.
 - CorrectionReceipt is one-to-one with PaymentReversal and stores the original receipt and reversal snapshots under a unique manual correction receipt number.
 - Accountants may browse payment/receipt history and create/view reversals only. Admins approve, but not their own requests.
+- Admins may edit an individual PromotionBatchItem only while its batch is draft. Promote and retain require a target grade and a target section in that grade; exclude and graduate clear both target IDs.
+- UpdatePromotionBatchItem locks the batch and item, validates the draft state and target relation, then writes promotion_batch_item_updated inside its transaction. ConfirmPromotionBatch now locks and rechecks the batch draft state before applying items.
+- Accountants may read payment/receipt history and details, reversal history/detail/request pages, the Dues Dashboard, and payment-reminder list/detail pages. They cannot collect payments, approve reversals, generate/cancel reminders, or enter family, student, guardian, academic, staff, event, promotion, or admin-dashboard pages.
 
 ## Verification Result
 Passed on 2026-10-07:
-- php artisan test --compact: 467 tests, 2223 assertions
+- php artisan migrate:fresh --no-interaction
+- php artisan test --compact: 474 tests, 2273 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --dirty --format agent
 - npm run build passed (non-blocking optional Fontaine font-fallback warning)
@@ -329,5 +334,5 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, and 10D-7 if approved.
+1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, 10D-7, and 10D-8 if approved.
 2. Audit-log filtering/export/retention, receipt PDF export, partial reversals, and refunds remain deferred.

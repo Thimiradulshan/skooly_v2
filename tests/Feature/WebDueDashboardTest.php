@@ -262,7 +262,7 @@ it('keeps due dashboard routes while payment collection has no destructive route
     expect(Route::has('receipts.export'))->toBeFalse();
 });
 
-it('denies teacher and accountant the dues dashboard', function () {
+it('allows accountants to read the dues dashboard but denies teachers', function () {
     $this->actingAs(userWithRole(Role::TEACHER))->get(route('dues-dashboard.index'))->assertForbidden();
-    $this->actingAs(userWithRole(Role::ACCOUNTANT))->get(route('dues-dashboard.index'))->assertForbidden();
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))->get(route('dues-dashboard.index'))->assertOk();
 });

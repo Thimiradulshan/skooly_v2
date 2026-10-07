@@ -34,6 +34,23 @@ function promotionWebPayload(AcademicYear $source, AcademicYear $target, Section
     ];
 }
 
+/**
+ * @return array{PromotionBatch, PromotionBatchItem}
+ */
+function editablePromotionBatchItem(): array
+{
+    $source = AcademicYear::factory()->create();
+    $target = AcademicYear::factory()->create();
+    $grade = Grade::factory()->create(['sequence_order' => 1]);
+    $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
+    $section = Section::factory()->for($grade)->create(['name' => 'A']);
+    Section::factory()->for($nextGrade)->create(['name' => 'A']);
+    promotedWebStudent($source, $grade, $section);
+    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$section->id]);
+
+    return [$batch, $batch->items()->sole()];
+}
+
 it('denies guests the promotion batch index', function () {
     $this->get(route('promotion-batches.index'))->assertRedirect(route('login'));
 });
@@ -88,6 +105,115 @@ it('shows a promotion batch and its items', function () {
         ->assertSee($student->name)
         ->assertSee('Confirm promotion batch');
 });
+
+it('lets an admin change a draft item to a custom promotion target and audits the edit', function () {
+    $source = AcademicYear::factory()->create();
+    $target = AcademicYear::factory()->create();
+    $grade = Grade::factory()->create(['sequence_order' => 1]);
+    $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
+    $customGrade = Grade::factory()->create(['sequence_order' => 3]);
+    $sourceSection = Section::factory()->for($grade)->create(['name' => 'A']);
+    Section::factory()->for($nextGrade)->create(['name' => 'A']);
+    $customSection = Section::factory()->for($customGrade)->create(['name' => 'B']);
+    promotedWebStudent($source, $grade, $sourceSection);
+    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$sourceSection->id]);
+    $item = $batch->items()->sole();
+    $admin = adminUser();
+
+    $this->actingAs($admin)
+        ->put(route('promotion-batches.items.update', [$batch, $item]), [
+            'action' => PromotionBatchItem::ACTION_PROMOTE,
+            'target_grade_id' => $customGrade->id,
+            'target_section_id' => $customSection->id,
+        ])
+        ->assertRedirect(route('promotion-batches.show', $batch));
+
+    expect($item->refresh()->only(['action', 'target_grade_id', 'target_section_id']))->toBe([
+        'action' => PromotionBatchItem::ACTION_PROMOTE,
+        'target_grade_id' => $customGrade->id,
+        'target_section_id' => $customSection->id,
+    ]);
+    expect(AuditLog::query()->where('action', AuditLog::ACTION_PROMOTION_BATCH_ITEM_UPDATED)->where('auditable_id', $item->id)->count())
+        ->toBe(1);
+});
+
+it('lets an admin retain a student in a selected target-year grade and section', function () {
+    $source = AcademicYear::factory()->create();
+    $target = AcademicYear::factory()->create();
+    $grade = Grade::factory()->create(['sequence_order' => 1]);
+    $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
+    $sourceSection = Section::factory()->for($grade)->create(['name' => 'A']);
+    $retainedSection = Section::factory()->for($grade)->create(['name' => 'B']);
+    Section::factory()->for($nextGrade)->create(['name' => 'A']);
+    $student = promotedWebStudent($source, $grade, $sourceSection);
+    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$sourceSection->id]);
+    $item = $batch->items()->sole();
+
+    $this->actingAs(adminUser())
+        ->put(route('promotion-batches.items.update', [$batch, $item]), [
+            'action' => PromotionBatchItem::ACTION_RETAIN,
+            'target_grade_id' => $grade->id,
+            'target_section_id' => $retainedSection->id,
+        ])
+        ->assertRedirect();
+    $this->actingAs(adminUser())->post(route('promotion-batches.confirm', $batch))->assertRedirect();
+
+    expect(Enrollment::query()->where('student_id', $student->id)->where('academic_year_id', $target->id)->sole()
+        ->only(['grade_id', 'section_id']))->toBe(['grade_id' => $grade->id, 'section_id' => $retainedSection->id]);
+});
+
+it('clears targets for excluded and graduated draft items', function () {
+    [$batch, $excludedItem] = editablePromotionBatchItem();
+    $source = AcademicYear::factory()->create();
+    $target = AcademicYear::factory()->create();
+    $grade = Grade::factory()->create(['sequence_order' => 3]);
+    $nextGrade = Grade::factory()->create(['sequence_order' => 4]);
+    $section = Section::factory()->for($grade)->create(['name' => 'A']);
+    Section::factory()->for($nextGrade)->create(['name' => 'A']);
+    promotedWebStudent($source, $grade, $section);
+    $secondBatch = app(CreatePromotionBatch::class)->handle($source, $target, [$section->id]);
+    $graduatedItem = $secondBatch->items()->sole();
+
+    $this->actingAs(adminUser())
+        ->put(route('promotion-batches.items.update', [$batch, $excludedItem]), ['action' => PromotionBatchItem::ACTION_EXCLUDE])
+        ->assertRedirect();
+    $this->actingAs(adminUser())
+        ->put(route('promotion-batches.items.update', [$secondBatch, $graduatedItem]), ['action' => PromotionBatchItem::ACTION_GRADUATE])
+        ->assertRedirect();
+
+    expect($excludedItem->refresh()->only(['action', 'target_grade_id', 'target_section_id']))->toBe([
+        'action' => PromotionBatchItem::ACTION_EXCLUDE, 'target_grade_id' => null, 'target_section_id' => null,
+    ]);
+    expect($graduatedItem->refresh()->only(['action', 'target_grade_id', 'target_section_id']))->toBe([
+        'action' => PromotionBatchItem::ACTION_GRADUATE, 'target_grade_id' => null, 'target_section_id' => null,
+    ]);
+});
+
+it('rejects a target section outside the selected target grade', function () {
+    [$batch, $item] = editablePromotionBatchItem();
+    $targetGrade = Grade::factory()->create();
+    $otherSection = Section::factory()->create();
+
+    $this->actingAs(adminUser())
+        ->put(route('promotion-batches.items.update', [$batch, $item]), [
+            'action' => PromotionBatchItem::ACTION_PROMOTE,
+            'target_grade_id' => $targetGrade->id,
+            'target_section_id' => $otherSection->id,
+        ])
+        ->assertSessionHasErrors('target_section_id');
+});
+
+it('does not edit confirmed or discarded promotion batch items', function (string $status) {
+    [$batch, $item] = editablePromotionBatchItem();
+    $batch->update(['status' => $status]);
+    $before = $item->only(['action', 'target_grade_id', 'target_section_id']);
+
+    $this->actingAs(adminUser())
+        ->put(route('promotion-batches.items.update', [$batch, $item]), ['action' => PromotionBatchItem::ACTION_EXCLUDE])
+        ->assertSessionHasErrors('promotion_batch_item');
+
+    expect($item->refresh()->only(array_keys($before)))->toBe($before);
+})->with([PromotionBatch::STATUS_CONFIRMED, PromotionBatch::STATUS_DISCARDED]);
 
 it('confirms a promotion batch and creates target year enrollment without modifying source enrollment', function () {
     $source = AcademicYear::factory()->create();

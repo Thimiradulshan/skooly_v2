@@ -206,7 +206,7 @@ Do not invent answers for these.
 - Payment correction or refund does not exist and must not be designed without approval. See docs/destructive-action-policy-draft.md.
 - Archive semantics are undefined: hidden from new selections only, or hidden from reports too.
 - Fee structure and event charge editing were resolved in Phase 10D-5: their price may change only before due generation. FeeStructure locks when a StudentDueItem directly references it; EventCharge locks conservatively when any EventDueItem exists for its Event.
-- Promotion item editing needs a decision before any backend edit action is written.
+- Promotion item editing was resolved in Phase 10D-8: Admin may edit one item only while its batch is draft; promote and retain require an Admin-selected target grade and matching target section, while exclude and graduate keep target IDs null.
 - SchoolSetting.active_academic_year_id is inert and needs a decision on whether anything should honour it.
 - Money and history must never be hard deleted. Configuration should be archived, pending approval.
 
@@ -259,6 +259,13 @@ Do not invent answers for these.
 - Admin enters a unique correction receipt number on approval. CorrectionReceipt snapshots the original Receipt and reversal details; the original receipt stays immutable.
 - Request and approval are explicitly audited inside their respective transactions.
 - Accountants receive only payment/receipt history and reversal request/list/detail access. Payment collection, family access, and approval remain Admin-only.
+
+## Phase 10D-8 Rules
+- Draft promotion items are individually editable only by Admin. Confirmed and discarded batches, including their items, are immutable.
+- Promotion item updates are transactional and audited as promotion_batch_item_updated. They never create or modify Enrollments, Students, due items, payments, or receipts.
+- Promote and retain require a target grade and a target section belonging to that grade. Exclude and graduate always persist null target IDs.
+- Accountant read access includes payment/receipt history and details, reversal history/detail/request pages, the Dues Dashboard, and payment-reminder list/detail pages only.
+- Accountant cannot collect payments, approve reversals, generate/cancel reminders, view family/student/guardian pages, or access academic setup, staff, events, promotion, or the admin dashboard.
 
 ## Phase 10D-6B Rules
 - Pagination is read-only and uses 20 records per page with query-string preservation across every in-scope Admin list page.

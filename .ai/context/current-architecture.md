@@ -88,7 +88,7 @@ Laravel modular monolith.
 - ApprovePaymentReversal locks the reversal, original payment, original allocations, and due items inside one transaction before reopening every original allocation.
 - Approval never mutates or deletes the original payment, receipt, or allocations. It creates a CorrectionReceipt with the original receipt snapshot and reversal snapshot.
 - Payment reversal request and approval use explicit append-only audit entries.
-- Accountant web access is limited to payment/receipt history and payment-reversal visibility/requesting; collection, families, and approval remain Admin-only.
+- Accountant web access is limited to payment/receipt history and detail, payment-reversal visibility/requesting, the Dues Dashboard, and payment-reminder list/detail. Collection, reminder mutations, families, students, guardians, academic setup, staff, events, promotion, approval, and the admin dashboard remain Admin-only.
 
 ## Recurring Fee Due Generation
 - app/Actions/Fees/GenerateRecurringDueItems.php generates StudentDueItems for a cycle.
@@ -214,13 +214,13 @@ Laravel modular monolith.
 ## Web Student Promotion
 - PromotionBatchController creates drafts through CreatePromotionBatch and confirms drafts through ConfirmPromotionBatch.
 - The web layer accepts only source/target academic years and source section IDs, the complete existing creation contract.
-- Draft items remain derived and read-only in the web layer; confirmation uses their existing backend targets and actions.
+- Draft items may be edited individually by Admin through UpdatePromotionBatchItem. The action locks the batch and item, requires a valid matching target grade/section for promote or retain, clears targets for exclude or graduate, and audits the change.
 - Source enrollments are never modified. Target enrollments are created only on confirmation, within the existing transaction.
-- No promotion reversal, export, destructive route, or next-year due generation exists.
+- Confirmed and discarded batch items remain immutable. No promotion reversal, export, destructive route, or next-year due generation exists.
 - Admins may discard a draft PromotionBatch, which changes only its status and discarded_at. Confirmed and discarded batches cannot be discarded again.
 
 ## Web Payment Reminders
-- PaymentReminderController lists and previews internal reminder records and delegates generation to GeneratePaymentReminders.
+- PaymentReminderController lists and previews internal reminder records for Admin and Accountant; only Admin may generate or cancel them.
 - Reminder generation can be limited by academic year or family, the exact action-supported filters.
 - The detail page renders due_item_ids and message_snapshot without recalculating content or sending a channel message.
 - No send, edit, delete, status-transition, queue, scheduler, or Guardian web workflow exists.

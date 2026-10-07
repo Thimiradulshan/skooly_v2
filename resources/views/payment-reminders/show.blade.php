@@ -15,7 +15,7 @@
 
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('payment-reminders.index') }}">Back to payment reminders</a>
-        @if ($paymentReminder->status === \App\Models\PaymentReminder::STATUS_PENDING)
+        @if ($paymentReminder->status === \App\Models\PaymentReminder::STATUS_PENDING && auth()->user()->hasRole(\App\Models\Role::ADMIN))
             <form method="POST" action="{{ route('payment-reminders.cancel', $paymentReminder) }}"
                   data-confirm="Cancel this reminder record? No message has been sent."
                   data-confirm-title="Cancel payment reminder"
