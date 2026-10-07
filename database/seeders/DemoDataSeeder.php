@@ -83,7 +83,7 @@ class DemoDataSeeder extends Seeder
     {
         $roles = [];
 
-        foreach ([Role::ADMIN, Role::ACCOUNTANT, Role::TEACHER] as $name) {
+        foreach ([Role::SUPERADMIN, Role::ADMIN, Role::ACCOUNTANT, Role::TEACHER] as $name) {
             $roles[$name] = Role::query()->firstOrCreate(['name' => $name]);
         }
 

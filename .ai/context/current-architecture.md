@@ -230,6 +230,13 @@ Laravel modular monolith.
 - SchoolSetting.active_academic_year_id is editable but no existing workflow reads it.
 - Archive/deactivate and hard delete are deliberately absent: the schema has no lifecycle status and archive semantics remain unresolved.
 
+## Web Identity and Teaching Configuration
+- Superadmin is a fixed role assigned through `users:make-superadmin {email}` to an existing trusted user.
+- UserPolicy allows Superadmin to manage every account and Admin to manage only non-Admin/non-Superadmin accounts.
+- Users have an is_active lifecycle; inactive accounts cannot log in and are not hard deleted.
+- Subjects support Admin-only CRUD; teaching assignments prevent a referenced Subject from deletion.
+- Teacher qualifications, teaching assignments, and class-in-charge assignments support Admin-only list/create/view workflows. Teaching assignments require an existing qualification.
+
 ## Demo Data & Local Testing
 - DemoDataSeeder builds deterministic local and testing data and returns early in production.
 - All generated records come from the existing actions, never duplicated logic.

@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-1B: Audit Log Viewing
+Phase 10D-2: Identity, Teacher, Subject & Assignment Management
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -40,7 +40,7 @@ Phase 10D-1B: Audit Log Viewing
 - Phase 10D-1B: Audit Log Viewing - complete / pending commit
 
 ## Current Status
-Phase 10D-1B is complete and verified. It adds an Admin-only, read-only audit-log index and detail view. Audit-log filtering, export, retention, update, and deletion remain deferred.
+Phase 10D-2 is complete and verified. It adds fixed-role staff management, Superadmin bootstrap, user archiving, Subject CRUD, and read/create/view teaching configuration. Accountant and Teacher operational access remains Admin-only.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -232,9 +232,22 @@ Phase 10D-1B is complete and verified. It adds an Admin-only, read-only audit-lo
 - Admin-only audit-log index and detail pages display stored action, actor, auditable record reference, occurred_at, and metadata without writing or modifying AuditLog records.
 - Audit viewing never follows auditable records, so a historical entry remains readable when its subject no longer exists.
 - No audit-log filter, export, retention, create, update, or delete route was added.
+- Superadmin is a fixed role. The `users:make-superadmin {email}` command assigns it only to an existing user.
+- Users have an is_active lifecycle. Inactive users cannot authenticate; user records are never hard deleted.
+- Superadmin manages all user accounts. Admin manages only accounts without Admin or Superadmin roles.
+- Subject CRUD is Admin-only. A Subject with teaching assignments cannot be deleted.
+- Teacher qualifications, teaching assignments, and class-in-charge assignments are Admin-only list/create/view workflows. A teaching assignment requires a qualified Teacher.
 
 ## Verification Result
 Passed on 2026-10-07:
+- php artisan test --compact: 428 tests, 1982 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (non-blocking optional Fontaine font-fallback warning)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
+Previously passed on 2026-10-07:
 - php artisan test --compact: 415 tests, 1935 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --dirty --format agent

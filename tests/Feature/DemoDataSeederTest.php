@@ -47,12 +47,12 @@ it('creates the accountant and teacher demo users for access testing', function 
     expect(User::query()->where('email', 'teacher@skooly.test')->sole()->hasRole(Role::TEACHER))->toBeTrue();
 });
 
-it('creates the three roles', function () {
+it('creates the fixed roles', function () {
     seedDemoData($this);
 
-    expect(Role::query()->count())->toBe(3);
+    expect(Role::query()->count())->toBe(4);
     expect(Role::query()->pluck('name')->sort()->values()->all())
-        ->toBe([Role::ACCOUNTANT, Role::ADMIN, Role::TEACHER]);
+        ->toBe([Role::ACCOUNTANT, Role::ADMIN, Role::SUPERADMIN, Role::TEACHER]);
 });
 
 it('creates academic years grades and sections', function () {

@@ -19,10 +19,15 @@ use App\Http\Controllers\Web\PromotionBatchController;
 use App\Http\Controllers\Web\ReceiptController;
 use App\Http\Controllers\Web\SchoolSettingController;
 use App\Http\Controllers\Web\SectionController;
+use App\Http\Controllers\Web\SectionYearAssignmentController;
 use App\Http\Controllers\Web\StudentDiscountController;
 use App\Http\Controllers\Web\StudentFeeSubscriptionController;
 use App\Http\Controllers\Web\StudentRegistrationController;
+use App\Http\Controllers\Web\SubjectController;
+use App\Http\Controllers\Web\TeacherAssignmentController;
+use App\Http\Controllers\Web\TeacherQualificationController;
 use App\Http\Controllers\Web\TermController;
+use App\Http\Controllers\Web\UserController;
 use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +41,10 @@ Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
+Route::middleware(['auth', 'role:'.Role::ADMIN.','.Role::SUPERADMIN])->group(function (): void {
+    Route::resource('users', UserController::class)->except('destroy');
+});
+
 Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -46,6 +55,19 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::resource('terms', TermController::class)->except('destroy');
     Route::resource('grades', GradeController::class)->except('destroy');
     Route::resource('sections', SectionController::class)->except('destroy');
+    Route::resource('subjects', SubjectController::class);
+    Route::get('/teacher-qualifications', [TeacherQualificationController::class, 'index'])->name('teacher-qualifications.index');
+    Route::get('/teacher-qualifications/create', [TeacherQualificationController::class, 'create'])->name('teacher-qualifications.create');
+    Route::post('/teacher-qualifications', [TeacherQualificationController::class, 'store'])->name('teacher-qualifications.store');
+    Route::get('/teacher-qualifications/{teacher}', [TeacherQualificationController::class, 'show'])->name('teacher-qualifications.show');
+    Route::get('/teacher-assignments', [TeacherAssignmentController::class, 'index'])->name('teacher-assignments.index');
+    Route::get('/teacher-assignments/create', [TeacherAssignmentController::class, 'create'])->name('teacher-assignments.create');
+    Route::post('/teacher-assignments', [TeacherAssignmentController::class, 'store'])->name('teacher-assignments.store');
+    Route::get('/teacher-assignments/{teacherAssignment}', [TeacherAssignmentController::class, 'show'])->name('teacher-assignments.show');
+    Route::get('/section-year-assignments', [SectionYearAssignmentController::class, 'index'])->name('section-year-assignments.index');
+    Route::get('/section-year-assignments/create', [SectionYearAssignmentController::class, 'create'])->name('section-year-assignments.create');
+    Route::post('/section-year-assignments', [SectionYearAssignmentController::class, 'store'])->name('section-year-assignments.store');
+    Route::get('/section-year-assignments/{sectionYearAssignment}', [SectionYearAssignmentController::class, 'show'])->name('section-year-assignments.show');
     Route::get('/school-settings', [SchoolSettingController::class, 'edit'])->name('school-settings.edit');
     Route::match(['put', 'patch'], '/school-settings', [SchoolSettingController::class, 'update'])
         ->name('school-settings.update');

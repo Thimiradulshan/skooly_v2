@@ -32,9 +32,9 @@ deferred for the Academic Year, Term, Grade, and Section records.
 | --- | --- | --- | --- | --- | --- |
 | Payment list | Staff cannot answer "has this family paid?" without a payment ID. | Yes, `Payment` | No, show only | None to list | 10D-6 |
 | Receipt list and PDF export | Receipts are reachable only by ID. Browser print works today; PDF does not. | Yes, `Receipt` | Show and print only | Receipt numbering rule, which also affects export | 10D-6 |
-| User and role management | Staff accounts cannot be created without a shell. | Yes, `User`, `Role` | No | Whether roles are fixed or user-definable | 10D-2 |
-| Teacher list and profile | Teachers cannot be managed at all. | Yes, `User` with teacher role | No | Same as user management | 10D-2 |
-| Subject and assignment setup | Teacher assignments block any future teacher section scoping. | Yes, `Subject`, `TeacherAssignment`, `SectionYearAssignment` | No | None to create and list | 10D-2 |
+| User lifecycle and authorization expansion | Fixed-role user management and archiving now exist, but Accountant and Teacher operational permissions remain Admin-only. | Yes, `User`, `Role` | List/create/view/edit/archive | Per-resource role permissions | 10D-8 |
+| Teacher profile refinement | Teachers can be managed as Users and their qualifications can be viewed, but no dedicated profile beyond the staff account exists. | Yes, `User` with teacher role | Partial | None | Later |
+| Subject and assignment corrections | Subjects have CRUD and qualifications/assignments have list/create/view, but teaching configuration cannot yet be corrected or withdrawn. | Yes, `Subject`, `TeacherAssignment`, `SectionYearAssignment` | Partial | Correction/history rule | Later |
 | Guardian add and edit | A family can only ever have the single guardian entered at creation. A second parent cannot be added. | Yes, `Guardian` | Indirect only | None | 10D-3 |
 | Student detail and edit | Students are reachable only through a family. Admission number, status, and photo path cannot be corrected. | Yes, `Student` | No | None | 10D-3 |
 | Discount list and deactivate | A discount can be applied but never reviewed or withdrawn. A wrong discount silently affects future dues. | Yes, `Discount` | No | Whether withdrawal is "deactivate" or "end date" | 10D-3 |

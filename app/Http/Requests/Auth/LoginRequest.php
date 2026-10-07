@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
      */
     public function authenticate(): void
     {
-        if (! auth()->attempt($this->only('email', 'password'))) {
+        if (! auth()->attempt(array_merge($this->only('email', 'password'), ['is_active' => true]))) {
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);

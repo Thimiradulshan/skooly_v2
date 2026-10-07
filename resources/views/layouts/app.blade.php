@@ -35,6 +35,12 @@
                 </div>
 
                 <div>
+                    <p class="sidebar-section-title">Staff</p>
+                    <a class="sidebar-link {{ request()->routeIs('users.*') ? 'is-active' : '' }}"
+                       href="{{ route('users.index') }}">Users</a>
+                </div>
+
+                <div>
                     <p class="sidebar-section-title">Academic Setup</p>
                     <a class="sidebar-link {{ request()->routeIs('academic-years.*') ? 'is-active' : '' }}"
                        href="{{ route('academic-years.index') }}">Academic Years</a>
@@ -46,6 +52,14 @@
                        href="{{ route('sections.index') }}">Sections</a>
                     <a class="sidebar-link {{ request()->routeIs('school-settings.*') ? 'is-active' : '' }}"
                        href="{{ route('school-settings.edit') }}">School Settings</a>
+                    <a class="sidebar-link {{ request()->routeIs('subjects.*') ? 'is-active' : '' }}"
+                       href="{{ route('subjects.index') }}">Subjects</a>
+                    <a class="sidebar-link {{ request()->routeIs('teacher-qualifications.*') ? 'is-active' : '' }}"
+                       href="{{ route('teacher-qualifications.index') }}">Teacher Qualifications</a>
+                    <a class="sidebar-link {{ request()->routeIs('teacher-assignments.*') ? 'is-active' : '' }}"
+                       href="{{ route('teacher-assignments.index') }}">Teaching Assignments</a>
+                    <a class="sidebar-link {{ request()->routeIs('section-year-assignments.*') ? 'is-active' : '' }}"
+                       href="{{ route('section-year-assignments.index') }}">Class In Charge</a>
                 </div>
 
                 <div>

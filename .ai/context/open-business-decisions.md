@@ -221,3 +221,12 @@ Do not invent answers for these.
 - Audit pages display only stored AuditLog data and never create, update, delete, or recompute an audit entry.
 - Audit-log filtering, export, and retention remain deferred; no retention period or export format has been chosen.
 - Audit viewing must remain readable when actor_user_id or the polymorphic auditable source is null.
+
+## Phase 10D-2 Rules
+- Roles are fixed: Superadmin, Admin, Accountant, and Teacher. Role CRUD is not implemented.
+- The first Superadmin is assigned to an existing trusted user through the `users:make-superadmin` console command.
+- Users are archived through is_active and are never hard deleted. Inactive users cannot authenticate.
+- Superadmin manages all accounts. Admin can manage only users without Admin or Superadmin roles.
+- The final active Superadmin cannot be archived or stripped of the Superadmin role; users cannot archive themselves.
+- Subject deletion is allowed only when no teaching assignment references the Subject.
+- Teacher qualifications, teaching assignments, and class-in-charge assignments are list/create/view only; correction and removal rules remain deferred.

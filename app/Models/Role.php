@@ -16,6 +16,8 @@ class Role extends Model
 
     public const ADMIN = 'Admin';
 
+    public const SUPERADMIN = 'Superadmin';
+
     public const ACCOUNTANT = 'Accountant';
 
     public const TEACHER = 'Teacher';

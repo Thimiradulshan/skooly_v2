@@ -16,7 +16,7 @@ uses(LazilyRefreshDatabase::class);
 it('keeps the base seeder minimal and free of demo content', function () {
     $this->seed(DatabaseSeeder::class);
 
-    expect(Role::query()->count())->toBe(3);
+    expect(Role::query()->count())->toBe(4);
     expect(User::query()->where('email', 'admin@skooly.test')->count())->toBe(1);
     expect(Family::count())->toBe(0);
     expect(Student::count())->toBe(0);

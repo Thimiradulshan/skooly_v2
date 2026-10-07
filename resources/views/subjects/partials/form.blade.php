@@ -1,0 +1,2 @@
+<div class="form-field"><label class="form-label" for="code">Code <span class="req">*</span></label><input class="form-control" type="text" id="code" name="code" value="{{ old('code', $subject->code ?? '') }}" required autofocus></div>
+<div class="form-field"><label class="form-label" for="name">Name <span class="req">*</span></label><input class="form-control" type="text" id="name" name="name" value="{{ old('name', $subject->name ?? '') }}" required></div>

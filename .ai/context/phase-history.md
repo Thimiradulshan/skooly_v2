@@ -602,6 +602,24 @@ Verification:
 - `php artisan test --compact`: 415 tests / 1935 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D-2: Identity, Teacher, Subject & Assignment Management
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Fixed Superadmin role plus `users:make-superadmin {email}` bootstrap command.
+- is_active user lifecycle and inactive-login rejection.
+- Admin/Superadmin User management; no hard delete, Admin restrictions, and final-Superadmin safeguards.
+- Subject CRUD with teaching-assignment deletion protection.
+- Teacher qualification, teaching assignment, and class-in-charge list/create/view web flows.
+
+Deferred:
+- Accountant and Teacher operational access.
+- Role CRUD, user hard deletion, and assignment correction/removal workflows.
+
+Verification:
+- `php artisan test --compact`: 428 tests / 1982 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

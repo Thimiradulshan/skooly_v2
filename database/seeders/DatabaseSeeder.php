@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             return;
         }
 
-        foreach ([Role::ADMIN, Role::ACCOUNTANT, Role::TEACHER] as $name) {
+        foreach ([Role::SUPERADMIN, Role::ADMIN, Role::ACCOUNTANT, Role::TEACHER] as $name) {
             Role::query()->firstOrCreate(['name' => $name]);
         }
 
