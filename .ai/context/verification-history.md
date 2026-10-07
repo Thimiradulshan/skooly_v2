@@ -10,6 +10,15 @@ git diff --check
 git status
 
 ## Latest Known Good
+Phase 10D-6 passed on 2026-10-07:
+- 445 tests / 2073 assertions passed.
+- PHPStan passed with 0 errors.
+- Pint passed.
+- `npm run build` passed; Vite reported only the optional Fontaine font-fallback warning.
+- Composer audit found no vulnerabilities.
+- `git diff --check` passed.
+
+## Previous Known Good
 Phase 10D-4 passed on 2026-10-07:
 - 442 tests / 2055 assertions passed.
 - PHPStan passed with 0 errors.

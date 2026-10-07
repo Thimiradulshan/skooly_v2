@@ -245,3 +245,8 @@ Do not invent answers for these.
 - Both workflows are Admin-only, confirmed in the web UI, and preserve history rather than deleting records.
 - No audit action constants exist for discard or cancellation, so neither transition writes a new audit entry in this phase.
 - Archive/deactivate remains blocked pending the module-specific business decisions documented in docs/destructive-action-policy-draft.md.
+
+## Phase 10D-6 Rules
+- Payment and Receipt history is read-only and Admin-only. It does not alter payments, receipts, allocations, due items, or snapshots.
+- Search is limited to family code, payment reference, and receipt number. Sort columns and directions are validated allow-lists; no client-provided SQL identifier is used.
+- Receipt PDF export, audit-log filtering/export/retention, and payment correction/refund remain deferred pending their documented decisions.

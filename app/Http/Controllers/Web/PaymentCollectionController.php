@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ListPaymentsRequest;
 use App\Http\Requests\Web\StoreManualPaymentRequest;
 use App\Models\Family;
 use App\Models\Payment;
@@ -11,6 +12,29 @@ use Carbon\Carbon;
 
 class PaymentCollectionController extends Controller
 {
+    public function index(ListPaymentsRequest $request)
+    {
+        $sort = $request->input('sort', 'paid_at');
+        $direction = $request->input('direction', 'desc');
+        $search = $request->string('search')->trim()->toString();
+
+        $payments = Payment::query()
+            ->with(['family', 'receipt'])
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($query) use ($search): void {
+                    $query->where('payment_reference', 'like', "%{$search}%")
+                        ->orWhereHas('family', fn ($family) => $family->where('family_code', 'like', "%{$search}%"))
+                        ->orWhereHas('receipt', fn ($receipt) => $receipt->where('receipt_no', 'like', "%{$search}%"));
+                });
+            })
+            ->orderBy($sort, $direction)
+            ->orderByDesc('id')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('payments.index', compact('payments', 'search', 'sort', 'direction'));
+    }
+
     public function create(Family $family)
     {
         return view('payments.create', [

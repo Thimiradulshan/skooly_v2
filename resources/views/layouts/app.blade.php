@@ -77,6 +77,14 @@
                 </div>
 
                 <div>
+                    <p class="sidebar-section-title">Payments</p>
+                    <a class="sidebar-link {{ request()->routeIs('payments.*') ? 'is-active' : '' }}"
+                       href="{{ route('payments.index') }}">Payment History</a>
+                    <a class="sidebar-link {{ request()->routeIs('receipts.*') ? 'is-active' : '' }}"
+                       href="{{ route('receipts.index') }}">Receipts</a>
+                </div>
+
+                <div>
                     <p class="sidebar-section-title">School Life</p>
                     <a class="sidebar-link {{ request()->routeIs('events.*') ? 'is-active' : '' }}"
                        href="{{ route('events.index') }}">Events</a>

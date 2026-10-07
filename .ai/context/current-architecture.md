@@ -49,7 +49,7 @@ Laravel modular monolith.
 - Backend-Frontend Feature Parity and CRUD Coverage Audit (Phase 10C-5, committed in f63c2d5)
 
 ## Current Module
-- Phase 10D-4: Draft Discard & Reminder Cancellation is complete and verified.
+- Phase 10D-6: Payment & Receipt History Lists is complete and verified.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -194,6 +194,7 @@ Laravel modular monolith.
 - StoreManualPaymentRequest provides user-friendly validation for totals, family ownership, and current balances; Payment::recordManual() remains authoritative.
 - ReceiptController renders the stored Receipt snapshot only.
 - The payment UI is Admin-only and supports manual collection, payment viewing, and receipt viewing without mutation routes.
+- Admin-only payment and receipt history lists support family-code, payment-reference, and receipt-number search, validated fixed sorting, and 20-record pagination.
 
 ## Web Event Management
 - EventController uses CreateEvent and UpdateEvent; it does not confirm or generate dues.

@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-4: Draft Discard & Reminder Cancellation
+Phase 10D-6: Payment & Receipt History Lists
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -40,10 +40,11 @@ Phase 10D-4: Draft Discard & Reminder Cancellation
 - Phase 10D-1B: Audit Log Viewing - complete (committed in dab9034)
 - Phase 10D-2: Identity, Teacher, Subject & Assignment Management - complete (committed in deef8f5)
 - Phase 10D-3: Student & Guardian Management - complete (committed in 60007d9)
-- Phase 10D-4: Draft Discard & Reminder Cancellation - complete / pending commit
+- Phase 10D-4: Draft Discard & Reminder Cancellation - complete (committed in bb27137)
+- Phase 10D-6: Payment & Receipt History Lists - complete / pending commit
 
 ## Current Status
-Phase 10D-4 is complete and verified. It adds Admin-only discard of draft promotion batches and cancellation of pending payment reminder records, without deleting history or changing student enrollments, due items, payments, or receipts.
+Phase 10D-6 is complete and verified. It adds Admin-only payment and receipt history lists with safe search, fixed sorting, pagination, and detail links, without modifying any financial record.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -247,10 +248,11 @@ Phase 10D-4 is complete and verified. It adds Admin-only discard of draft promot
 - Only draft PromotionBatches can be discarded. Discarding sets status to discarded and records discarded_at; it never changes promotion items, Students, or Enrollments.
 - Only pending PaymentReminders can be cancelled. Cancellation sets status to cancelled and never sends a message or changes stored snapshots, due items, payments, receipts, or allocations.
 - Discard and cancellation are Admin-only. They are not separately audited because no AuditLog action constants exist for them.
+- Payment and Receipt history lists are read-only and Admin-only. They search family code, payment reference, and receipt number, sort only through validated allow-lists, paginate 20 records per page, and preserve query strings across pages.
 
 ## Verification Result
 Passed on 2026-10-07:
-- php artisan test --compact: 442 tests, 2055 assertions
+- php artisan test --compact: 445 tests, 2073 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --dirty --format agent
 - npm run build passed (non-blocking optional Fontaine font-fallback warning)
@@ -292,5 +294,5 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Review and commit Phase 10D-4 if approved.
-2. Archive/deactivate work remains blocked on archive semantics; otherwise continue with Phase 10D-6 payment/receipt lists, search, and pagination.
+1. Review and commit Phase 10D-6 if approved.
+2. Archive/deactivate remains blocked on archive semantics; next unblocked work is broader list search/sort/pagination coverage or the decisions needed for payment correction/refund.

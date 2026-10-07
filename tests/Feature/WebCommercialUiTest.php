@@ -170,7 +170,7 @@ it('adds no destructive or mutation routes', function () {
     $forbidden = [
         'families.destroy', 'students.destroy',
         'fee-categories.destroy', 'fee-structures.destroy',
-        'payments.edit', 'payments.update', 'payments.destroy', 'payments.refund', 'payments.index',
+        'payments.edit', 'payments.update', 'payments.destroy', 'payments.refund',
         'receipts.destroy', 'receipts.export',
         'events.destroy', 'events.charges.destroy', 'events.participation.destroy',
         'promotion-batches.destroy', 'promotion-batches.reverse',

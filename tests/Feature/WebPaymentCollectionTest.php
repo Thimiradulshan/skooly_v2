@@ -50,6 +50,11 @@ it('denies guests the payment collection page', function () {
         ->assertRedirect(route('login'));
 });
 
+it('denies guests the payment and receipt history pages', function () {
+    $this->get(route('payments.index'))->assertRedirect(route('login'));
+    $this->get(route('receipts.index'))->assertRedirect(route('login'));
+});
+
 it('denies teachers and accountants the payment collection page', function () {
     $family = Family::factory()->create();
 
@@ -223,8 +228,43 @@ it('shows payment details with a receipt link', function () {
         ->assertSee('View receipt');
 });
 
+it('lists payments and receipts with search sorting and pagination', function () {
+    $firstFamily = Family::factory()->create(['family_code' => 'FAM-HISTORY-ONE']);
+    $secondFamily = Family::factory()->create(['family_code' => 'FAM-HISTORY-TWO']);
+    $firstDueItem = paymentDueItem(Student::factory()->for($firstFamily)->create());
+    $secondDueItem = paymentDueItem(Student::factory()->for($secondFamily)->create());
+    $firstPayment = Payment::recordManual($firstFamily, 'RCT-HISTORY-ONE', 'cash', '20.00', [
+        ['student_due_item_id' => $firstDueItem->id, 'amount' => '20.00'],
+    ], 'PAY-HISTORY-ONE', paidAt: now()->subDay());
+    Payment::recordManual($secondFamily, 'RCT-HISTORY-TWO', 'card', '40.00', [
+        ['student_due_item_id' => $secondDueItem->id, 'amount' => '40.00'],
+    ], 'PAY-HISTORY-TWO');
+
+    $this->actingAs(adminUser())
+        ->get(route('payments.index', ['search' => 'HISTORY-ONE', 'sort' => 'amount', 'direction' => 'asc']))
+        ->assertOk()
+        ->assertSee('FAM-HISTORY-ONE')
+        ->assertSee('RCT-HISTORY-ONE')
+        ->assertDontSee('FAM-HISTORY-TWO');
+
+    $this->actingAs(adminUser())
+        ->get(route('receipts.index', ['search' => 'PAY-HISTORY-ONE']))
+        ->assertOk()
+        ->assertSee('RCT-HISTORY-ONE')
+        ->assertDontSee('RCT-HISTORY-TWO');
+
+    expect($firstPayment->receipt)->not->toBeNull();
+});
+
+it('rejects invalid list sorting input', function () {
+    $this->actingAs(adminUser())
+        ->get(route('payments.index', ['sort' => 'payments.amount; drop table payments']))
+        ->assertSessionHasErrors('sort');
+});
+
 it('adds no automatic allocation, edit, delete, or refund route', function () {
-    expect(Route::has('payments.index'))->toBeFalse();
+    expect(Route::has('payments.index'))->toBeTrue();
+    expect(Route::has('receipts.index'))->toBeTrue();
     expect(Route::has('payments.edit'))->toBeFalse();
     expect(Route::has('payments.update'))->toBeFalse();
     expect(Route::has('payments.destroy'))->toBeFalse();

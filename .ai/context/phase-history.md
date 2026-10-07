@@ -637,7 +637,7 @@ Verification:
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 10D-4: Draft Discard & Reminder Cancellation
-Status: complete and verified on 2026-10-07; pending commit.
+Status: complete and verified on 2026-10-07; committed in bb27137.
 
 Implemented:
 - Admin-only discard of draft promotion batches, retaining every batch item and making no Student or Enrollment change.
@@ -650,6 +650,21 @@ Deferred:
 
 Verification:
 - `php artisan test --compact`: 442 tests / 2055 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
+## Phase 10D-6: Payment & Receipt History Lists
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Admin-only payment and receipt history index pages with links to their existing detail pages.
+- Search by family code, payment reference, and receipt number; validated fixed sorting; 20-record pagination with query-string preservation.
+- No financial data mutation, automatic allocation, refund, edit, delete, or receipt export workflow.
+
+Deferred:
+- Receipt PDF export, audit-log filtering/export/retention, broader list-page rollout, and payment correction/refund.
+
+Verification:
+- `php artisan test --compact`: 445 tests / 2073 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 8: Student Promotion

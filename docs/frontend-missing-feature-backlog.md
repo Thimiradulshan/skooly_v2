@@ -30,8 +30,8 @@ deferred for the Academic Year, Term, Grade, and Section records.
 
 | Gap | Why it matters | Backend exists | Frontend exists | Decision needed | Suggested phase |
 | --- | --- | --- | --- | --- | --- |
-| Payment list | Staff cannot answer "has this family paid?" without a payment ID. | Yes, `Payment` | No, show only | None to list | 10D-6 |
-| Receipt list and PDF export | Receipts are reachable only by ID. Browser print works today; PDF does not. | Yes, `Receipt` | Show and print only | Receipt numbering rule, which also affects export | 10D-6 |
+| Payment list | Staff can now browse, search, sort, and paginate payment history. | Yes, `Payment` | Yes | None | Complete in 10D-6 |
+| Receipt list and PDF export | Receipts can now be browsed, searched, sorted, and paginated. Browser print works today; PDF does not. | Yes, `Receipt` | List, show, print | Receipt numbering rule, which also affects export | PDF deferred |
 | User lifecycle and authorization expansion | Fixed-role user management and archiving now exist, but Accountant and Teacher operational permissions remain Admin-only. | Yes, `User`, `Role` | List/create/view/edit/archive | Per-resource role permissions | 10D-8 |
 | Teacher profile refinement | Teachers can be managed as Users and their qualifications can be viewed, but no dedicated profile beyond the staff account exists. | Yes, `User` with teacher role | Partial | None | Later |
 | Subject and assignment corrections | Subjects have CRUD and qualifications/assignments have list/create/view, but teaching configuration cannot yet be corrected or withdrawn. | Yes, `Subject`, `TeacherAssignment`, `SectionYearAssignment` | Partial | Correction/history rule | Later |
@@ -39,7 +39,7 @@ deferred for the Academic Year, Term, Grade, and Section records.
 | Student photo upload | Student details and status can be edited, but photo_path accepts an existing path only; secure file upload is absent. | Yes, `Student` | Detail/edit | Upload/storage policy | Later |
 | Discount history/audit | Discounts can be reviewed and deactivated for future generation, but deactivation is not separately audited. | Yes, `Discount` | List/deactivate | Audit event decision | Later |
 | Fee subscription history/audit | Subscriptions can be reviewed and ended for future generation, but ending is not separately audited. | Yes, `StudentFeeSubscription` | List/end | Audit event decision | Later |
-| Search, sort, and pagination | Every list degrades at real school size. | n/a | No | None | 10D-6 |
+| Search, sort, and pagination | Payment and receipt history lists now support this. Other lists still need it. | n/a | Partial | None | Continue later |
 | Payment correction or refund | **There is no correction path for a mistaken payment at all.** A duplicate or wrong-amount payment is permanent. | No | No | **Required.** Needs amount ceiling, audit, approval, and whether due items are reopened | 10D-7 |
 | Accountant access | Finance work is impossible for anyone but an Admin. | Role and policies exist | No pages | Required before any Accountant page | 10D-8 |
 
