@@ -34,6 +34,8 @@ class AuditLog extends Model
 
     public const ACTION_PAYMENT_REMINDERS_GENERATED = 'payment_reminders_generated';
 
+    public const ACTION_GUARDIAN_STUDENT_UNLINKED = 'guardian_student_unlinked';
+
     /** @use HasFactory<AuditLogFactory> */
     use HasFactory;
 

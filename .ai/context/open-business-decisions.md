@@ -230,3 +230,11 @@ Do not invent answers for these.
 - The final active Superadmin cannot be archived or stripped of the Superadmin role; users cannot archive themselves.
 - Subject deletion is allowed only when no teaching assignment references the Subject.
 - Teacher qualifications, teaching assignments, and class-in-charge assignments are list/create/view only; correction and removal rules remain deferred.
+
+## Phase 10D-3 Rules
+- Guardian creation and editing do not grant Student visibility. Links remain explicit through guardian_student.
+- Guardian-Student unlink is Admin-only, confirmed in the web UI, and audited as guardian_student_unlinked.
+- Student edits never change Family membership. Enrollment movement must use Enrollment::placeIn() so placement history is preserved.
+- Discount withdrawal sets is_active false and never changes existing due-item snapshots.
+- Fee subscription ending sets is_active false plus ends_on and never changes existing due-item snapshots.
+- Guardian login, photo upload/storage, discount/subscription lifecycle auditing, and standalone link/enrollment reports remain deferred.

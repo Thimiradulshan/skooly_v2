@@ -35,10 +35,10 @@ deferred for the Academic Year, Term, Grade, and Section records.
 | User lifecycle and authorization expansion | Fixed-role user management and archiving now exist, but Accountant and Teacher operational permissions remain Admin-only. | Yes, `User`, `Role` | List/create/view/edit/archive | Per-resource role permissions | 10D-8 |
 | Teacher profile refinement | Teachers can be managed as Users and their qualifications can be viewed, but no dedicated profile beyond the staff account exists. | Yes, `User` with teacher role | Partial | None | Later |
 | Subject and assignment corrections | Subjects have CRUD and qualifications/assignments have list/create/view, but teaching configuration cannot yet be corrected or withdrawn. | Yes, `Subject`, `TeacherAssignment`, `SectionYearAssignment` | Partial | Correction/history rule | Later |
-| Guardian add and edit | A family can only ever have the single guardian entered at creation. A second parent cannot be added. | Yes, `Guardian` | Indirect only | None | 10D-3 |
-| Student detail and edit | Students are reachable only through a family. Admission number, status, and photo path cannot be corrected. | Yes, `Student` | No | None | 10D-3 |
-| Discount list and deactivate | A discount can be applied but never reviewed or withdrawn. A wrong discount silently affects future dues. | Yes, `Discount` | No | Whether withdrawal is "deactivate" or "end date" | 10D-3 |
-| Fee subscription list and end | A transport subscription cannot be switched off once granted. | Yes, `StudentFeeSubscription` | No | Same as discount | 10D-3 |
+| Guardian management refinement | Guardians can now be added/edited and explicitly linked/unlinked from Students, but no Guardian login exists. | Yes, `Guardian` | Add/edit/view/link/unlink | Guardian authentication | Later |
+| Student photo upload | Student details and status can be edited, but photo_path accepts an existing path only; secure file upload is absent. | Yes, `Student` | Detail/edit | Upload/storage policy | Later |
+| Discount history/audit | Discounts can be reviewed and deactivated for future generation, but deactivation is not separately audited. | Yes, `Discount` | List/deactivate | Audit event decision | Later |
+| Fee subscription history/audit | Subscriptions can be reviewed and ended for future generation, but ending is not separately audited. | Yes, `StudentFeeSubscription` | List/end | Audit event decision | Later |
 | Search, sort, and pagination | Every list degrades at real school size. | n/a | No | None | 10D-6 |
 | Payment correction or refund | **There is no correction path for a mistaken payment at all.** A duplicate or wrong-amount payment is permanent. | No | No | **Required.** Needs amount ceiling, audit, approval, and whether due items are reopened | 10D-7 |
 | Accountant access | Finance work is impossible for anyone but an Admin. | Role and policies exist | No pages | Required before any Accountant page | 10D-8 |
@@ -54,10 +54,10 @@ deferred for the Academic Year, Term, Grade, and Section records.
 | Promotion item editing | Every exception case is blocked. A single student cannot be retained, excluded, graduated, or retargeted. | No | No | Required. Backend edit action first | 10D-8 |
 | Fee structure editing | A price cannot be corrected after creation. | No | No | Whether editing may affect already-generated dues | 10D-5 |
 | Event charge editing | Same problem, smaller blast radius. | No | No | Same | 10D-5 |
-| Event participation management | Only students in charge grades can be opted in. | Partial | Partial | Whether wider opt-in is valid | 10D-3 |
+| Event participation management | Only students in charge grades can be opted in. | Partial | Partial | Whether wider opt-in is valid | Later |
 | Report export | The dashboard cannot be shared or filed. | `BuildDuesDashboardReport` | No | Export format | 10D-9 |
-| Enrollment list and edit | A student cannot be moved between sections after registration. | No | No | Whether to allow section moves | 10D-3 |
-| Guardian-Student link management | Revoking a link is the main privacy lever and is console-only. | No | No | Whether revocation needs audit | 10D-3 |
+| Enrollment reporting refinement | Enrollment placement can be viewed and moved with preserved history, but no standalone enrollment list exists. | Yes | Student detail/placement | None | Later |
+| Guardian-Student link reporting | Links can be created and revoked with an audit record, but no standalone link report exists. | Yes | Student detail | None | Later |
 
 ---
 

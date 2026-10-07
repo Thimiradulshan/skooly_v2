@@ -237,6 +237,13 @@ Laravel modular monolith.
 - Subjects support Admin-only CRUD; teaching assignments prevent a referenced Subject from deletion.
 - Teacher qualifications, teaching assignments, and class-in-charge assignments support Admin-only list/create/view workflows. Teaching assignments require an existing qualification.
 
+## Web Student and Guardian Management
+- GuardianController supports Admin-only Guardian create, view, edit, and update under an existing Family.
+- Guardian visibility remains explicit: StudentController links and unlinks guardian_student records only after same-Family validation; unlink writes an audit record in the same transaction.
+- StudentController supports Admin-only detail and edit, without changing the Student's Family or historical Enrollments.
+- EnrollmentPlacementController calls Enrollment::placeIn() for section movement and preserves placement history.
+- Discount and StudentFeeSubscription lists support future-only deactivation/end workflows; stored due-item snapshots are never rewritten.
+
 ## Demo Data & Local Testing
 - DemoDataSeeder builds deterministic local and testing data and returns early in production.
 - All generated records come from the existing actions, never duplicated logic.

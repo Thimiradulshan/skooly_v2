@@ -14,6 +14,7 @@
     <div class="page-actions">
         <x-button-link :href="route('families.edit', $family)">Edit family</x-button-link>
         <x-button-link :href="route('families.students.create', $family)" variant="secondary">Register student</x-button-link>
+        <x-button-link :href="route('families.guardians.create', $family)" variant="secondary">Add guardian</x-button-link>
         <x-button-link :href="route('families.payments.create', $family)" variant="secondary">Record payment</x-button-link>
     </div>
 
@@ -33,7 +34,7 @@
         <div class="table-wrap">
             <table class="table">
                 <thead>
-                <tr><th>Name</th><th>Relationship</th><th>Contact</th><th>Email</th></tr>
+                <tr><th>Name</th><th>Relationship</th><th>Contact</th><th>Email</th><th class="actions">Actions</th></tr>
                 </thead>
                 <tbody>
                 @forelse ($family->guardians as $guardian)
@@ -42,9 +43,10 @@
                         <td>{{ $guardian->relationship }}</td>
                         <td>{{ $guardian->contact_no }}</td>
                         <td>{{ $guardian->email }}</td>
+                        <td class="actions"><x-button-link :href="route('guardians.show', $guardian)" variant="quiet" size="small">View</x-button-link></td>
                     </tr>
                 @empty
-                    <tr class="table-empty"><td colspan="4">No guardians yet.</td></tr>
+                    <tr class="table-empty"><td colspan="5">No guardians yet.</td></tr>
                 @endforelse
                 </tbody>
             </table>
@@ -60,12 +62,13 @@
                 <tbody>
                 @forelse ($family->students as $student)
                     <tr>
-                        <td>{{ $student->name }}</td>
+                        <td><a href="{{ route('students.show', $student) }}">{{ $student->name }}</a></td>
                         <td>{{ $student->admission_no }}</td>
                         <td><x-status-badge :value="$student->status" /></td>
                         <td class="actions">
                             <x-button-link :href="route('students.discounts.create', $student)" variant="quiet" size="small">Discount</x-button-link>
                             <x-button-link :href="route('students.fee-subscriptions.create', $student)" variant="quiet" size="small">Fee subscription</x-button-link>
+                            <x-button-link :href="route('students.show', $student)" variant="quiet" size="small">View</x-button-link>
                         </td>
                     </tr>
                 @empty

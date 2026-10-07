@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\AdminDashboardController;
 use App\Http\Controllers\Web\AuditLogController;
 use App\Http\Controllers\Web\DueGenerationController;
 use App\Http\Controllers\Web\DuesDashboardController;
+use App\Http\Controllers\Web\EnrollmentPlacementController;
 use App\Http\Controllers\Web\EventChargeController;
 use App\Http\Controllers\Web\EventController;
 use App\Http\Controllers\Web\EventParticipationController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Web\FamilyController;
 use App\Http\Controllers\Web\FeeCategoryController;
 use App\Http\Controllers\Web\FeeStructureController;
 use App\Http\Controllers\Web\GradeController;
+use App\Http\Controllers\Web\GuardianController;
 use App\Http\Controllers\Web\PaymentCollectionController;
 use App\Http\Controllers\Web\PaymentReminderController;
 use App\Http\Controllers\Web\PromotionBatchController;
@@ -20,6 +22,7 @@ use App\Http\Controllers\Web\ReceiptController;
 use App\Http\Controllers\Web\SchoolSettingController;
 use App\Http\Controllers\Web\SectionController;
 use App\Http\Controllers\Web\SectionYearAssignmentController;
+use App\Http\Controllers\Web\StudentController;
 use App\Http\Controllers\Web\StudentDiscountController;
 use App\Http\Controllers\Web\StudentFeeSubscriptionController;
 use App\Http\Controllers\Web\StudentRegistrationController;
@@ -83,6 +86,20 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('families.students.create');
     Route::post('/families/{family}/students', [StudentRegistrationController::class, 'store'])
         ->name('families.students.store');
+    Route::get('/families/{family}/guardians/create', [GuardianController::class, 'create'])
+        ->name('families.guardians.create');
+    Route::post('/families/{family}/guardians', [GuardianController::class, 'store'])
+        ->name('families.guardians.store');
+    Route::get('/guardians/{guardian}', [GuardianController::class, 'show'])->name('guardians.show');
+    Route::get('/guardians/{guardian}/edit', [GuardianController::class, 'edit'])->name('guardians.edit');
+    Route::match(['put', 'patch'], '/guardians/{guardian}', [GuardianController::class, 'update'])->name('guardians.update');
+    Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
+    Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
+    Route::match(['put', 'patch'], '/students/{student}', [StudentController::class, 'update'])->name('students.update');
+    Route::post('/students/{student}/guardians', [StudentController::class, 'linkGuardian'])->name('students.guardians.store');
+    Route::delete('/students/{student}/guardians/{guardian}', [StudentController::class, 'unlinkGuardian'])->name('students.guardians.destroy');
+    Route::get('/enrollments/{enrollment}/placements/create', [EnrollmentPlacementController::class, 'create'])->name('enrollments.placements.create');
+    Route::post('/enrollments/{enrollment}/placements', [EnrollmentPlacementController::class, 'store'])->name('enrollments.placements.store');
 
     Route::get('/fee-categories', [FeeCategoryController::class, 'index'])->name('fee-categories.index');
     Route::get('/fee-categories/create', [FeeCategoryController::class, 'create'])->name('fee-categories.create');
@@ -98,13 +115,21 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
 
     Route::get('/students/{student}/discounts/create', [StudentDiscountController::class, 'create'])
         ->name('students.discounts.create');
+    Route::get('/students/{student}/discounts', [StudentDiscountController::class, 'index'])
+        ->name('students.discounts.index');
     Route::post('/students/{student}/discounts', [StudentDiscountController::class, 'store'])
         ->name('students.discounts.store');
+    Route::post('/discounts/{discount}/deactivate', [StudentDiscountController::class, 'deactivate'])
+        ->name('discounts.deactivate');
 
     Route::get('/students/{student}/fee-subscriptions/create', [StudentFeeSubscriptionController::class, 'create'])
         ->name('students.fee-subscriptions.create');
+    Route::get('/students/{student}/fee-subscriptions', [StudentFeeSubscriptionController::class, 'index'])
+        ->name('students.fee-subscriptions.index');
     Route::post('/students/{student}/fee-subscriptions', [StudentFeeSubscriptionController::class, 'store'])
         ->name('students.fee-subscriptions.store');
+    Route::post('/student-fee-subscriptions/{studentFeeSubscription}/end', [StudentFeeSubscriptionController::class, 'end'])
+        ->name('student-fee-subscriptions.end');
 
     Route::get('/due-generation/recurring', [DueGenerationController::class, 'recurringCreate'])
         ->name('due-generation.recurring.create');

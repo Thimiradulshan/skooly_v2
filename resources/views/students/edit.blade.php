@@ -1,0 +1,12 @@
+@extends('layouts.app')
+@section('title', 'Edit '.$student->name)
+@section('content')
+    <x-page-header :title="'Edit '.$student->name" subtitle="Update the student record. Enrollment placement is managed separately to preserve history." eyebrow="Registration" />
+    <x-card><form method="POST" action="{{ route('students.update', $student) }}" data-loading>@csrf @method('PUT')
+        <div class="form-field"><label class="form-label" for="name">Name <span class="req">*</span></label><input class="form-control" id="name" name="name" value="{{ old('name', $student->name) }}" required></div>
+        <div class="form-grid"><div class="form-field"><label class="form-label" for="dob">Date of birth <span class="req">*</span></label><input class="form-control" type="date" id="dob" name="dob" value="{{ old('dob', $student->dob->toDateString()) }}" required></div><div class="form-field"><label class="form-label" for="gender">Gender <span class="req">*</span></label><input class="form-control" id="gender" name="gender" value="{{ old('gender', $student->gender) }}" required></div></div>
+        <div class="form-grid"><div class="form-field"><label class="form-label" for="admission_no">Admission number <span class="req">*</span></label><input class="form-control" id="admission_no" name="admission_no" value="{{ old('admission_no', $student->admission_no) }}" required></div><div class="form-field"><label class="form-label" for="status">Status <span class="req">*</span></label><select class="form-control" id="status" name="status" required>@foreach ([\App\Models\Student::STATUS_PENDING_REGISTRATION, \App\Models\Student::STATUS_ACTIVE, \App\Models\Student::STATUS_INACTIVE, \App\Models\Student::STATUS_WITHDRAWN, \App\Models\Student::STATUS_GRADUATED] as $status)<option value="{{ $status }}" {{ old('status', $student->status) === $status ? 'selected' : '' }}>{{ str($status)->headline() }}</option>@endforeach</select></div></div>
+        <div class="form-field"><label class="form-label" for="photo_path">Photo path</label><input class="form-control" id="photo_path" name="photo_path" value="{{ old('photo_path', $student->photo_path) }}"><span class="form-help">File upload is not implemented; this stores an existing path only.</span></div>
+        <div class="btn-row"><button type="submit" class="btn">Save student</button><a class="btn btn-secondary" href="{{ route('students.show', $student) }}">Cancel</a></div>
+    </form></x-card>
+@endsection

@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-2: Identity, Teacher, Subject & Assignment Management
+Phase 10D-3: Student & Guardian Management
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -40,7 +40,7 @@ Phase 10D-2: Identity, Teacher, Subject & Assignment Management
 - Phase 10D-1B: Audit Log Viewing - complete / pending commit
 
 ## Current Status
-Phase 10D-2 is complete and verified. It adds fixed-role staff management, Superadmin bootstrap, user archiving, Subject CRUD, and read/create/view teaching configuration. Accountant and Teacher operational access remains Admin-only.
+Phase 10D-3 is complete and verified. It adds Guardian and Student management, explicit audited Guardian-Student link revocation, history-preserving enrollment placement, and discount/subscription lifecycle controls.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -237,9 +237,20 @@ Phase 10D-2 is complete and verified. It adds fixed-role staff management, Super
 - Superadmin manages all user accounts. Admin manages only accounts without Admin or Superadmin roles.
 - Subject CRUD is Admin-only. A Subject with teaching assignments cannot be deleted.
 - Teacher qualifications, teaching assignments, and class-in-charge assignments are Admin-only list/create/view workflows. A teaching assignment requires a qualified Teacher.
+- Guardian creation and editing never grant Student visibility. A Guardian must be explicitly linked to a Student from the same Family.
+- Guardian-Student unlinking is transactional and writes guardian_student_unlinked audit data. It never changes Family membership.
+- Student updates never change Family membership or historical Enrollments. Enrollment placement uses Enrollment::placeIn() to append history.
+- Discount deactivation and subscription ending affect future due generation only; existing StudentDueItems and snapshots remain unchanged.
 
 ## Verification Result
 Passed on 2026-10-07:
+- php artisan test --compact: 438 tests, 2035 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (non-blocking optional Fontaine font-fallback warning)
+- composer audit: no security vulnerability advisories
+
+Previously passed on 2026-10-07:
 - php artisan test --compact: 428 tests, 1982 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --dirty --format agent

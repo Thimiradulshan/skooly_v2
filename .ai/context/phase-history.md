@@ -620,6 +620,22 @@ Verification:
 - `php artisan test --compact`: 428 tests / 1982 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D-3: Student & Guardian Management
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Guardian create, view, and edit pages under existing Families.
+- Student detail and edit pages plus explicit Guardian-Student link and audited unlink workflows.
+- Enrollment placement page that delegates to Enrollment::placeIn().
+- Discount review/deactivation and fee-subscription review/end pages for future generation only.
+
+Deferred:
+- Guardian login, photo upload/storage, discount/subscription lifecycle audit entries, standalone enrollment/link reports, and Event participation scope.
+
+Verification:
+- `php artisan test --compact`: 438 tests / 2035 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 
