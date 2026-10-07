@@ -4,6 +4,7 @@ namespace App\Actions\Promotion;
 
 use App\Actions\Audit\RecordAuditLog;
 use App\Models\AuditLog;
+use App\Models\Grade;
 use App\Models\PromotionBatch;
 use App\Models\PromotionBatchItem;
 use App\Models\Section;
@@ -49,7 +50,8 @@ class UpdatePromotionBatchItem
                     throw new InvalidArgumentException('Promote and retain actions require a target grade and target section.');
                 }
 
-                $targetSection = Section::query()->findOrFail($targetSectionId);
+                Grade::query()->active()->findOrFail($targetGradeId);
+                $targetSection = Section::query()->active()->findOrFail($targetSectionId);
 
                 if ($targetSection->grade_id !== $targetGradeId) {
                     throw new InvalidArgumentException('The target section must belong to the selected target grade.');

@@ -210,11 +210,13 @@ Do not invent answers for these.
 - SchoolSetting.active_academic_year_id is inert and needs a decision on whether anything should honour it.
 - Money and history must never be hard deleted. Configuration should be archived, pending approval.
 
-## Phase 10D-1A Rules
-- Academic year, term, grade, and section web pages support list, create, view, edit, and update only.
-- Archive/deactivate remains deferred: none of the four tables has a lifecycle status, and archive semantics remain unresolved.
-- No hard delete or archive route exists for academic setup.
-- SchoolSetting.active_academic_year_id may be selected by an Admin but remains inert until a separate decision assigns downstream behaviour.
+## Academic Archive Workflow Rules
+- AcademicYear, Term, Grade, and Section have an `is_archived` lifecycle flag. They are never hard deleted.
+- Only Admin may archive or restore them. Archive preserves history and never cascades to children.
+- Archived records are excluded only from new-selection/configuration flows. Existing indexes, details, history, reports, and existing-update references remain readable.
+- The active SchoolSetting academic year must be changed before that year can be archived. SchoolSetting rejects archived academic years.
+- Archive and restore transitions are explicitly audited.
+- SchoolSetting.active_academic_year_id otherwise remains inert until a separate decision assigns downstream behaviour.
 
 ## Phase 10D-1B Rules
 - Audit-log viewing is Admin-only and read-only.

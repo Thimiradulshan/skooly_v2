@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\Academic\SetAcademicRecordArchived;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ArchiveAcademicRecordRequest;
 use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreGradeRequest;
 use App\Http\Requests\Web\UpdateGradeRequest;
+use App\Models\AuditLog;
 use App\Models\Grade;
 
 class GradeController extends Controller
@@ -67,5 +70,19 @@ class GradeController extends Controller
         $grade->update($request->validated());
 
         return redirect()->route('grades.show', $grade)->with('status', 'Grade updated.');
+    }
+
+    public function archive(ArchiveAcademicRecordRequest $request, Grade $grade, SetAcademicRecordArchived $setArchived)
+    {
+        $setArchived->handle($grade, true, AuditLog::ACTION_GRADE_ARCHIVED, $request->user());
+
+        return redirect()->route('grades.show', $grade)->with('status', 'Grade archived. Existing history remains available.');
+    }
+
+    public function restore(ArchiveAcademicRecordRequest $request, Grade $grade, SetAcademicRecordArchived $setArchived)
+    {
+        $setArchived->handle($grade, false, AuditLog::ACTION_GRADE_RESTORED, $request->user());
+
+        return redirect()->route('grades.show', $grade)->with('status', 'Grade restored.');
     }
 }

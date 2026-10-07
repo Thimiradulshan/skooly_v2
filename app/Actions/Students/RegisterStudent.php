@@ -3,9 +3,11 @@
 namespace App\Actions\Students;
 
 use App\Actions\Audit\RecordAuditLog;
+use App\Models\AcademicYear;
 use App\Models\AuditLog;
 use App\Models\Enrollment;
 use App\Models\Family;
+use App\Models\Grade;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\User;
@@ -42,7 +44,9 @@ class RegisterStudent
             }
 
             if ($enrollment !== null) {
-                $section = Section::query()->findOrFail($enrollment['section_id']);
+                AcademicYear::query()->active()->findOrFail($enrollment['academic_year_id']);
+                Grade::query()->active()->findOrFail($enrollment['grade_id']);
+                $section = Section::query()->active()->findOrFail($enrollment['section_id']);
 
                 if ($section->grade_id !== $enrollment['grade_id']) {
                     throw new InvalidArgumentException('Section does not belong to the given Grade.');

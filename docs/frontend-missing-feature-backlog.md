@@ -12,7 +12,7 @@ console.
 
 | Gap | Why it matters | Backend exists | Frontend exists | Decision needed | Suggested phase |
 | --- | --- | --- | --- | --- | --- |
-| Academic setup archive/deactivate | List, create, view, edit, and update now exist for academic years, terms, grades, and sections. Old configuration cannot yet be hidden safely. | No status columns | No | Required. Define archive semantics before a migration and UI | 10D-4 |
+| Academic setup archive/deactivate | Admins can archive and restore academic years, terms, grades, and sections. Archived records remain visible in history and are excluded only from new configuration selections. | `is_archived` lifecycle flags | Yes | Complete in 10D archive workflow | Complete |
 | Active year behaviour | School Setting can now select the active year, but no existing workflow reads the setting. | Yes, `SchoolSetting` | Edit/update | Whether anything should *depend* on it | Later decision |
 | Audit log filtering, export, and retention | Admins can now review entries and stored metadata, but cannot narrow, export, or retain them by policy. | Yes, `AuditLog` | Read-only index and detail | Retention policy and export format | 10D-6 |
 
@@ -21,8 +21,8 @@ Admin-only, read-only audit-log viewing.** Audit filtering, export, and retentio
 remain deferred.
 
 Completed in Phase 10D-1A: **Academic Year**, Term, **Grade**, **Section**, and
-School Setting list/create/view/edit/update web surfaces. Archive/deactivate remains
-deferred for the Academic Year, Term, Grade, and Section records.
+School Setting list/create/view/edit/update web surfaces. Academic Year, Term, Grade,
+and Section archive/restore are complete; the active academic year cannot be archived.
 
 ---
 
@@ -82,8 +82,8 @@ deferred for the Academic Year, Term, Grade, and Section records.
    onboarding depends on it.
 3. **10D-3 — Student and guardian management.** Fixes the one-guardian-per-family
    limitation and the missing student record pages.
-4. **10D-4 — Discard and cancel workflows are complete.** Archive/deactivate remains
-   blocked by the business decisions in `docs/destructive-action-policy-draft.md`.
+4. **10D archive workflow — complete.** Academic configuration archives safely without
+   deleting or rewriting history.
 5. **10D-6 — Lists, search, pagination, and safe sorting.** Makes the existing screens usable at scale.
 6. **10D-7 — Payment correction or refund.** The only genuinely missing capability
    that cannot be deferred indefinitely.

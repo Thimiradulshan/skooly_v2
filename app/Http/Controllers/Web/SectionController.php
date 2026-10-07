@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\Academic\SetAcademicRecordArchived;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ArchiveAcademicRecordRequest;
 use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreSectionRequest;
 use App\Http\Requests\Web\UpdateSectionRequest;
+use App\Models\AuditLog;
 use App\Models\Grade;
 use App\Models\Section;
 
@@ -63,7 +66,7 @@ class SectionController extends Controller
 
     public function edit(Section $section)
     {
-        return view('sections.edit', array_merge(['section' => $section], $this->formData()));
+        return view('sections.edit', array_merge(['section' => $section], $this->formData($section)));
     }
 
     public function update(UpdateSectionRequest $request, Section $section)
@@ -73,11 +76,25 @@ class SectionController extends Controller
         return redirect()->route('sections.show', $section)->with('status', 'Section updated.');
     }
 
+    public function archive(ArchiveAcademicRecordRequest $request, Section $section, SetAcademicRecordArchived $setArchived)
+    {
+        $setArchived->handle($section, true, AuditLog::ACTION_SECTION_ARCHIVED, $request->user());
+
+        return redirect()->route('sections.show', $section)->with('status', 'Section archived. Existing history remains available.');
+    }
+
+    public function restore(ArchiveAcademicRecordRequest $request, Section $section, SetAcademicRecordArchived $setArchived)
+    {
+        $setArchived->handle($section, false, AuditLog::ACTION_SECTION_RESTORED, $request->user());
+
+        return redirect()->route('sections.show', $section)->with('status', 'Section restored.');
+    }
+
     /**
      * @return array<string, mixed>
      */
-    private function formData(): array
+    private function formData(?Section $section = null): array
     {
-        return ['grades' => Grade::query()->orderBy('sequence_order')->get()];
+        return ['grades' => Grade::query()->active()->when($section, fn ($query) => $query->orWhereKey($section->grade_id))->orderBy('sequence_order')->get()];
     }
 }

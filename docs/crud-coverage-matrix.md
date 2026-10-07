@@ -18,10 +18,10 @@ Statuses used:
 | Module | List | Create | View | Edit | Update | Archive | Delete | Restore | Generate | Confirm | Export/Print | Search/Filter | Status change | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | School Setting | Not Applicable | Not Applicable | Yes | Yes | Yes | Not Applicable | No | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | Not Applicable | Singleton active-year setting. Its downstream behaviour is intentionally inert |
-| Academic Year | Yes | Yes | Yes | Yes | Yes | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Archive/deactivate deferred: schema has no status field |
-| Term | Yes | Yes | Yes | Yes | Yes | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Archive/deactivate deferred: schema has no status field |
-| Grade | Yes | Yes | Yes | Yes | Yes | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Archive/deactivate deferred: schema has no status field; sequence drives promotion |
-| Section | Yes | Yes | Yes | Yes | Yes | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Archive/deactivate deferred: schema has no status field |
+| Academic Year | Yes | Yes | Yes | Yes | Yes | Yes | Not Recommended | Yes | Not Applicable | Not Applicable | No | No | No | Admin archive/restore; active SchoolSetting year is protected; history remains visible |
+| Term | Yes | Yes | Yes | Yes | Yes | Yes | Not Recommended | Yes | Not Applicable | Not Applicable | No | No | No | Admin archive/restore; history remains visible |
+| Grade | Yes | Yes | Yes | Yes | Yes | Yes | Not Recommended | Yes | Not Applicable | Not Applicable | No | No | No | Admin archive/restore; sequence drives promotion; history remains visible |
+| Section | Yes | Yes | Yes | Yes | Yes | Yes | Not Recommended | Yes | Not Applicable | Not Applicable | No | No | No | Admin archive/restore; history remains visible |
 | User | No | No | No | No | No | Needs Decision | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Staff cannot be created without a console |
 | Role | No | No | No | No | No | Not Applicable | Not Recommended | Not Applicable | Not Applicable | Not Applicable | No | No | No | Only three fixed roles. Creating roles ad hoc is risky |
 | Subject | No | No | No | No | No | Needs Decision | Needs Decision | Not Applicable | Not Applicable | Not Applicable | No | No | No | Referenced by teacher assignments |

@@ -4,9 +4,8 @@ namespace App\Http\Requests\Web;
 
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StoreEnrollmentPlacementRequest extends FormRequest
+class ArchiveAcademicRecordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +22,6 @@ class StoreEnrollmentPlacementRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'grade_id' => ['required', 'integer', Rule::exists('grades', 'id')->where('is_archived', 0)],
-            'section_id' => ['required', 'integer', Rule::exists('sections', 'id')->where('is_archived', 0)],
-        ];
+        return [];
     }
 }

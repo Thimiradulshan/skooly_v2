@@ -38,7 +38,7 @@ class PaymentReminderController extends Controller
     public function create()
     {
         return view('payment-reminders.create', [
-            'academicYears' => AcademicYear::query()->orderBy('id')->get(),
+            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
             'families' => Family::query()->orderBy('family_code')->get(),
         ]);
     }

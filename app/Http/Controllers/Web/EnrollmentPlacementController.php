@@ -17,14 +17,14 @@ class EnrollmentPlacementController extends Controller
 
         return view('enrollments.placements.create', [
             'enrollment' => $enrollment,
-            'grades' => Grade::query()->with('sections')->orderBy('sequence_order')->get(),
+            'grades' => Grade::query()->active()->with(['sections' => fn ($query) => $query->active()])->orderBy('sequence_order')->get(),
         ]);
     }
 
     public function store(StoreEnrollmentPlacementRequest $request, Enrollment $enrollment)
     {
-        $grade = Grade::query()->findOrFail($request->integer('grade_id'));
-        $section = Section::query()->findOrFail($request->integer('section_id'));
+        $grade = Grade::query()->active()->findOrFail($request->integer('grade_id'));
+        $section = Section::query()->active()->findOrFail($request->integer('section_id'));
 
         if ($section->grade_id !== $grade->id) {
             throw ValidationException::withMessages(['section_id' => 'The selected section must belong to the selected grade.']);

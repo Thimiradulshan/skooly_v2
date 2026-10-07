@@ -28,7 +28,7 @@ class StudentFeeSubscriptionController extends Controller
         return view('students.fee-subscriptions.create', [
             'student' => $student,
             'feeCategories' => FeeCategory::query()->where('is_opt_in', true)->orderBy('name')->get(),
-            'academicYears' => AcademicYear::query()->orderBy('id')->get(),
+            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
         ]);
     }
 
@@ -37,7 +37,7 @@ class StudentFeeSubscriptionController extends Controller
         $createSubscription->handle(
             $student,
             FeeCategory::query()->findOrFail($request->integer('fee_category_id')),
-            AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
+            AcademicYear::query()->active()->findOrFail($request->integer('academic_year_id')),
             [
                 'is_active' => $request->boolean('is_active'),
                 'starts_on' => $request->input('starts_on'),

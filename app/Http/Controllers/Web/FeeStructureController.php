@@ -53,8 +53,8 @@ class FeeStructureController extends Controller
     {
         return view('fee-structures.create', [
             'feeCategories' => FeeCategory::query()->orderBy('name')->get(),
-            'grades' => Grade::query()->orderBy('sequence_order')->get(),
-            'academicYears' => AcademicYear::query()->orderBy('id')->get(),
+            'grades' => Grade::query()->active()->orderBy('sequence_order')->get(),
+            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
         ]);
     }
 
@@ -62,8 +62,8 @@ class FeeStructureController extends Controller
     {
         $createFeeStructure->handle(
             FeeCategory::query()->findOrFail($request->integer('fee_category_id')),
-            Grade::query()->findOrFail($request->integer('grade_id')),
-            AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
+            Grade::query()->active()->findOrFail($request->integer('grade_id')),
+            AcademicYear::query()->active()->findOrFail($request->integer('academic_year_id')),
             (string) $request->input('amount'),
             $request->string('frequency')->toString(),
         );

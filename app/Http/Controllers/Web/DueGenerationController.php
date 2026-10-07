@@ -15,14 +15,14 @@ class DueGenerationController extends Controller
     public function recurringCreate()
     {
         return view('due-generation.recurring', [
-            'academicYears' => AcademicYear::query()->orderBy('id')->get(),
+            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
         ]);
     }
 
     public function recurringStore(GenerateRecurringDuesRequest $request, GenerateRecurringDueItems $generateRecurringDueItems)
     {
         $created = $generateRecurringDueItems->handle(
-            AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
+            AcademicYear::query()->active()->findOrFail($request->integer('academic_year_id')),
             $request->string('due_date')->toString(),
             $request->input('cycle_key'),
             $request->user(),

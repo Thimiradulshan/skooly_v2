@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\Academic\SetAcademicRecordArchived;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ArchiveAcademicRecordRequest;
 use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreAcademicYearRequest;
 use App\Http\Requests\Web\UpdateAcademicYearRequest;
 use App\Models\AcademicYear;
+use App\Models\AuditLog;
+use App\Models\SchoolSetting;
+use Illuminate\Validation\ValidationException;
 
 class AcademicYearController extends Controller
 {
@@ -67,5 +72,23 @@ class AcademicYearController extends Controller
         $academicYear->update($request->validated());
 
         return redirect()->route('academic-years.show', $academicYear)->with('status', 'Academic year updated.');
+    }
+
+    public function archive(ArchiveAcademicRecordRequest $request, AcademicYear $academicYear, SetAcademicRecordArchived $setArchived)
+    {
+        if (SchoolSetting::query()->where('active_academic_year_id', $academicYear->id)->exists()) {
+            throw ValidationException::withMessages(['academic_year' => 'Select a different active academic year before archiving this academic year.']);
+        }
+
+        $setArchived->handle($academicYear, true, AuditLog::ACTION_ACADEMIC_YEAR_ARCHIVED, $request->user());
+
+        return redirect()->route('academic-years.show', $academicYear)->with('status', 'Academic year archived. Existing history remains available.');
+    }
+
+    public function restore(ArchiveAcademicRecordRequest $request, AcademicYear $academicYear, SetAcademicRecordArchived $setArchived)
+    {
+        $setArchived->handle($academicYear, false, AuditLog::ACTION_ACADEMIC_YEAR_RESTORED, $request->user());
+
+        return redirect()->route('academic-years.show', $academicYear)->with('status', 'Academic year restored.');
     }
 }

@@ -54,8 +54,8 @@ class TeacherAssignmentController extends Controller
     public function create()
     {
         return view('teacher-assignments.create', [
-            'academicYears' => AcademicYear::query()->orderByDesc('start_date')->get(),
-            'sections' => Section::query()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
+            'academicYears' => AcademicYear::query()->active()->orderByDesc('start_date')->get(),
+            'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
             'teachers' => $this->teachers()->get(),
             'subjects' => Subject::query()->orderBy('code')->get(),
         ]);

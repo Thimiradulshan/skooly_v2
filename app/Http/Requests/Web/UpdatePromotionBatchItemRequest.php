@@ -31,14 +31,14 @@ class UpdatePromotionBatchItemRequest extends FormRequest
             'target_grade_id' => [
                 'nullable',
                 'integer',
-                'exists:grades,id',
+                Rule::exists('grades', 'id')->where('is_archived', 0),
                 'required_if:action,promote,retain',
                 'prohibited_unless:action,promote,retain',
             ],
             'target_section_id' => [
                 'nullable',
                 'integer',
-                'exists:sections,id',
+                Rule::exists('sections', 'id')->where('is_archived', 0),
                 'required_if:action,promote,retain',
                 'prohibited_unless:action,promote,retain',
             ],
@@ -60,7 +60,7 @@ class UpdatePromotionBatchItemRequest extends FormRequest
                     return;
                 }
 
-                $targetSection = Section::query()->find($this->integer('target_section_id'));
+                $targetSection = Section::query()->active()->find($this->integer('target_section_id'));
 
                 if ($targetSection?->grade_id !== $this->integer('target_grade_id')) {
                     $validator->errors()->add('target_section_id', 'The target section must belong to the selected target grade.');

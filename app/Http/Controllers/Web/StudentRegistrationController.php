@@ -18,9 +18,9 @@ class StudentRegistrationController extends Controller
 
         return view('students.create', [
             'family' => $family,
-            'academicYears' => AcademicYear::query()->orderBy('id')->get(),
-            'grades' => Grade::query()->orderBy('sequence_order')->get(),
-            'sections' => Section::query()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
+            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
+            'grades' => Grade::query()->active()->orderBy('sequence_order')->get(),
+            'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
         ]);
     }
 

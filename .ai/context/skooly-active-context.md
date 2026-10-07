@@ -158,7 +158,7 @@ Use this file before broad project reinspection.
 - Read docs/system-overview.md and docs/data-flow.md to understand the system without re-reading the code.
 - Use docs/user-workflows.md to see how each Admin task is performed and where it is limited.
 - docs/ui-ux-roadmap.md and docs/production-gap-register.md record what the interface and the release still need.
-- Academic setup web screens now exist (Phase 10D-1A); archive/deactivate still needs a lifecycle-status decision.
+- Academic setup supports Admin-only archive/restore for AcademicYear, Term, Grade, and Section. `is_archived` preserves history and is excluded only from new selections.
 - The admin UI is a static plain-CSS design system in public/css/admin.css. No build step and no npm packages.
 - Navigation lives once in the sidebar. New pages must add their link there, not repeat markup.
 - Shared UI pieces live in resources/views/components. Reuse them instead of restyling per view.
@@ -169,9 +169,8 @@ Use this file before broad project reinspection.
 - docs/backend-frontend-feature-parity.md and docs/crud-coverage-matrix.md record backend versus frontend coverage.
 - docs/frontend-missing-feature-backlog.md is the ordered plan for what to build next.
 - docs/destructive-action-policy-draft.md defines what must never be deleted.
-- The largest remaining gap: no academic setup UI, so school staff still need a console.
-- Admin-only academic setup pages now cover list, create, view, edit, and update for AcademicYear, Term, Grade, and Section, plus SchoolSetting active-year selection.
-- Archive/deactivate is deferred because the schema has no lifecycle status and its semantics need a decision. No hard delete route exists.
+- Admin-only academic setup pages cover list, create, view, edit, update, archive, and restore for AcademicYear, Term, Grade, and Section. No hard delete route exists.
+- Active SchoolSetting years cannot be archived; SchoolSetting selects only unarchived years. Archiving a year does not archive children.
 - SchoolSetting.active_academic_year_id remains inert outside its settings page.
 - Users may have multiple roles.
 - No Spatie permissions yet.
@@ -225,4 +224,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-10-01: `migrate:fresh` and `DemoDataSeeder` passed; 410 tests / 1913 assertions passed; PHPStan and Pint passed; Composer audit found no advisories; git diff --check passed.
+- 2026-10-07: `migrate:fresh --no-interaction` passed; 481 tests / 2324 assertions passed; PHPStan and Pint passed; npm build passed with only the optional Fontaine warning; Composer audit found no advisories; git diff --check passed.

@@ -10,6 +10,15 @@ git diff --check
 git status
 
 ## Latest Known Good
+Phase 10D Archive/Deactivate Workflow passed on 2026-10-07:
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 481 tests / 2324 assertions passed.
+- PHPStan passed with 0 errors.
+- Pint passed.
+- `npm run build` passed; Vite reported only the optional Fontaine font-fallback warning.
+- Composer audit found no vulnerabilities.
+- `git diff --check` passed.
+
 Phase 10D-9 print sub-scope passed on 2026-10-07:
 - `php artisan test --compact`: 475 tests / 2288 assertions passed.
 - PHPStan passed with 0 errors.

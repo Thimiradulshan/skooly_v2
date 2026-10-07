@@ -30,8 +30,8 @@ class StoreFeeStructureRequest extends FormRequest
                     ->where('academic_year_id', $this->input('academic_year_id'))
                     ->where('frequency', $this->input('frequency'))),
             ],
-            'grade_id' => ['required', 'integer', 'exists:grades,id'],
-            'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
+            'grade_id' => ['required', 'integer', Rule::exists('grades', 'id')->where('is_archived', 0)],
+            'academic_year_id' => ['required', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
             'amount' => ['required', 'numeric', 'min:0'],
             'frequency' => ['required', 'string', 'max:255'],
         ];

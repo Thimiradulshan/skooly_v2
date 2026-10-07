@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\Academic\SetAcademicRecordArchived;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ArchiveAcademicRecordRequest;
 use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreTermRequest;
 use App\Http\Requests\Web\UpdateTermRequest;
 use App\Models\AcademicYear;
+use App\Models\AuditLog;
 use App\Models\Term;
 
 class TermController extends Controller
@@ -63,7 +66,7 @@ class TermController extends Controller
 
     public function edit(Term $term)
     {
-        return view('terms.edit', array_merge(['term' => $term], $this->formData()));
+        return view('terms.edit', array_merge(['term' => $term], $this->formData($term)));
     }
 
     public function update(UpdateTermRequest $request, Term $term)
@@ -73,11 +76,25 @@ class TermController extends Controller
         return redirect()->route('terms.show', $term)->with('status', 'Term updated.');
     }
 
+    public function archive(ArchiveAcademicRecordRequest $request, Term $term, SetAcademicRecordArchived $setArchived)
+    {
+        $setArchived->handle($term, true, AuditLog::ACTION_TERM_ARCHIVED, $request->user());
+
+        return redirect()->route('terms.show', $term)->with('status', 'Term archived. Existing history remains available.');
+    }
+
+    public function restore(ArchiveAcademicRecordRequest $request, Term $term, SetAcademicRecordArchived $setArchived)
+    {
+        $setArchived->handle($term, false, AuditLog::ACTION_TERM_RESTORED, $request->user());
+
+        return redirect()->route('terms.show', $term)->with('status', 'Term restored.');
+    }
+
     /**
      * @return array<string, mixed>
      */
-    private function formData(): array
+    private function formData(?Term $term = null): array
     {
-        return ['academicYears' => AcademicYear::query()->orderByDesc('start_date')->get()];
+        return ['academicYears' => AcademicYear::query()->active()->when($term, fn ($query) => $query->orWhereKey($term->academic_year_id))->orderByDesc('start_date')->get()];
     }
 }

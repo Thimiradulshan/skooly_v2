@@ -42,6 +42,22 @@ class AuditLog extends Model
 
     public const ACTION_GUARDIAN_STUDENT_UNLINKED = 'guardian_student_unlinked';
 
+    public const ACTION_ACADEMIC_YEAR_ARCHIVED = 'academic_year_archived';
+
+    public const ACTION_ACADEMIC_YEAR_RESTORED = 'academic_year_restored';
+
+    public const ACTION_TERM_ARCHIVED = 'term_archived';
+
+    public const ACTION_TERM_RESTORED = 'term_restored';
+
+    public const ACTION_GRADE_ARCHIVED = 'grade_archived';
+
+    public const ACTION_GRADE_RESTORED = 'grade_restored';
+
+    public const ACTION_SECTION_ARCHIVED = 'section_archived';
+
+    public const ACTION_SECTION_RESTORED = 'section_restored';
+
     /** @use HasFactory<AuditLogFactory> */
     use HasFactory;
 

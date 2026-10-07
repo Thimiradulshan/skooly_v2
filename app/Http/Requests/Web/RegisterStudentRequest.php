@@ -39,9 +39,9 @@ class RegisterStudentRequest extends FormRequest
             'status' => ['nullable', 'string', Rule::in($statuses)],
             'guardian_ids' => ['nullable', 'array'],
             'guardian_ids.*' => ['integer', 'exists:guardians,id'],
-            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
-            'grade_id' => ['nullable', 'integer', 'exists:grades,id'],
-            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'academic_year_id' => ['nullable', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
+            'grade_id' => ['nullable', 'integer', Rule::exists('grades', 'id')->where('is_archived', 0)],
+            'section_id' => ['nullable', 'integer', Rule::exists('sections', 'id')->where('is_archived', 0)],
         ];
     }
 

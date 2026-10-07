@@ -4,6 +4,7 @@ namespace App\Http\Requests\Web;
 
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreSectionYearAssignmentRequest extends FormRequest
 {
@@ -23,8 +24,8 @@ class StoreSectionYearAssignmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
-            'section_id' => ['required', 'integer', 'exists:sections,id'],
+            'academic_year_id' => ['required', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
+            'section_id' => ['required', 'integer', Rule::exists('sections', 'id')->where('is_archived', 0)],
             'class_in_charge_id' => ['required', 'integer', 'exists:users,id'],
         ];
     }

@@ -24,7 +24,7 @@ class UpdateSchoolSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'active_academic_year_id' => ['required', 'integer', Rule::exists('academic_years', 'id')],
+            'active_academic_year_id' => ['required', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
         ];
     }
 }

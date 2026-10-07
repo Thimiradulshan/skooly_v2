@@ -56,16 +56,16 @@ class PromotionBatchController extends Controller
     public function create()
     {
         return view('promotion-batches.create', [
-            'academicYears' => AcademicYear::query()->orderBy('id')->get(),
-            'sections' => Section::query()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
+            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
+            'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
         ]);
     }
 
     public function store(StorePromotionBatchRequest $request, CreatePromotionBatch $createPromotionBatch)
     {
         $batch = $createPromotionBatch->handle(
-            AcademicYear::query()->findOrFail($request->integer('source_academic_year_id')),
-            AcademicYear::query()->findOrFail($request->integer('target_academic_year_id')),
+            AcademicYear::query()->active()->findOrFail($request->integer('source_academic_year_id')),
+            AcademicYear::query()->active()->findOrFail($request->integer('target_academic_year_id')),
             array_map('intval', $request->input('source_section_ids')),
             $request->user(),
         );
@@ -90,8 +90,8 @@ class PromotionBatchController extends Controller
 
         return view('promotion-batches.show', [
             'promotionBatch' => $promotionBatch,
-            'grades' => Grade::query()->orderBy('sequence_order')->get(),
-            'sections' => Section::query()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
+            'grades' => Grade::query()->active()->orderBy('sequence_order')->get(),
+            'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
         ]);
     }
 

@@ -765,6 +765,20 @@ Verification:
 - `php artisan test --compact`: 475 tests / 2288 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D Archive/Deactivate Workflow
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- `is_archived` lifecycle flags and local `active()` scopes for AcademicYear, Term, Grade, and Section.
+- Admin-only confirmed archive/restore routes with explicit audit records for every transition.
+- Active-year archive protection and SchoolSetting filtering/validation for archived years.
+- Existing indexes, details, reports, and foreign references remain readable; only new configuration selectors exclude archived records.
+
+Verification:
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 481 tests / 2324 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

@@ -59,6 +59,14 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::resource('terms', TermController::class)->except('destroy');
     Route::resource('grades', GradeController::class)->except('destroy');
     Route::resource('sections', SectionController::class)->except('destroy');
+    Route::post('/academic-years/{academicYear}/archive', [AcademicYearController::class, 'archive'])->name('academic-years.archive');
+    Route::post('/academic-years/{academicYear}/restore', [AcademicYearController::class, 'restore'])->name('academic-years.restore');
+    Route::post('/terms/{term}/archive', [TermController::class, 'archive'])->name('terms.archive');
+    Route::post('/terms/{term}/restore', [TermController::class, 'restore'])->name('terms.restore');
+    Route::post('/grades/{grade}/archive', [GradeController::class, 'archive'])->name('grades.archive');
+    Route::post('/grades/{grade}/restore', [GradeController::class, 'restore'])->name('grades.restore');
+    Route::post('/sections/{section}/archive', [SectionController::class, 'archive'])->name('sections.archive');
+    Route::post('/sections/{section}/restore', [SectionController::class, 'restore'])->name('sections.restore');
     Route::resource('subjects', SubjectController::class);
     Route::get('/teacher-qualifications', [TeacherQualificationController::class, 'index'])->name('teacher-qualifications.index');
     Route::get('/teacher-qualifications/create', [TeacherQualificationController::class, 'create'])->name('teacher-qualifications.create');

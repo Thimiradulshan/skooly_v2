@@ -13,7 +13,7 @@ class SchoolSettingController extends Controller
     {
         return view('school-settings.edit', [
             'schoolSetting' => SchoolSetting::query()->firstOrFail(),
-            'academicYears' => AcademicYear::query()->orderByDesc('start_date')->get(),
+            'academicYears' => AcademicYear::query()->active()->orderByDesc('start_date')->get(),
         ]);
     }
 

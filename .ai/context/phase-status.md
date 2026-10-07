@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-9: Print-Friendly Family and Student Detail Pages
+Phase 10D Archive/Deactivate Workflow
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -47,9 +47,10 @@ Phase 10D-9: Print-Friendly Family and Student Detail Pages
 - Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists - complete / pending commit
 - Phase 10D-7: Payment Reversal Workflow - complete / pending commit
 - Phase 10D-8: Promotion Draft Editing & Accountant Read Access - complete / pending commit
+- Phase 10D Archive/Deactivate Workflow - implementation complete / verification in progress
 
 ## Current Status
-The unblocked, presentation-only print sub-scope of Phase 10D-9 is complete and verified. Family and Student detail pages have browser print buttons and scoped print styles; exports, dashboard charts, and reports remain deferred.
+Admin-only archive/restore is implemented for AcademicYear, Term, Grade, and Section. Archive sets `is_archived`, preserves every record and foreign reference, excludes the record only from new configuration selectors, and writes explicit audit logs. An active SchoolSetting academic year cannot be archived.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -264,7 +265,20 @@ The unblocked, presentation-only print sub-scope of Phase 10D-9 is complete and 
 - UpdatePromotionBatchItem locks the batch and item, validates the draft state and target relation, then writes promotion_batch_item_updated inside its transaction. ConfirmPromotionBatch now locks and rechecks the batch draft state before applying items.
 - Accountants may read payment/receipt history and details, reversal history/detail/request pages, the Dues Dashboard, and payment-reminder list/detail pages. They cannot collect payments, approve reversals, generate/cancel reminders, or enter family, student, guardian, academic, staff, event, promotion, or admin-dashboard pages.
 
+- AcademicYear, Term, Grade, and Section use a local `active()` scope for new configuration selectors only; there is no global lifecycle scope.
+- Archive and restore are Admin-only, explicitly confirmed in the UI, and audit each transition. Archiving an AcademicYear never archives Terms or other children.
+- SchoolSetting lists and accepts only active academic years. Historical indexes, detail views, reports, and existing associations stay unfiltered.
+
 ## Verification Result
+Passed on 2026-10-07:
+- php artisan migrate:fresh --no-interaction
+- php artisan test --compact: 481 tests, 2324 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (optional Fontaine font-fallback warning only)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
 Passed on 2026-10-07:
 - php artisan test --compact: 475 tests, 2288 assertions
 - php vendor/bin/phpstan analyse: 0 errors

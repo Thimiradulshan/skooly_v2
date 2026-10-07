@@ -20,7 +20,7 @@ class EventChargeController extends Controller
 
         return view('events.charges.create', [
             'event' => $event,
-            'grades' => Grade::query()->orderBy('sequence_order')->get(),
+            'grades' => Grade::query()->active()->orderBy('sequence_order')->get(),
         ]);
     }
 
@@ -28,7 +28,7 @@ class EventChargeController extends Controller
     {
         $createEventCharge->handle(
             $event,
-            Grade::query()->findOrFail($request->integer('grade_id')),
+            Grade::query()->active()->findOrFail($request->integer('grade_id')),
             (string) $request->input('amount'),
         );
 

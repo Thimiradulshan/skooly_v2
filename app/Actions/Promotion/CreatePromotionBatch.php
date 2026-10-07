@@ -35,7 +35,7 @@ class CreatePromotionBatch
                 'status' => PromotionBatch::STATUS_DRAFT,
             ]);
 
-            $sections = Section::query()->whereIn('id', $sourceSectionIds)->get();
+            $sections = Section::query()->active()->whereIn('id', $sourceSectionIds)->get();
 
             foreach ($sections as $section) {
                 $batch->sections()->create(['source_section_id' => $section->id]);
@@ -84,7 +84,7 @@ class CreatePromotionBatch
     {
         $current = Grade::query()->findOrFail($gradeId);
 
-        return Grade::query()
+        return Grade::query()->active()
             ->where('sequence_order', '>', $current->sequence_order)
             ->orderBy('sequence_order')
             ->first();
@@ -92,7 +92,7 @@ class CreatePromotionBatch
 
     private function sectionWithSameName(int $gradeId, string $name): ?Section
     {
-        return Section::query()
+        return Section::query()->active()
             ->where('grade_id', $gradeId)
             ->where('name', $name)
             ->first();

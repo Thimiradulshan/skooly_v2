@@ -53,7 +53,7 @@ class EventController extends Controller
     public function store(StoreEventRequest $request, CreateEvent $createEvent)
     {
         $event = $createEvent->handle(
-            AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
+            AcademicYear::query()->active()->findOrFail($request->integer('academic_year_id')),
             FeeCategory::query()->findOrFail($request->integer('fee_category_id')),
             $this->eventData($request),
         );
@@ -73,7 +73,7 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        return view('events.edit', array_merge(['event' => $event], $this->formData()));
+        return view('events.edit', array_merge(['event' => $event], $this->formData($event)));
     }
 
     public function update(UpdateEventRequest $request, Event $event, UpdateEvent $updateEvent)
@@ -93,10 +93,10 @@ class EventController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function formData(): array
+    private function formData(?Event $event = null): array
     {
         return [
-            'academicYears' => AcademicYear::query()->orderBy('id')->get(),
+            'academicYears' => AcademicYear::query()->active()->when($event, fn ($query) => $query->orWhereKey($event->academic_year_id))->orderBy('id')->get(),
             'feeCategories' => FeeCategory::query()->orderBy('name')->get(),
         ];
     }

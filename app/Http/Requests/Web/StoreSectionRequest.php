@@ -24,7 +24,7 @@ class StoreSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'grade_id' => ['required', 'integer', Rule::exists('grades', 'id')],
+            'grade_id' => ['required', 'integer', Rule::exists('grades', 'id')->where('is_archived', 0)],
             'name' => ['required', 'string', 'max:255', Rule::unique('sections', 'name')->where('grade_id', $this->integer('grade_id'))],
             'capacity' => ['nullable', 'integer', 'min:1', 'max:65535'],
         ];

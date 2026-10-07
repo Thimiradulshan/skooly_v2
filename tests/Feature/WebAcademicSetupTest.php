@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AcademicYear;
+use App\Models\AuditLog;
 use App\Models\Grade;
 use App\Models\Role;
 use App\Models\SchoolSetting;
@@ -94,9 +95,67 @@ it('has no delete routes for academic setup', function () {
     expect(Route::has('sections.destroy'))->toBeFalse();
 });
 
-it('has no archive routes because the schema has no archive status', function () {
-    expect(Route::has('academic-years.archive'))->toBeFalse();
-    expect(Route::has('terms.archive'))->toBeFalse();
-    expect(Route::has('grades.archive'))->toBeFalse();
-    expect(Route::has('sections.archive'))->toBeFalse();
+it('archives and restores academic setup records without deleting history', function (string $model, string $archiveRoute, string $restoreRoute, string $archiveAction, string $restoreAction) {
+    $admin = adminUser();
+    $record = $model::factory()->create();
+
+    $this->actingAs($admin)->post(route($archiveRoute, $record))->assertRedirect();
+
+    expect($record->refresh()->is_archived)->toBeTrue();
+    $this->assertDatabaseHas('audit_logs', [
+        'action' => $archiveAction,
+        'auditable_type' => $record->getMorphClass(),
+        'auditable_id' => $record->id,
+        'actor_user_id' => $admin->id,
+    ]);
+
+    $this->actingAs($admin)->post(route($restoreRoute, $record))->assertRedirect();
+
+    expect($record->refresh()->is_archived)->toBeFalse();
+    $this->assertDatabaseHas('audit_logs', [
+        'action' => $restoreAction,
+        'auditable_type' => $record->getMorphClass(),
+        'auditable_id' => $record->id,
+        'actor_user_id' => $admin->id,
+    ]);
+})->with([
+    [AcademicYear::class, 'academic-years.archive', 'academic-years.restore', AuditLog::ACTION_ACADEMIC_YEAR_ARCHIVED, AuditLog::ACTION_ACADEMIC_YEAR_RESTORED],
+    [Term::class, 'terms.archive', 'terms.restore', AuditLog::ACTION_TERM_ARCHIVED, AuditLog::ACTION_TERM_RESTORED],
+    [Grade::class, 'grades.archive', 'grades.restore', AuditLog::ACTION_GRADE_ARCHIVED, AuditLog::ACTION_GRADE_RESTORED],
+    [Section::class, 'sections.archive', 'sections.restore', AuditLog::ACTION_SECTION_ARCHIVED, AuditLog::ACTION_SECTION_RESTORED],
+]);
+
+it('keeps archived academic setup records visible in indexes and details', function () {
+    $academicYear = AcademicYear::factory()->create(['is_archived' => true, 'name' => 'Archived year']);
+    $term = Term::factory()->for($academicYear)->create(['is_archived' => true, 'name' => 'Archived term']);
+
+    $this->actingAs(adminUser())->get(route('academic-years.index'))->assertOk()->assertSee('Archived year');
+    $this->actingAs(adminUser())->get(route('terms.show', $term))->assertOk()->assertSee('Archived term')->assertSee('Archived');
+});
+
+it('prevents archiving the active academic year and excludes archived years from school settings', function () {
+    $admin = adminUser();
+    $activeYear = AcademicYear::factory()->create(['name' => 'Active year']);
+    $archivedYear = AcademicYear::factory()->create(['is_archived' => true, 'name' => 'Archived year']);
+    SchoolSetting::factory()->for($activeYear, 'activeAcademicYear')->create();
+
+    $this->actingAs($admin)->post(route('academic-years.archive', $activeYear))
+        ->assertSessionHasErrors('academic_year');
+    expect($activeYear->refresh()->is_archived)->toBeFalse();
+
+    $this->actingAs($admin)->get(route('school-settings.edit'))
+        ->assertSee('Active year')
+        ->assertDontSee('Archived year');
+    $this->actingAs($admin)->put(route('school-settings.update'), ['active_academic_year_id' => $archivedYear->id])
+        ->assertSessionHasErrors('active_academic_year_id');
+});
+
+it('excludes archived records from new configuration selectors', function () {
+    $academicYear = AcademicYear::factory()->create(['is_archived' => true, 'name' => 'Archived year']);
+    $grade = Grade::factory()->create(['is_archived' => true, 'name' => 'Archived grade']);
+    $section = Section::factory()->for($grade)->create(['is_archived' => true, 'name' => 'Archived section']);
+
+    $this->actingAs(adminUser())->get(route('terms.create'))->assertDontSee('Archived year');
+    $this->actingAs(adminUser())->get(route('sections.create'))->assertDontSee('Archived grade');
+    $this->actingAs(adminUser())->get(route('promotion-batches.create'))->assertDontSee('Archived year')->assertDontSee('Archived section');
 });

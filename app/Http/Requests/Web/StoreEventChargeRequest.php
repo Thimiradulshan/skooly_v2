@@ -24,7 +24,7 @@ class StoreEventChargeRequest extends FormRequest
             'grade_id' => [
                 'required',
                 'integer',
-                'exists:grades,id',
+                Rule::exists('grades', 'id')->where('is_archived', 0),
                 Rule::unique('event_charges', 'grade_id')->where('event_id', $this->route('event')->id),
             ],
             'amount' => ['required', 'numeric', 'decimal:0,2', 'min:0'],

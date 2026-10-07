@@ -21,15 +21,15 @@ class StorePromotionBatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'source_academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
+            'source_academic_year_id' => ['required', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
             'target_academic_year_id' => [
                 'required',
                 'integer',
-                'exists:academic_years,id',
+                Rule::exists('academic_years', 'id')->where('is_archived', 0),
                 Rule::notIn([$this->input('source_academic_year_id')]),
             ],
             'source_section_ids' => ['required', 'array', 'min:1'],
-            'source_section_ids.*' => ['required', 'integer', 'exists:sections,id'],
+            'source_section_ids.*' => ['required', 'integer', Rule::exists('sections', 'id')->where('is_archived', 0)],
         ];
     }
 

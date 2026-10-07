@@ -49,7 +49,7 @@ Laravel modular monolith.
 - Backend-Frontend Feature Parity and CRUD Coverage Audit (Phase 10C-5, committed in f63c2d5)
 
 ## Current Module
-- Phase 10D-6B: Remaining List Pagination & Search is complete and verified.
+- Phase 10D Archive/Deactivate Workflow is implemented; verification is in progress.
 
 ## Families and Guardians
 - Family is the household registration and billing unit, identified by a unique family_code.
@@ -240,7 +240,9 @@ Laravel modular monolith.
 - Form Requests repeat the Admin role check as defense in depth.
 - Academic year details show terms, grade details show sections, and section details show its grade.
 - SchoolSetting.active_academic_year_id is editable but no existing workflow reads it.
-- Archive/deactivate and hard delete are deliberately absent: the schema has no lifecycle status and archive semantics remain unresolved.
+- AcademicYear, Term, Grade, and Section have `is_archived` flags with explicit local `active()` scopes, never global scopes.
+- Archive/restore is Admin-only, confirmed, and audited. It preserves all history, does not cascade from AcademicYear, and hides records only from new-selection/configuration flows.
+- SchoolSetting excludes archived academic years and blocks selection of one; its current active academic year cannot be archived.
 
 ## Web Identity and Teaching Configuration
 - Superadmin is a fixed role assigned through `users:make-superadmin {email}` to an existing trusted user.

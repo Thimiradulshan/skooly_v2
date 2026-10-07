@@ -4,16 +4,21 @@ namespace App\Models;
 
 use Database\Factories\SectionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['grade_id', 'name', 'capacity'])]
+#[Fillable(['grade_id', 'name', 'capacity', 'is_archived'])]
 class Section extends Model
 {
     /** @use HasFactory<SectionFactory> */
     use HasFactory;
+
+    protected $attributes = [
+        'is_archived' => false,
+    ];
 
     /**
      * Get the grade that contains the section.
@@ -55,6 +60,11 @@ class Section extends Model
         return $this->hasMany(EnrollmentPlacement::class);
     }
 
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('is_archived', false);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -64,6 +74,7 @@ class Section extends Model
     {
         return [
             'capacity' => 'integer',
+            'is_archived' => 'boolean',
         ];
     }
 }
