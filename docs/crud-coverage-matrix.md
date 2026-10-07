@@ -101,7 +101,7 @@ Statuses used:
 
 | Module | List | Create | View | Edit | Update | Archive | Delete | Restore | Generate | Confirm | Export/Print | Search/Filter | Status change | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Audit Log | **Yes** | Automatic | **Yes** | Not Applicable | Not Applicable | Not Applicable | **Not Recommended** | Not Applicable | Not Applicable | Not Applicable | **No** | **No** | Not Applicable | Admin-only read-only index and detail. Append-only by design; no filtering, export, or retention policy |
+| Audit Log | **Yes** | Automatic | **Yes** | Not Applicable | Not Applicable | Not Applicable | **Not Recommended** | Not Applicable | Not Applicable | Not Applicable | **CSV/PDF** | **Yes** | Not Applicable | Admin-only stored action, actor, record-type, and date-range filters; shared CSV/PDF export query; append-only and retained forever with no archive or purge |
 | Dues Dashboard | Yes | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | Yes | Not Applicable | Filters work well |
 | Admin Dashboard | Yes | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | No | Not Applicable | Counts only |
 | Login | Not Applicable | Not Applicable | Yes | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | No | Not Applicable | No rate limit, no reset |

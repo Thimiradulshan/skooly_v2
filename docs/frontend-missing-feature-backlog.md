@@ -14,11 +14,11 @@ console.
 | --- | --- | --- | --- | --- | --- |
 | Academic setup archive/deactivate | Admins can archive and restore academic years, terms, grades, and sections. Archived records remain visible in history and are excluded only from new configuration selections. | `is_archived` lifecycle flags | Yes | Complete in 10D archive workflow | Complete |
 | Active year behaviour | School Setting can now select the active year, but no existing workflow reads the setting. | Yes, `SchoolSetting` | Edit/update | Whether anything should *depend* on it | Later decision |
-| Audit log filtering, export, and retention | Admins can now review entries and stored metadata, but cannot narrow, export, or retain them by policy. | Yes, `AuditLog` | Read-only index and detail | Retention policy and export format | 10D-6 |
+| Audit log filtering, export, and retention | Admins can filter stored rows, download CSV or PDF exports, and retain logs forever. | Yes, `AuditLog` | Index, detail, CSV, PDF | Complete | Complete |
 
 **Phase 10D-1A removes the academic setup console dependency. Phase 10D-1B adds
-Admin-only, read-only audit-log viewing.** Audit filtering, export, and retention
-remain deferred.
+Admin-only, read-only audit-log viewing.** Audit filtering and CSV/PDF export are
+complete; audit logs are retained forever without archive or purge.
 
 Completed in Phase 10D-1A: **Academic Year**, Term, **Grade**, **Section**, and
 School Setting list/create/view/edit/update web surfaces. Academic Year, Term, Grade,

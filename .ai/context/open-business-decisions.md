@@ -218,11 +218,12 @@ Do not invent answers for these.
 - Archive and restore transitions are explicitly audited.
 - SchoolSetting.active_academic_year_id otherwise remains inert until a separate decision assigns downstream behaviour.
 
-## Phase 10D-1B Rules
-- Audit-log viewing is Admin-only and read-only.
-- Audit pages display only stored AuditLog data and never create, update, delete, or recompute an audit entry.
-- Audit-log filtering, export, and retention remain deferred; no retention period or export format has been chosen.
-- Audit viewing must remain readable when actor_user_id or the polymorphic auditable source is null.
+## Audit Log Workflow Rules
+- Audit-log viewing, filtering, and export are Admin-only and read-only.
+- Filters accept only stored action, actor, auditable type, and occurred-at date-range values.
+- CSV is streamed and serializes stored metadata as JSON. PDF uses local Dompdf HTML and has no remote asset dependency. Both exports use the filtered stored-row query and include a filter summary.
+- Audit logs are retained forever. No archive, purge, update, delete, or retention route exists.
+- Audit viewing and export never follow the polymorphic auditable source, so entries remain readable when it is absent. Actor references may be null and display as System.
 
 ## Phase 10D-2 Rules
 - Roles are fixed: Superadmin, Admin, Accountant, and Teacher. Role CRUD is not implemented.
@@ -251,7 +252,7 @@ Do not invent answers for these.
 ## Phase 10D-6 Rules
 - Payment and Receipt history is read-only and Admin-only. It does not alter payments, receipts, allocations, due items, or snapshots.
 - Search is limited to family code, payment reference, and receipt number. Sort columns and directions are validated allow-lists; no client-provided SQL identifier is used.
-- Receipt PDF export, audit-log filtering/export/retention, and payment correction/refund remain deferred pending their documented decisions.
+- Receipt PDF export and payment correction/refund remain deferred pending their documented decisions.
 
 ## Phase 10D-7 Rules
 - Payment correction is an append-only, full-payment reversal only; the original Payment, Receipt, and PaymentAllocation records are never changed or deleted.
@@ -272,5 +273,5 @@ Do not invent answers for these.
 ## Phase 10D-6B Rules
 - Pagination is read-only and uses 20 records per page with query-string preservation across every in-scope Admin list page.
 - Text search is limited to relevant stored identifiers and names. It is validated to 100 characters and never supplies a SQL identifier.
-- AuditLog remains paginated but unfiltered; audit-log filtering, export, and retention remain deferred.
+- AuditLog filtering and export are complete; audit logs remain retained forever without archive or purge.
 - Student discount and subscription histories remain scoped to their selected Student and do not gain cross-student search.

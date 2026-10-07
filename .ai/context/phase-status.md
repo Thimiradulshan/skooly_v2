@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D Archive/Deactivate Workflow
+Phase 10D Audit Log Workflow
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -47,10 +47,11 @@ Phase 10D Archive/Deactivate Workflow
 - Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists - complete / pending commit
 - Phase 10D-7: Payment Reversal Workflow - complete / pending commit
 - Phase 10D-8: Promotion Draft Editing & Accountant Read Access - complete / pending commit
-- Phase 10D Archive/Deactivate Workflow - implementation complete / verification in progress
+- Phase 10D Archive/Deactivate Workflow - complete / pending commit
+- Phase 10D Audit Log Workflow - complete / pending commit
 
 ## Current Status
-Admin-only archive/restore is implemented for AcademicYear, Term, Grade, and Section. Archive sets `is_archived`, preserves every record and foreign reference, excludes the record only from new configuration selectors, and writes explicit audit logs. An active SchoolSetting academic year cannot be archived.
+Admin-only audit-log filtering and CSV/PDF export are complete. Logs remain append-only and retained forever; no archive, purge, mutation, or polymorphic-source follow-up route exists. The completed AcademicYear, Term, Grade, and Section archive workflow preserves every record and foreign reference, excludes archived records only from new configuration selectors, and writes explicit audit logs.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -268,8 +269,18 @@ Admin-only archive/restore is implemented for AcademicYear, Term, Grade, and Sec
 - AcademicYear, Term, Grade, and Section use a local `active()` scope for new configuration selectors only; there is no global lifecycle scope.
 - Archive and restore are Admin-only, explicitly confirmed in the UI, and audit each transition. Archiving an AcademicYear never archives Terms or other children.
 - SchoolSetting lists and accepts only active academic years. Historical indexes, detail views, reports, and existing associations stay unfiltered.
+- Audit logs are Admin-only and read-only. They filter by stored action, actor, auditable type, and occurred-at date range; CSV and local-Dompdf PDF exports use the same stored-row query and include a filter summary.
+- Audit logs are retained forever. No audit-log archive, purge, update, delete, or polymorphic auditable lookup route exists.
 
 ## Verification Result
+Passed on 2026-10-07:
+- php artisan test --compact: 490 tests, 2363 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (optional Fontaine font-fallback warning only)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
 Passed on 2026-10-07:
 - php artisan migrate:fresh --no-interaction
 - php artisan test --compact: 481 tests, 2324 assertions
@@ -358,4 +369,4 @@ None.
 ## Next Exact Step
 1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, 10D-7, and 10D-8 if approved.
 2. Do not implement Phase 10D-9 report exports, dashboard charts, or reports without their outstanding product decisions.
-3. Audit-log filtering/export/retention, receipt PDF export, partial reversals, and refunds remain deferred.
+3. Receipt PDF export, partial reversals, and refunds remain deferred.

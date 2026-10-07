@@ -78,7 +78,7 @@ class AuditLog extends Model
     }
 
     /**
-     * @return array<string, string>
+     * @return array{metadata: 'array', occurred_at: 'datetime'}
      */
     protected function casts(): array
     {

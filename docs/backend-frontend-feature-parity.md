@@ -104,7 +104,7 @@ role, teacher, subject, and assignment setup remain backend-only.
 
 | Module | Model / Table | Backend actions | Web controller | Web routes | Views | Tests | Frontend | Missing UI | Risk / notes | Suggested phase |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Audit Logs | `AuditLog` | `RecordAuditLog` (write only) | `AuditLogController` | index, show | index, show | `AuditLogTest`, `WebAuditLogTest`, `DeploymentReadinessTest` | **Partial** | No filtering, export, or retention policy | Admins can review stored audit entries and metadata without a database shell. Records remain append-only and read-only | 10D-6 |
+| Audit Logs | `AuditLog` | `RecordAuditLog` (write only) | `AuditLogController` | index, show, CSV export, PDF export | index, show, local PDF template | `AuditLogTest`, `WebAuditLogTest`, `DeploymentReadinessTest` | **Complete** | None | Admin-only stored-row filters and exports. Audit logs are append-only and retained forever; no archive, purge, mutation, or polymorphic-source lookup exists | Complete |
 
 ---
 

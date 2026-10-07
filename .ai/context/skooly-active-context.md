@@ -95,6 +95,7 @@ Use this file before broad project reinspection.
 - Guardian access requires an explicit guardian_student link. Family membership and combined billing never grant sibling visibility.
 - Teacher access is denied, including financial details.
 - Audit logs are append-only and written only through RecordAuditLog. No observers or packages.
+- Audit logs are retained forever. Admin-only filters and CSV/PDF exports use stored audit rows only, never follow polymorphic auditable sources, and provide no archive, purge, update, or delete workflow.
 - Payment recording, payment allocations, and promotion create/confirm are audited inside their transactions.
 - Recurring, event, and reminder generation each log once per run.
 - A failed transaction writes no audit entries.

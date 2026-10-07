@@ -86,7 +86,6 @@ what is deliberately not built yet, and what to do next.
 | No email verification | Medium | Any known email with the password is accepted. |
 | Coarse single-role model | Medium | Accountant and Teacher cannot use the app at all yet. |
 | Receipt numbering rule unresolved | Medium | Receipt numbers are entered manually, so uniqueness is operator-controlled. |
-| No audit retention or export | Medium | Audit logs grow indefinitely and cannot be reviewed from the UI. |
 | Automatic payment allocation unresolved | Medium | Manual only by design; no automatic strategy exists. |
 | Promotion reversal safety window unresolved | Low | Reversal is deliberately not implemented. |
 | No database money constraints | Low | Balances are guarded in application code, not by a check constraint. |
@@ -102,5 +101,4 @@ what is deliberately not built yet, and what to do next.
    model with per-resource policies.
 5. Enforce `SESSION_SECURE_COOKIE=true` in production and confirm TLS termination.
 6. Add database check constraints for non-negative money columns.
-7. Define audit log retention and add an audit review screen with export.
-8. Resolve the receipt numbering rule so numbers are generated, not typed.
+7. Resolve the receipt numbering rule so numbers are generated, not typed.

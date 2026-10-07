@@ -23,8 +23,8 @@ about risk to real student and money data, not effort.
 | GAP-16 | Finance | Sibling discount rule unresolved | No sibling discount exists, and none is safe to guess. | Low | Deferred |
 | GAP-17 | Finance | No database-level non-negative money constraints | Balances are protected in application code only. A bug or direct SQL could write a negative balance. | Medium | 10C-9 |
 | GAP-18 | Promotion | Reversal safety window unresolved | A confirmed promotion batch cannot be undone, so a mistake is only fixable by direct database work. | High | 10C-10 |
-| GAP-19 | Audit | No audit log viewing UI or export | The audit trail exists but cannot be reviewed by an Admin. Investigations need database access. | Medium | 10C-11 |
-| GAP-20 | Audit | No retention policy for audit logs | Logs grow indefinitely with no archival or pruning rule. | Low | Deferred |
+| GAP-19 | Audit | Audit log workflow | Admins can filter stored audit rows, download CSV/PDF exports, and logs are retained forever without archive or purge. | Resolved | Complete |
+| GAP-20 | Audit | Audit retention policy | Forever retention is approved. Audit logs remain append-only with no archive, purge, or deletion route. | Resolved | Complete |
 | GAP-21 | Operations | No backup or restore procedure rehearsed | Migration steps warn about backups, but no automated or tested backup exists. | Blocker | 10D-1 |
 | GAP-22 | Testing | No real-user acceptance testing | QA was performed by the development team only. No school staff have used the system. | Blocker | 10D-2 |
 | GAP-23 | UI/UX | No design system, sidebar, or responsive layout | Pages are plain HTML tables. Staff will make errors, especially on payment collection. | High | 10C-12 |

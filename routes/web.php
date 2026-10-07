@@ -53,6 +53,8 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+    Route::get('/audit-logs/export/csv', [AuditLogController::class, 'exportCsv'])->name('audit-logs.export.csv');
+    Route::get('/audit-logs/export/pdf', [AuditLogController::class, 'exportPdf'])->name('audit-logs.export.pdf');
     Route::get('/audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('audit-logs.show');
 
     Route::resource('academic-years', AcademicYearController::class)->except('destroy');

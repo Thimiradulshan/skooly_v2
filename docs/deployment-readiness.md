@@ -146,5 +146,3 @@ These are known and unresolved. Resolve them before serving real student data.
    application code, not by a database check constraint.
 8. **No automated scheduling.** Recurring and event due generation is manual.
 9. **No notification delivery.** Reminders are internal outbox records only.
-10. **No audit retention or export.** Audit logs exist and are append-only, but there
-    is no review UI, export, or retention policy.

@@ -602,6 +602,21 @@ Verification:
 - `php artisan test --compact`: 415 tests / 1935 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D: Audit Log Workflow
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Admin-only stored-action, actor, record-type, and occurred-at date-range filters with 20-record pagination and query-string preservation.
+- Admin-only CSV streamed download and local-Dompdf PDF download using the same filtered AuditLog query and filter summary.
+- JSON metadata export, no polymorphic auditable lookup, and no audit mutation, archive, or purge route.
+- Forever retention decision: AuditLog remains append-only with no deletion or retention job.
+- `WebAuditLogTest` coverage for each filter, combined pagination, CSV/PDF downloads, role protection, and destructive-route absence.
+
+Verification:
+- `php artisan test tests/Feature/WebAuditLogTest.php --compact`: 14 tests / 60 assertions passed.
+- `php artisan test --compact`: 490 tests / 2363 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 10D-2: Identity, Teacher, Subject & Assignment Management
 Status: complete and verified on 2026-10-07; committed in deef8f5.
 

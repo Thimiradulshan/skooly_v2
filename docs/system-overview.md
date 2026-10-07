@@ -60,7 +60,7 @@ there is a working web page for each one. What is missing is production hardenin
 | Payment Reminder outbox | Complete (no sending) |
 | Student Promotion | Complete (no reversal) |
 | Authorization policies and privacy helpers | Complete |
-| Audit Logs | Complete (Admin-only read-only viewer; no export or retention policy) |
+| Audit Logs | Complete (Admin-only filters, CSV/PDF export, and forever retention) |
 | Web admin pages for all of the above | Complete |
 
 ## Incomplete modules
