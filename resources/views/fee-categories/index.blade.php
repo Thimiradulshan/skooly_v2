@@ -12,7 +12,7 @@
         <x-button-link :href="route('fee-structures.create')" variant="secondary">Create fee structure</x-button-link>
     </div>
 
-    <x-list-search :action="route('fee-categories.index')" label="Fee category name" :value="$search" />
+    <x-list-search :action="route('fee-categories.index')" label="Fee category name" :value="$search" :sort-options="['name' => 'Name', 'recurring' => 'Recurring', 'opt_in' => 'Opt-in']" :sort="$sort" :direction="$direction" />
 
     <div class="table-wrap">
         <table class="table">

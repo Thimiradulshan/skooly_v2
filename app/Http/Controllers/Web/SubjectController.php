@@ -13,18 +13,31 @@ class SubjectController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['code' => 'code', 'name' => 'name'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $subjects = Subject::query()
+            ->withCount(['qualifiedTeachers', 'teacherAssignments'])
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where('code', 'like', "%{$search}%")
+                    ->orWhere('name', 'like', "%{$search}%");
+            });
+
+        if ($sort === null) {
+            $subjects->orderBy('code');
+        } else {
+            $subjects->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('subjects.index', [
-            'subjects' => Subject::query()
-                ->withCount(['qualifiedTeachers', 'teacherAssignments'])
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->where('code', 'like', "%{$search}%")
-                        ->orWhere('name', 'like', "%{$search}%");
-                })
-                ->orderBy('code')
+            'subjects' => $subjects
+                ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

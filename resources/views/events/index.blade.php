@@ -11,7 +11,7 @@
         <x-button-link :href="route('due-generation.events.create')" variant="secondary">Event due generation</x-button-link>
     </div>
 
-    <x-list-search :action="route('events.index')" label="Event, academic year, or fee category" :value="$search" />
+    <x-list-search :action="route('events.index')" label="Event, academic year, or fee category" :value="$search" :sort-options="['name' => 'Name', 'event_date' => 'Event date', 'mandatory' => 'Mandatory']" :sort="$sort" :direction="$direction" />
 
     <div class="table-wrap">
         <table class="table">

@@ -15,19 +15,31 @@ class TeacherQualificationController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['name' => 'name', 'email' => 'email'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $teachers = $this->teachers()
+            ->with('qualifiedSubjects')
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($query) use ($search): void {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhereHas('qualifiedSubjects', fn ($subject) => $subject->where('name', 'like', "%{$search}%")->orWhere('code', 'like', "%{$search}%"));
+                });
+            });
+
+        if ($sort !== null) {
+            $teachers->reorder()->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('teacher-qualifications.index', [
-            'teachers' => $this->teachers()
-                ->with('qualifiedSubjects')
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->where(function ($query) use ($search): void {
-                        $query->where('name', 'like', "%{$search}%")
-                            ->orWhereHas('qualifiedSubjects', fn ($subject) => $subject->where('name', 'like', "%{$search}%")->orWhere('code', 'like', "%{$search}%"));
-                    });
-                })
+            'teachers' => $teachers
+                ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

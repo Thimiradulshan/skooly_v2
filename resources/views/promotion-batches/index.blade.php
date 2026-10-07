@@ -10,7 +10,7 @@
         <x-button-link :href="route('promotion-batches.create')">Create promotion batch</x-button-link>
     </div>
 
-    <x-list-search :action="route('promotion-batches.index')" label="Source or target academic year" :value="$search" />
+    <x-list-search :action="route('promotion-batches.index')" label="Source or target academic year" :value="$search" :sort-options="['status' => 'Status', 'confirmed_at' => 'Confirmed at']" :sort="$sort" :direction="$direction" />
 
     <div class="table-wrap">
         <table class="table">

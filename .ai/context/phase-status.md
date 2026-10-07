@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-6B: Remaining List Pagination & Search
+Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -43,9 +43,10 @@ Phase 10D-6B: Remaining List Pagination & Search
 - Phase 10D-4: Draft Discard & Reminder Cancellation - complete (committed in bb27137)
 - Phase 10D-6: Payment & Receipt History Lists - complete (committed in 4cf641f)
 - Phase 10D-6B: Remaining List Pagination & Search - complete / pending commit
+- Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists - complete / pending commit
 
 ## Current Status
-Phase 10D-6B is complete and verified. It adds 20-record pagination to every remaining in-scope Admin list page and safe text search where relevant, without modifying domain records.
+Phase 10D-6C is complete and verified. It adds validated fixed sorting and direction controls to every in-scope Admin list page, while preserving search, pagination, and each page's default ordering.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -251,9 +252,17 @@ Phase 10D-6B is complete and verified. It adds 20-record pagination to every rem
 - Discard and cancellation are Admin-only. They are not separately audited because no AuditLog action constants exist for them.
 - Payment and Receipt history lists are read-only and Admin-only. They search family code, payment reference, and receipt number, sort only through validated allow-lists, paginate 20 records per page, and preserve query strings across pages.
 - In-scope Admin list pages now paginate 20 records per page. General text search is validated and applied only where the screen has an appropriate searchable identifier; audit-log filtering remains deliberately deferred and student-scoped discount/subscription lists remain scoped to their Student.
+- In-scope Admin list sorting uses controller-owned allow-lists, validated `asc` or `desc` directions, and stable `id` tie-breakers. User list sorting preserves its Gate/policy authorization. Audit logs, reminders, payments, receipts, and Student-scoped discount/subscription histories remain unchanged.
 
 ## Verification Result
 Passed on 2026-10-07:
+- php artisan test --compact: 452 tests, 2124 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (non-blocking optional Fontaine font-fallback warning)
+- composer audit: no security vulnerability advisories
+
+Previously passed on 2026-10-07:
 - php artisan test --compact: 450 tests, 2120 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --dirty --format agent
@@ -296,5 +305,5 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Review and commit Phase 10D-6B if approved.
-2. Remaining list sorting and audit-log filtering/export/retention remain deferred; payment correction/refund still requires product decisions.
+1. Review and commit Phases 10D-6B and 10D-6C if approved.
+2. Audit-log filtering/export/retention and payment correction/refund remain deferred; payment correction/refund still requires product decisions.

@@ -1,6 +1,6 @@
 # Frontend Missing Feature Backlog
 
-Phase 10C-5 audit, updated by Phase 10D-1B. Items are ordered by whether they block
+Phase 10C-5 audit, updated by Phase 10D-6C. Items are ordered by whether they block
 real school use, not by effort.
 
 ---
@@ -39,7 +39,7 @@ deferred for the Academic Year, Term, Grade, and Section records.
 | Student photo upload | Student details and status can be edited, but photo_path accepts an existing path only; secure file upload is absent. | Yes, `Student` | Detail/edit | Upload/storage policy | Later |
 | Discount history/audit | Discounts can be reviewed and deactivated for future generation, but deactivation is not separately audited. | Yes, `Discount` | List/deactivate | Audit event decision | Later |
 | Fee subscription history/audit | Subscriptions can be reviewed and ended for future generation, but ending is not separately audited. | Yes, `StudentFeeSubscription` | List/end | Audit event decision | Later |
-| Search, sort, and pagination | Payment and receipt history have search, fixed sorting, and pagination. Other Admin lists now have validated search where relevant and pagination; fixed sorting is still deferred. | n/a | Partial | None | Continue later |
+| Search, sort, and pagination | In-scope Admin lists now have validated search where relevant, fixed sorting, direction controls, and pagination with query-string preservation. Audit logs and Student-scoped histories intentionally remain outside this rollout. | n/a | Yes | None | Complete in 10D-6C |
 | Payment correction or refund | **There is no correction path for a mistaken payment at all.** A duplicate or wrong-amount payment is permanent. | No | No | **Required.** Needs amount ceiling, audit, approval, and whether due items are reopened | 10D-7 |
 | Accountant access | Finance work is impossible for anyone but an Admin. | Role and policies exist | No pages | Required before any Accountant page | 10D-8 |
 
@@ -84,7 +84,7 @@ deferred for the Academic Year, Term, Grade, and Section records.
    limitation and the missing student record pages.
 4. **10D-4 — Discard and cancel workflows are complete.** Archive/deactivate remains
    blocked by the business decisions in `docs/destructive-action-policy-draft.md`.
-5. **10D-6 — Lists, search, and pagination.** Makes the existing screens usable at scale.
+5. **10D-6 — Lists, search, pagination, and safe sorting.** Makes the existing screens usable at scale.
 6. **10D-7 — Payment correction or refund.** The only genuinely missing capability
    that cannot be deferred indefinitely.
 7. **10D-5 — Fee structure and event charge editing.** Requires a re-pricing decision.

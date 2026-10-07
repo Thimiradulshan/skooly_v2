@@ -16,21 +16,32 @@ class FeeStructureController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['amount' => 'amount', 'frequency' => 'frequency'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $feeStructures = FeeStructure::query()
+            ->with(['feeCategory', 'grade', 'academicYear'])
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($query) use ($search): void {
+                    $query->whereHas('feeCategory', fn ($feeCategory) => $feeCategory->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
+                });
+            });
+
+        if ($sort !== null) {
+            $feeStructures->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('fee-structures.index', [
-            'feeStructures' => FeeStructure::query()
-                ->with(['feeCategory', 'grade', 'academicYear'])
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->where(function ($query) use ($search): void {
-                        $query->whereHas('feeCategory', fn ($feeCategory) => $feeCategory->where('name', 'like', "%{$search}%"))
-                            ->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%"))
-                            ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
-                    });
-                })
+            'feeStructures' => $feeStructures
                 ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

@@ -11,7 +11,7 @@
         <x-button-link :href="route('fee-categories.index')" variant="secondary">Fee categories</x-button-link>
     </div>
 
-    <x-list-search :action="route('fee-structures.index')" label="Category, grade, or academic year" :value="$search" />
+    <x-list-search :action="route('fee-structures.index')" label="Category, grade, or academic year" :value="$search" :sort-options="['amount' => 'Amount', 'frequency' => 'Frequency']" :sort="$sort" :direction="$direction" />
 
     <div class="table-wrap">
         <table class="table">

@@ -15,14 +15,25 @@ class FeeCategoryController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['name' => 'name', 'recurring' => 'is_recurring', 'opt_in' => 'is_opt_in'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $feeCategories = FeeCategory::query()
+            ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"));
+
+        if ($sort !== null) {
+            $feeCategories->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('fee-categories.index', [
-            'feeCategories' => FeeCategory::query()
-                ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
+            'feeCategories' => $feeCategories
                 ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

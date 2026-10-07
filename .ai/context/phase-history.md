@@ -682,6 +682,23 @@ Verification:
 - `php artisan test --compact`: 450 tests / 2120 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Phase 10D-6C: Safe Fixed Sort Controls for Admin Lists
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Extended the shared list-search request and component with validated sort and direction inputs.
+- Added fixed, per-controller sort maps plus stable `id` tie-breakers to every in-scope Admin list page.
+- Preserved existing default ordering, text search, pagination, query-string state, and User Gate/policy authorization.
+- Added valid sort, query-string preservation, and sort-injection rejection coverage to `WebIndexPaginationTest`.
+
+Deferred:
+- Audit-log filtering, sorting, export, and retention; payment correction/refund; receipt PDF export.
+- Payment, receipt, reminder, and Student-scoped discount/subscription lists remain unchanged by this phase.
+
+Verification:
+- `php artisan test --compact`: 452 tests / 2124 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

@@ -18,22 +18,34 @@ class SectionYearAssignmentController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['academic_year' => 'academic_year_id', 'section' => 'section_id', 'teacher' => 'class_in_charge_id'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('desc');
+
+        $assignments = SectionYearAssignment::query()
+            ->with(['academicYear', 'section.grade', 'classInCharge'])
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($query) use ($search): void {
+                    $query->whereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('section', fn ($section) => $section->where('name', 'like', "%{$search}%")->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%")))
+                        ->orWhereHas('classInCharge', fn ($teacher) => $teacher->where('name', 'like', "%{$search}%"));
+                });
+            });
+
+        if ($sort === null) {
+            $assignments->orderByDesc('academic_year_id')->orderBy('section_id');
+        } else {
+            $assignments->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('section-year-assignments.index', [
-            'assignments' => SectionYearAssignment::query()
-                ->with(['academicYear', 'section.grade', 'classInCharge'])
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->where(function ($query) use ($search): void {
-                        $query->whereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
-                            ->orWhereHas('section', fn ($section) => $section->where('name', 'like', "%{$search}%")->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%")))
-                            ->orWhereHas('classInCharge', fn ($teacher) => $teacher->where('name', 'like', "%{$search}%"));
-                    });
-                })
-                ->orderByDesc('academic_year_id')
-                ->orderBy('section_id')
+            'assignments' => $assignments
+                ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

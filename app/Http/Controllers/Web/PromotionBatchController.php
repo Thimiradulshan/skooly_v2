@@ -21,19 +21,31 @@ class PromotionBatchController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['status' => 'status', 'confirmed_at' => 'confirmed_at'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('desc');
+
+        $promotionBatches = PromotionBatch::query()
+            ->with(['sourceAcademicYear', 'targetAcademicYear'])
+            ->withCount('items')
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->whereHas('sourceAcademicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('targetAcademicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
+            });
+
+        if ($sort === null) {
+            $promotionBatches->orderByDesc('id');
+        } else {
+            $promotionBatches->orderBy($sortOptions[$sort], $direction)->orderBy('id');
+        }
 
         return view('promotion-batches.index', [
-            'promotionBatches' => PromotionBatch::query()
-                ->with(['sourceAcademicYear', 'targetAcademicYear'])
-                ->withCount('items')
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->whereHas('sourceAcademicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
-                        ->orWhereHas('targetAcademicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
-                })
-                ->orderByDesc('id')
+            'promotionBatches' => $promotionBatches
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

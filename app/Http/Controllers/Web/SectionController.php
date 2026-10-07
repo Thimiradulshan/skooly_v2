@@ -14,19 +14,31 @@ class SectionController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['name' => 'name', 'capacity' => 'capacity'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $sections = Section::query()
+            ->with('grade')
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%"));
+            });
+
+        if ($sort === null) {
+            $sections->orderBy('grade_id')->orderBy('name');
+        } else {
+            $sections->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('sections.index', [
-            'sections' => Section::query()
-                ->with('grade')
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('grade', fn ($grade) => $grade->where('name', 'like', "%{$search}%"));
-                })
-                ->orderBy('grade_id')
-                ->orderBy('name')
+            'sections' => $sections
+                ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

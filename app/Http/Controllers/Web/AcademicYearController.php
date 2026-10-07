@@ -13,15 +13,28 @@ class AcademicYearController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['name' => 'name', 'start_date' => 'start_date', 'end_date' => 'end_date'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('desc');
+
+        $academicYears = AcademicYear::query()
+            ->withCount('terms')
+            ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"));
+
+        if ($sort === null) {
+            $academicYears->orderByDesc('start_date');
+        } else {
+            $academicYears->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('academic-years.index', [
-            'academicYears' => AcademicYear::query()
-                ->withCount('terms')
-                ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
-                ->orderByDesc('start_date')
+            'academicYears' => $academicYears
+                ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

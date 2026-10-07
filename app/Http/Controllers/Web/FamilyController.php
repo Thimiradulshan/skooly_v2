@@ -15,21 +15,32 @@ class FamilyController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['family_code' => 'family_code', 'address' => 'address', 'combined_billing' => 'combined_billing_enabled'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $families = Family::query()
+            ->withCount(['guardians', 'students'])
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($query) use ($search): void {
+                    $query->where('family_code', 'like', "%{$search}%")
+                        ->orWhere('address', 'like', "%{$search}%")
+                        ->orWhere('home_contact_no', 'like', "%{$search}%");
+                });
+            });
+
+        if ($sort !== null) {
+            $families->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('families.index', [
-            'families' => Family::query()
-                ->withCount(['guardians', 'students'])
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->where(function ($query) use ($search): void {
-                        $query->where('family_code', 'like', "%{$search}%")
-                            ->orWhere('address', 'like', "%{$search}%")
-                            ->orWhere('home_contact_no', 'like', "%{$search}%");
-                    });
-                })
+            'families' => $families
                 ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

@@ -96,16 +96,40 @@ it('paginates search results and keeps the search on the next page', function ()
     }
 
     $response = $this->actingAs(adminUser())
-        ->get(route('families.index', ['search' => 'PAGED-FAMILY']));
+        ->get(route('families.index', [
+            'search' => 'PAGED-FAMILY',
+            'sort' => 'family_code',
+            'direction' => 'desc',
+        ]));
 
     $response->assertOk()
         ->assertViewHas('families', fn ($families) => $families->perPage() === 20 && $families->total() === 21)
-        ->assertSee('search=PAGED-FAMILY&amp;page=2', false);
+        ->assertSee('search=PAGED-FAMILY&amp;sort=family_code&amp;direction=desc&amp;page=2', false);
 
     $this->actingAs(adminUser())
-        ->get(route('families.index', ['search' => 'PAGED-FAMILY', 'page' => 2]))
+        ->get(route('families.index', [
+            'search' => 'PAGED-FAMILY',
+            'sort' => 'family_code',
+            'direction' => 'desc',
+            'page' => 2,
+        ]))
         ->assertOk()
         ->assertViewHas('families', fn ($families) => $families->currentPage() === 2 && $families->count() === 1);
+});
+
+it('sorts an admin list by an allowed option', function () {
+    Family::factory()->create(['family_code' => 'SORTED-FAMILY-A']);
+    Family::factory()->create(['family_code' => 'SORTED-FAMILY-Z']);
+
+    $response = $this->actingAs(adminUser())
+        ->get(route('families.index', [
+            'search' => 'SORTED-FAMILY',
+            'sort' => 'family_code',
+            'direction' => 'desc',
+        ]));
+
+    $response->assertOk()
+        ->assertSeeInOrder(['SORTED-FAMILY-Z', 'SORTED-FAMILY-A']);
 });
 
 it('paginates reminder filters and audit logs without adding audit filtering', function () {
@@ -150,4 +174,10 @@ it('rejects invalid search input on admin list pages', function () {
     $this->actingAs(adminUser())
         ->get(route('families.index', ['search' => str_repeat('x', 101)]))
         ->assertSessionHasErrors('search');
+});
+
+it('rejects sort injection on admin list pages', function () {
+    $this->actingAs(adminUser())
+        ->get(route('families.index', ['sort' => 'family_code; drop table families']))
+        ->assertSessionHasErrors('sort');
 });

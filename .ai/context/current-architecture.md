@@ -224,7 +224,7 @@ Laravel modular monolith.
 - The shared layout exposes one grouped admin navigation row plus consistent success, error, and validation flash display.
 - Cross-links reuse existing named routes only; empty states already existed on every index page.
 - No backend action, model, authorization rule, or FormRequest changed in this phase.
-- Every in-scope Admin index now paginates 20 records with query-string preservation. Identifiable configuration and operational lists support validated text search; audit logs remain unfiltered by decision.
+- Every in-scope Admin index now paginates 20 records with query-string preservation. Identifiable configuration and operational lists support validated text search and fixed controller-owned sort options with direction and `id` tie-breakers; audit logs remain unfiltered and unsorted by decision.
 
 ## Web Academic Setup
 - Admin-only web pages manage AcademicYear, Term, Grade, Section, and the singleton SchoolSetting.

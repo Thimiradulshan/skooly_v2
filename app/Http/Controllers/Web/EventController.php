@@ -17,20 +17,31 @@ class EventController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['name' => 'name', 'event_date' => 'event_date', 'mandatory' => 'is_mandatory'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $events = Event::query()
+            ->with(['academicYear', 'feeCategory'])
+            ->withCount(['charges', 'participations', 'eventDueItems'])
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('feeCategory', fn ($feeCategory) => $feeCategory->where('name', 'like', "%{$search}%"));
+            });
+
+        if ($sort !== null) {
+            $events->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('events.index', [
-            'events' => Event::query()
-                ->with(['academicYear', 'feeCategory'])
-                ->withCount(['charges', 'participations', 'eventDueItems'])
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"))
-                        ->orWhereHas('feeCategory', fn ($feeCategory) => $feeCategory->where('name', 'like', "%{$search}%"));
-                })
+            'events' => $events
                 ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

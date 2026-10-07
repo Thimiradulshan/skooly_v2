@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -17,8 +18,15 @@ class UserController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('viewAny', User::class);
-        $request->validate(['search' => ['nullable', 'string', 'max:100']]);
+        $sortOptions = ['name' => 'name', 'email' => 'email'];
+        $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'sort' => ['nullable', 'string', 'max:50', Rule::in(array_keys($sortOptions))],
+            'direction' => ['nullable', Rule::in(['asc', 'desc'])],
+        ]);
         $search = $request->string('search')->trim()->toString();
+        $sort = $request->string('sort')->toString() ?: 'name';
+        $direction = $request->string('direction')->toString() ?: 'asc';
 
         return view('users.index', [
             'users' => User::query()
@@ -33,10 +41,13 @@ class UserController extends Controller
                             ->orWhere('email', 'like', "%{$search}%");
                     });
                 })
-                ->orderBy('name')
+                ->orderBy($sortOptions[$sort], $direction)
+                ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

@@ -13,15 +13,28 @@ class GradeController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['name' => 'name', 'sequence' => 'sequence_order'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $grades = Grade::query()
+            ->withCount('sections')
+            ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"));
+
+        if ($sort === null) {
+            $grades->orderBy('sequence_order');
+        } else {
+            $grades->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('grades.index', [
-            'grades' => Grade::query()
-                ->withCount('sections')
-                ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
-                ->orderBy('sequence_order')
+            'grades' => $grades
+                ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

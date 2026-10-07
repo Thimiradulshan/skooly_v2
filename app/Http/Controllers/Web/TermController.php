@@ -14,19 +14,31 @@ class TermController extends Controller
     public function index(ListSearchRequest $request)
     {
         $search = $request->string('search')->trim()->toString();
+        $sortOptions = ['name' => 'name', 'start_date' => 'start_date', 'end_date' => 'end_date'];
+        $sort = $request->sort($sortOptions);
+        $direction = $request->direction('asc');
+
+        $terms = Term::query()
+            ->with('academicYear')
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
+            });
+
+        if ($sort === null) {
+            $terms->orderBy('academic_year_id')->orderBy('start_date');
+        } else {
+            $terms->orderBy($sortOptions[$sort], $direction);
+        }
 
         return view('terms.index', [
-            'terms' => Term::query()
-                ->with('academicYear')
-                ->when($search !== '', function ($query) use ($search): void {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('academicYear', fn ($academicYear) => $academicYear->where('name', 'like', "%{$search}%"));
-                })
-                ->orderBy('academic_year_id')
-                ->orderBy('start_date')
+            'terms' => $terms
+                ->orderBy('id')
                 ->paginate(20)
                 ->withQueryString(),
             'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 

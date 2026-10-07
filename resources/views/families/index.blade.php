@@ -11,7 +11,7 @@
         <x-button-link :href="route('families.create')">Create family</x-button-link>
     </div>
 
-    <x-list-search :action="route('families.index')" label="Family code, address, or contact number" :value="$search" />
+    <x-list-search :action="route('families.index')" label="Family code, address, or contact number" :value="$search" :sort-options="['family_code' => 'Family code', 'address' => 'Address', 'combined_billing' => 'Combined billing']" :sort="$sort" :direction="$direction" />
 
     <div class="table-wrap">
         <table class="table">
