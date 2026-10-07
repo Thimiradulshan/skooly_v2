@@ -41,10 +41,10 @@ class Payment extends Model
         return $this->hasOne(Receipt::class);
     }
 
-    /** @return HasOne<PaymentReversal, $this> */
-    public function reversal(): HasOne
+    /** @return HasMany<PaymentReversal, $this> */
+    public function reversals(): HasMany
     {
-        return $this->hasOne(PaymentReversal::class, 'original_payment_id');
+        return $this->hasMany(PaymentReversal::class, 'original_payment_id');
     }
 
     /**

@@ -40,7 +40,7 @@ and Section archive/restore are complete; the active academic year cannot be arc
 | Discount history/audit | Discounts can be reviewed and deactivated for future generation, but deactivation is not separately audited. | Yes, `Discount` | List/deactivate | Audit event decision | Later |
 | Fee subscription history/audit | Subscriptions can be reviewed and ended for future generation, but ending is not separately audited. | Yes, `StudentFeeSubscription` | List/end | Audit event decision | Later |
 | Search, sort, and pagination | In-scope Admin lists now have validated search where relevant, fixed sorting, direction controls, and pagination with query-string preservation. Audit logs and Student-scoped histories intentionally remain outside this rollout. | n/a | Yes | None | Complete in 10D-6C |
-| Payment correction or refund | Full payment reversal is now available through an Accountant request and independent Admin approval, with due-item reopening and correction receipts. Refunds and partial reversals remain absent. | Yes | Yes | None for the approved full-reversal workflow | Complete in 10D-7 |
+| Payment correction or refund | Accountants can select exact partial or full original-allocation reversals for independent Admin approval, with capped reopening and itemized correction receipts. Refunds remain absent. | Yes | Yes | Refund policy | Partial: reversals complete |
 | Accountant access | Accountants can view payment/receipt history and request/list payment reversals. Collection, family, and approval access remain Admin-only. | Yes | Finance history and reversals only | Broader operational permissions | Later |
 
 ---

@@ -9,6 +9,8 @@ use App\Http\Requests\Web\ApprovePaymentReversalRequest;
 use App\Http\Requests\Web\StorePaymentReversalRequest;
 use App\Models\Payment;
 use App\Models\PaymentReversal;
+use App\Models\PaymentReversalAllocation;
+use InvalidArgumentException;
 use RuntimeException;
 
 class PaymentReversalController extends Controller
@@ -25,7 +27,19 @@ class PaymentReversalController extends Controller
 
     public function create(Payment $payment)
     {
-        $payment->load('family');
+        $payment->load(['family', 'allocations.studentDueItem']);
+        $reversedAmounts = PaymentReversalAllocation::query()
+            ->whereIn('payment_allocation_id', $payment->allocations->modelKeys())
+            ->whereHas('paymentReversal', fn ($query) => $query->where('status', PaymentReversal::STATUS_APPROVED))
+            ->selectRaw('payment_allocation_id, sum(selected_amount) as selected_amount')
+            ->groupBy('payment_allocation_id')
+            ->pluck('selected_amount', 'payment_allocation_id');
+
+        $payment->allocations->each(function ($allocation) use ($reversedAmounts): void {
+            $allocation->setAttribute('reversible_amount', $this->fromCents(
+                $this->toCents($allocation->amount) - $this->toCents($reversedAmounts[$allocation->id] ?? '0.00'),
+            ));
+        });
 
         return view('payment-reversals.create', compact('payment'));
     }
@@ -33,8 +47,22 @@ class PaymentReversalController extends Controller
     public function store(StorePaymentReversalRequest $request, Payment $payment, RequestPaymentReversal $requestPaymentReversal)
     {
         try {
-            $paymentReversal = $requestPaymentReversal->handle($payment, $request->string('reason')->toString(), $request->user());
-        } catch (RuntimeException $exception) {
+            /** @var array<int, string|null> $requestedAllocations */
+            $requestedAllocations = $request->validated('allocations');
+            $allocations = [];
+
+            foreach ($requestedAllocations as $paymentAllocationId => $amount) {
+                if ($amount !== null && $amount !== '') {
+                    $allocations[] = [
+                        'payment_allocation_id' => $paymentAllocationId,
+                        'amount' => $amount,
+                    ];
+                }
+            }
+
+            /** @var array<int, array{payment_allocation_id: int, amount: string}> $allocations */
+            $paymentReversal = $requestPaymentReversal->handle($payment, $request->string('reason')->toString(), $allocations, $request->user());
+        } catch (InvalidArgumentException|RuntimeException $exception) {
             return back()->withErrors(['payment' => $exception->getMessage()]);
         }
 
@@ -43,7 +71,7 @@ class PaymentReversalController extends Controller
 
     public function show(PaymentReversal $paymentReversal)
     {
-        $paymentReversal->load(['originalPayment.family', 'originalPayment.receipt', 'requestedBy', 'approvedBy', 'correctionReceipt']);
+        $paymentReversal->load(['originalPayment.family', 'originalPayment.receipt', 'requestedBy', 'approvedBy', 'allocations.paymentAllocation.studentDueItem', 'correctionReceipt']);
 
         return view('payment-reversals.show', compact('paymentReversal'));
     }
@@ -57,5 +85,25 @@ class PaymentReversalController extends Controller
         }
 
         return redirect()->route('payment-reversals.show', $paymentReversal)->with('status', 'Payment reversal approved and due items reopened.');
+    }
+
+    private function toCents(string|int|float $amount): int
+    {
+        if (is_int($amount)) {
+            return $amount * 100;
+        }
+
+        if (is_float($amount)) {
+            $amount = number_format($amount, 2, '.', '');
+        }
+
+        [$whole, $fraction] = array_pad(explode('.', $amount, 2), 2, '0');
+
+        return ((int) $whole * 100) + (int) str_pad($fraction, 2, '0');
+    }
+
+    private function fromCents(int $amount): string
+    {
+        return number_format($amount / 100, 2, '.', '');
     }
 }

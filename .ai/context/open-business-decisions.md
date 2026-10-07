@@ -260,12 +260,12 @@ Do not invent answers for these.
 - Receipt PDF download never creates, renumbers, updates, or otherwise mutates a Receipt, Payment, PaymentAllocation, or StudentDueItem.
 
 ## Phase 10D-7 Rules
-- Payment correction is an append-only, full-payment reversal only; the original Payment, Receipt, and PaymentAllocation records are never changed or deleted.
-- Exactly one PaymentReversal may exist per original Payment, enforced by a unique original_payment_id.
+- Payment correction is append-only and supports user-approved partial payment reversals; the original Payment, Receipt, and PaymentAllocation records are never changed or deleted.
+- A PaymentReversal selects one or more original PaymentAllocations through immutable PaymentReversalAllocation rows. Each selected amount is positive and cannot exceed that allocation's remaining amount after approved reversals.
 - Accountant requests require a reason. Admin approval is required, and a dual-role requester may not approve their own request.
-- Approval reopens each original allocation atomically: paid_amount decreases, balance_amount increases, and status becomes unpaid at zero paid or partially_paid otherwise.
-- Admin enters a unique correction receipt number on approval. CorrectionReceipt snapshots the original Receipt and reversal details; the original receipt stays immutable.
-- Request and approval are explicitly audited inside their respective transactions.
+- Request and approval lock the original Payment and allocations. Approval rechecks reversal caps plus paid, balance, and net safety, then atomically reopens only selected amounts: paid_amount decreases, balance_amount increases, and status becomes unpaid at zero paid or partially_paid otherwise.
+- Admin enters a unique correction receipt number on approval. CorrectionReceipt snapshots the original Receipt, reversal total, and itemized selected entries; the original receipt stays immutable.
+- Request and approval are explicitly audited inside their respective transactions with totals and itemized entries.
 - Accountants receive only payment/receipt history and reversal request/list/detail access. Payment collection, family access, and approval remain Admin-only.
 
 ## Phase 10D-8 Rules

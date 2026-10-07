@@ -15,9 +15,17 @@
         </dl>
     </x-card>
 
+    <x-card title="Selected allocations">
+        <div class="table-wrap"><table class="table"><thead><tr><th>Due item</th><th>Original allocation</th><th>Requested reversal</th></tr></thead><tbody>
+            @foreach ($paymentReversal->allocations as $allocation)
+                <tr><td>{{ $allocation->paymentAllocation->studentDueItem->description }}</td><td>{{ $allocation->paymentAllocation->amount }}</td><td>{{ $allocation->selected_amount }}</td></tr>
+            @endforeach
+        </tbody></table></div>
+    </x-card>
+
     @if ($paymentReversal->status === \App\Models\PaymentReversal::STATUS_REQUESTED && auth()->user()->can('approve', $paymentReversal))
         <x-card title="Approve reversal">
-            <form method="POST" action="{{ route('payment-reversals.approve', $paymentReversal) }}" data-confirm="Approve this full payment reversal? The original records remain immutable and each allocation will be reopened." data-loading>
+            <form method="POST" action="{{ route('payment-reversals.approve', $paymentReversal) }}" data-confirm="Approve this itemized payment reversal? The original records remain immutable and only the selected amounts will be reopened." data-loading>
                 @csrf
                 <div class="form-field"><label class="form-label" for="receipt_no">Correction receipt number</label><input class="form-control" id="receipt_no" name="receipt_no" value="{{ old('receipt_no') }}" required></div>
                 <div class="btn-row"><button class="btn" type="submit">Approve reversal</button></div>

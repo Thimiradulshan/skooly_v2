@@ -20,7 +20,7 @@
         <a class="btn btn-secondary" href="{{ route('families.show', $payment->family) }}">Back to family</a>
     </div>
     @endif
-    @if (auth()->user()->hasRole(\App\Models\Role::ACCOUNTANT) && ! $payment->reversal)
+    @if (auth()->user()->hasRole(\App\Models\Role::ACCOUNTANT))
         <div class="page-actions"><a class="btn btn-secondary" href="{{ route('payments.reversals.create', $payment) }}">Request reversal</a></div>
     @endif
 
@@ -62,7 +62,11 @@
         </div>
     @endif
 
-    @if ($payment->reversal)
-        <div class="page-actions"><a class="btn btn-secondary" href="{{ route('payment-reversals.show', $payment->reversal) }}">View reversal</a></div>
+    @if ($payment->reversals->isNotEmpty())
+        <div class="page-actions">
+            @foreach ($payment->reversals as $reversal)
+                <a class="btn btn-secondary" href="{{ route('payment-reversals.show', $reversal) }}">View reversal {{ $reversal->id }}</a>
+            @endforeach
+        </div>
     @endif
 @endsection

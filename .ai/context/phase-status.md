@@ -52,7 +52,7 @@ Phase 10D Audit Log Workflow
 - Phase 10D Audit Log Workflow - complete / pending commit
 
 ## Current Status
-Admin-only downloadable PDFs now render existing immutable Receipt snapshots with the manual receipt number as the filename. Accountant receipt list/detail access is unchanged and does not include PDF download. Browser print remains available; no receipt, payment, allocation, or due-item mutation route was added.
+User-approved partial payment reversals are implemented. Accountants select exact original-allocation amounts, independent Admins approve under locks, and correction receipts/audit entries retain immutable itemized snapshots. Refunds remain deferred.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -259,8 +259,8 @@ Admin-only downloadable PDFs now render existing immutable Receipt snapshots wit
 - Payment and Receipt history lists are read-only and Admin-only. They search family code, payment reference, and receipt number, sort only through validated allow-lists, paginate 20 records per page, and preserve query strings across pages.
 - In-scope Admin list pages now paginate 20 records per page. General text search is validated and applied only where the screen has an appropriate searchable identifier; audit-log filtering remains deliberately deferred and student-scoped discount/subscription lists remain scoped to their Student.
 - In-scope Admin list sorting uses controller-owned allow-lists, validated `asc` or `desc` directions, and stable `id` tie-breakers. User list sorting preserves its Gate/policy authorization. Audit logs, reminders, payments, receipts, and Student-scoped discount/subscription histories remain unchanged.
-- PaymentReversal is one-to-one with the original Payment and supports requested then approved states only. Original payment, receipt, and allocations remain immutable.
-- Approval locks the reversal, original payment, payment allocations, and due items. It validates reopening before changing every due item in one transaction.
+- PaymentReversal supports multiple requested/approved corrections per original Payment. PaymentReversalAllocation records the selected amount against each original PaymentAllocation and prevents duplicate allocation selection inside one reversal.
+- Request and approval lock the original payment and allocations. Both calculate remaining reversible allocation amounts from approved reversal allocations; approval rechecks due paid/balance/net safety before reopening only the selected amounts in one transaction.
 - CorrectionReceipt is one-to-one with PaymentReversal and stores the original receipt and reversal snapshots under a unique manual correction receipt number.
 - Accountants may browse payment/receipt history and create/view reversals only. Admins approve, but not their own requests.
 - Admins may edit an individual PromotionBatchItem only while its batch is draft. Promote and retain require a target grade and a target section in that grade; exclude and graduate clear both target IDs.
@@ -276,6 +276,15 @@ Admin-only downloadable PDFs now render existing immutable Receipt snapshots wit
 - The unreachable welcome Blade view was removed; the root route remains a redirect for every user.
 
 ## Verification Result
+Passed on 2026-10-08:
+- php artisan migrate:fresh --no-interaction
+- php artisan test --compact: 498 tests, 2413 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (optional Fontaine font-fallback warning only)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
 Passed on 2026-10-08:
 - php artisan test tests/Feature/WebPaymentCollectionTest.php tests/Feature/WebCommercialWorkflowUiTest.php --compact: 37 tests, 267 assertions
 - php artisan test --compact: 496 tests, 2395 assertions
@@ -380,4 +389,4 @@ None.
 ## Next Exact Step
 1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, 10D-7, 10D-8, and 10D-9 if approved.
 2. Do not implement Phase 10D-9 report exports, dashboard charts, or reports without their outstanding product decisions.
-3. Partial reversals and refunds remain deferred.
+3. Refunds remain deferred.

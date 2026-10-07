@@ -83,10 +83,10 @@ Laravel modular monolith.
 - Payment recording uses DB transaction for atomicity.
 
 ## Payment Reversals
-- PaymentReversal is append-only and has a unique original_payment_id, so only one full reversal can exist for a Payment.
+- PaymentReversal is append-only and has many immutable PaymentReversalAllocation selections tied to original PaymentAllocations. A Payment can have multiple reversal requests.
 - Accountants request with a required reason; Admins approve, except a dual-role requester cannot approve their own reversal.
-- ApprovePaymentReversal locks the reversal, original payment, original allocations, and due items inside one transaction before reopening every original allocation.
-- Approval never mutates or deletes the original payment, receipt, or allocations. It creates a CorrectionReceipt with the original receipt snapshot and reversal snapshot.
+- Request and approval lock the payment and original allocations. Requested amounts must be positive and no more than the remaining amount after approved reversal allocations; approval rechecks that cap and due-item paid/balance/net safety under locks.
+- Approval never mutates or deletes the original payment, receipt, or allocations. It reopens only approved selected amounts and creates a CorrectionReceipt with immutable original-receipt and itemized reversal snapshots.
 - Payment reversal request and approval use explicit append-only audit entries.
 - Accountant web access is limited to payment/receipt history and detail, payment-reversal visibility/requesting, the Dues Dashboard, and payment-reminder list/detail. Collection, reminder mutations, families, students, guardians, academic setup, staff, events, promotion, approval, and the admin dashboard remain Admin-only.
 

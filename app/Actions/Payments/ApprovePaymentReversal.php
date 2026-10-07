@@ -8,6 +8,7 @@ use App\Models\CorrectionReceipt;
 use App\Models\Payment;
 use App\Models\PaymentAllocation;
 use App\Models\PaymentReversal;
+use App\Models\PaymentReversalAllocation;
 use App\Models\StudentDueItem;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,8 @@ class ApprovePaymentReversal
     public function handle(PaymentReversal $paymentReversal, string $receiptNo, User $approver): PaymentReversal
     {
         return DB::transaction(function () use ($paymentReversal, $receiptNo, $approver): PaymentReversal {
+            $originalPaymentId = PaymentReversal::query()->findOrFail($paymentReversal->id)->original_payment_id;
+            $payment = Payment::query()->lockForUpdate()->findOrFail($originalPaymentId);
             $reversal = PaymentReversal::query()->lockForUpdate()->findOrFail($paymentReversal->id);
 
             if ($reversal->status !== PaymentReversal::STATUS_REQUESTED) {
@@ -29,7 +32,6 @@ class ApprovePaymentReversal
                 throw new RuntimeException('A requester cannot approve their own payment reversal.');
             }
 
-            $payment = Payment::query()->lockForUpdate()->findOrFail($reversal->original_payment_id);
             $receipt = $payment->receipt()->lockForUpdate()->first();
 
             if ($receipt === null) {
@@ -40,33 +42,65 @@ class ApprovePaymentReversal
                 ->where('payment_id', $payment->id)
                 ->orderBy('student_due_item_id')
                 ->lockForUpdate()
-                ->get();
+                ->get()
+                ->keyBy('id');
 
             if ($allocations->isEmpty()) {
                 throw new RuntimeException('A payment reversal requires original allocations.');
             }
 
+            $reversalAllocations = PaymentReversalAllocation::query()
+                ->where('payment_reversal_id', $reversal->id)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
+
+            if ($reversalAllocations->isEmpty()) {
+                throw new RuntimeException('A payment reversal requires selected original allocations.');
+            }
+
+            $paymentReversals = PaymentReversal::query()
+                ->where('original_payment_id', $payment->id)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
+            $approvedReversedAmounts = PaymentReversalAllocation::query()
+                ->whereIn('payment_reversal_id', $paymentReversals->where('status', PaymentReversal::STATUS_APPROVED)->modelKeys())
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get()
+                ->groupBy('payment_allocation_id')
+                ->map(fn ($approvedAllocations): int => $approvedAllocations->sum(fn (PaymentReversalAllocation $allocation): int => $this->toCents($allocation->selected_amount)));
+
             $dueItems = StudentDueItem::query()
-                ->whereKey($allocations->pluck('student_due_item_id'))
+                ->whereKey($allocations->pluck('student_due_item_id')->unique())
                 ->orderBy('id')
                 ->lockForUpdate()
                 ->get()
                 ->keyBy('id');
             $reopenedAllocations = [];
+            $totalAmount = 0;
 
-            foreach ($allocations as $allocation) {
+            foreach ($reversalAllocations as $reversalAllocation) {
+                $allocation = $allocations->get($reversalAllocation->payment_allocation_id);
+
+                if ($allocation === null) {
+                    throw new RuntimeException('A selected reversal allocation does not belong to the original payment.');
+                }
+
                 $dueItem = $dueItems->get($allocation->student_due_item_id);
 
                 if ($dueItem === null) {
                     throw new RuntimeException('An original payment allocation has no due item.');
                 }
 
-                $allocationAmount = $this->toCents($allocation->amount);
+                $allocationAmount = $this->toCents($reversalAllocation->selected_amount);
+                $remainingReversibleAmount = $this->toCents($allocation->amount) - ($approvedReversedAmounts->get($allocation->id) ?? 0);
                 $paidAmount = $this->toCents($dueItem->paid_amount);
                 $balanceAmount = $this->toCents($dueItem->balance_amount);
                 $netAmount = $this->toCents($dueItem->net_amount);
 
-                if ($allocationAmount > $paidAmount || $balanceAmount + $allocationAmount > $netAmount) {
+                if ($allocationAmount <= 0 || $allocationAmount > $remainingReversibleAmount || $allocationAmount > $paidAmount || $balanceAmount + $allocationAmount > $netAmount) {
                     throw new RuntimeException('The original allocation can no longer be reopened safely.');
                 }
 
@@ -82,8 +116,9 @@ class ApprovePaymentReversal
                 $reopenedAllocations[] = [
                     'payment_allocation_id' => $allocation->id,
                     'student_due_item_id' => $dueItem->id,
-                    'amount' => $allocation->amount,
+                    'selected_amount' => $this->fromCents($allocationAmount),
                 ];
+                $totalAmount += $allocationAmount;
             }
 
             $reversal->update([
@@ -103,6 +138,7 @@ class ApprovePaymentReversal
                     'payment_reversal_id' => $reversal->id,
                     'original_payment_id' => $payment->id,
                     'reason' => $reversal->reason,
+                    'total_amount' => $this->fromCents($totalAmount),
                     'reopened_allocations' => $reopenedAllocations,
                 ],
             ]);
@@ -112,10 +148,12 @@ class ApprovePaymentReversal
                 'original_payment_id' => $payment->id,
                 'family_id' => $payment->family_id,
                 'correction_receipt_no' => $receiptNo,
+                'total_amount' => $this->fromCents($totalAmount),
                 'allocation_count' => count($reopenedAllocations),
+                'allocations' => $reopenedAllocations,
             ]);
 
-            return $reversal->load(['originalPayment', 'requestedBy', 'approvedBy', 'correctionReceipt']);
+            return $reversal->load(['originalPayment', 'requestedBy', 'approvedBy', 'allocations.paymentAllocation', 'correctionReceipt']);
         });
     }
 

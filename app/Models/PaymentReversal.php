@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['original_payment_id', 'requested_by_user_id', 'reason', 'status', 'approved_by_user_id', 'approved_at'])]
@@ -32,6 +33,12 @@ class PaymentReversal extends Model
     public function approvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by_user_id');
+    }
+
+    /** @return HasMany<PaymentReversalAllocation, $this> */
+    public function allocations(): HasMany
+    {
+        return $this->hasMany(PaymentReversalAllocation::class);
     }
 
     /** @return HasOne<CorrectionReceipt, $this> */

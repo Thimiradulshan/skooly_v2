@@ -731,19 +731,25 @@ Verification:
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 10D-7: Payment Reversal Workflow
-Status: complete and verified on 2026-10-07; pending commit.
+Status: complete, extended for approved partial reversals, and verified on 2026-10-08; pending commit.
 
 Implemented:
 - Append-only PaymentReversal and CorrectionReceipt models, factories, and migrations.
-- Accountant-only reversal requests with required reasons, one request per original Payment.
+- Accountant-only reversal requests with required reasons and exact selected original-allocation amounts.
 - Admin-only independent approval with dual-role self-approval prevention.
-- Transactional row locking and full original-allocation reopening with invalid-state rollback.
-- Immutable correction-receipt snapshots plus explicit requested and approved audit entries.
+- PaymentReversalAllocation records with per-reversal allocation uniqueness, safe migration backfill, and removal of the former one-reversal-per-payment constraint.
+- Transactional locking with request-time and approval-time remaining-cap checks across approved reversal allocations; only selected amounts reopen and invalid approval rolls back.
+- Immutable itemized correction-receipt snapshots plus explicit requested and approved audit entries containing totals and entries.
 - Finance-only Accountant access to payment/receipt history and reversal views; no collection, family, or approval access.
 - PaymentReversalTest coverage for success, exact reopening, immutability, correction receipt, audit actions, duplicate prevention, self approval, roles, validation, and rollback.
 
 Deferred:
-- Partial reversals, refunds, payment edits/deletes, receipt PDF export, and broader Accountant operational permissions.
+- Refunds, payment edits/deletes, receipt PDF export, and broader Accountant operational permissions.
+
+Verification:
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 498 tests / 2413 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 10D-8: Promotion Draft Editing & Accountant Read Access
 Status: complete and verified on 2026-10-07; pending commit.

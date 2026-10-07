@@ -108,22 +108,25 @@ history may already reference them.
 2. What audit entry a delete writes. Deleting something should leave a trace.
 3. Whether confirmation is required and what it says.
 
-### Approved payment-reversal rule (Phase 10D-7)
+### Approved payment-reversal rule
 
 - A reversal is a new append-only record linked to exactly one original payment; the
   original payment, receipt, and allocations are never changed or deleted.
-- Only one full reversal may exist per original payment. Partial reversals and refunds
-  are not implemented.
+- An Accountant selects exact positive reversal amounts against one or more original
+  allocations. Multiple reversals may exist for a payment, but an allocation can never
+  be reopened beyond its original amount after approved reversals are totalled.
 - An Accountant requests a reversal with a required reason. An Admin approves it, but an
   account holding both roles cannot approve its own request.
-- Approval atomically reopens every original allocation on its due item. It subtracts the
-  allocation from `paid_amount`, adds it to `balance_amount`, and sets status to `unpaid`
-  when paid reaches zero or `partially_paid` otherwise.
+- Approval locks and rechecks the requested allocation amounts, then atomically reopens
+  only those amounts on their due items. It subtracts each selected amount from
+  `paid_amount`, adds it to `balance_amount`, and sets status to `unpaid` when paid
+  reaches zero or `partially_paid` otherwise.
 - An Admin enters a unique correction receipt number. The correction receipt stores the
-  original receipt snapshot and reversal snapshot; the original receipt remains immutable.
-- Request and approval produce explicit append-only audit entries.
+  original receipt snapshot plus an itemized partial-reversal snapshot; the original
+  receipt remains immutable. Request and approval audit entries include the total and
+  selected entries.
 
-Refunds, partial reversals, and payment edits or deletes remain out of scope.
+Refunds and payment edits or deletes remain out of scope.
 
 ## 6. What must not be built
 

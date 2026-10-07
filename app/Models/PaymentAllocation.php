@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['payment_id', 'student_due_item_id', 'amount'])]
 class PaymentAllocation extends Model
@@ -22,6 +23,12 @@ class PaymentAllocation extends Model
     public function studentDueItem(): BelongsTo
     {
         return $this->belongsTo(StudentDueItem::class);
+    }
+
+    /** @return HasMany<PaymentReversalAllocation, $this> */
+    public function reversalAllocations(): HasMany
+    {
+        return $this->hasMany(PaymentReversalAllocation::class);
     }
 
     /**
