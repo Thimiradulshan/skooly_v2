@@ -62,12 +62,13 @@ it('records the payment correction path as an open decision', function () {
     expect($backlog)->toContain('refund');
 });
 
-it('documents audit log viewing as a missing frontend feature', function () {
+it('documents audit log viewing and its remaining gaps', function () {
     $parity = parityDoc('backend-frontend-feature-parity.md');
     $backlog = parityDoc('frontend-missing-feature-backlog.md');
 
     expect($parity)->toContain('Audit Logs');
-    expect($backlog)->toContain('Audit log viewing');
+    expect($parity)->toContain('AuditLogController');
+    expect($backlog)->toContain('Audit log filtering, export, and retention');
 });
 
 it('does not claim any delete route currently exists', function () {

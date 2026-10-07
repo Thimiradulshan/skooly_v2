@@ -544,7 +544,7 @@ Rejected: SweetAlert2, because the Vite build output is gitignored and depending
 it would break a fresh checkout and the test suite.
 
 ## Phase 10C-5: Backend-Frontend Feature Parity and CRUD Coverage Audit
-Status: complete / pending commit. Verified on 2026-09-30.
+Status: complete, verified on 2026-09-30, committed in f63c2d5.
 
 Audit and planning only. No backend behaviour, route, controller, or model changed.
 
@@ -566,7 +566,7 @@ Headline findings:
 Recommended next phase: 10D-1, academic setup plus audit viewing.
 
 ## Phase 10D-1A: Academic Setup Web Pages
-Status: complete and verified on 2026-10-01.
+Status: complete, verified on 2026-10-01, committed in 1891bf6.
 
 Implemented:
 - Admin-only AcademicYearController, TermController, GradeController, SectionController, and SchoolSettingController.
@@ -584,6 +584,23 @@ Verification:
 - `php artisan migrate:fresh --no-interaction` and `php artisan db:seed --class=DemoDataSeeder --no-interaction` passed.
 - `php artisan test --compact`: 410 tests / 1913 assertions passed.
 - PHPStan, Pint, Composer audit, and `git diff --check` passed.
+
+## Phase 10D-1B: Audit Log Viewing
+Status: complete and verified on 2026-10-07; pending commit.
+
+Implemented:
+- Admin-only AuditLogController index and show actions.
+- Read-only audit-log index and detail pages, including stored metadata.
+- Governance navigation link and WebAuditLogTest coverage.
+- Updated parity, CRUD, backlog, and system-overview documentation.
+
+Deferred:
+- Audit-log filtering, export, retention, create, update, and delete workflows.
+- Audit log access for Accountant, Teacher, and Guardian users.
+
+Verification:
+- `php artisan test --compact`: 415 tests / 1935 assertions passed.
+- PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.

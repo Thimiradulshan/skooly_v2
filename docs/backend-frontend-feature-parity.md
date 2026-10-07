@@ -104,7 +104,7 @@ role, teacher, subject, and assignment setup remain backend-only.
 
 | Module | Model / Table | Backend actions | Web controller | Web routes | Views | Tests | Frontend | Missing UI | Risk / notes | Suggested phase |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Audit Logs | `AuditLog` | `RecordAuditLog` (write only) | none | none | none | `AuditLogTest`, `DeploymentReadinessTest` | **Missing** | **No viewing, filtering, or export screen** | The most important governance feature in the system is invisible. A discrepancy cannot be investigated without a database shell | 10D-1 |
+| Audit Logs | `AuditLog` | `RecordAuditLog` (write only) | `AuditLogController` | index, show | index, show | `AuditLogTest`, `WebAuditLogTest`, `DeploymentReadinessTest` | **Partial** | No filtering, export, or retention policy | Admins can review stored audit entries and metadata without a database shell. Records remain append-only and read-only | 10D-6 |
 
 ---
 

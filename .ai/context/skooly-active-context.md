@@ -34,7 +34,7 @@ Use this file before broad project reinspection.
 - Phase 10C-4 Admin UI/UX Foundation & Login Redesign: complete.
 - Phase 10C-4B Commercial Admin UI/UX Redesign: complete.
 - Phase 10C-4C Commercial UI/UX Defect Audit & Workflow Completion: complete.
-- Phase 10C-5 Backend-Frontend Feature Parity & CRUD Coverage Audit: complete and verified; pending commit.
+- Phase 10C-5 Backend-Frontend Feature Parity & CRUD Coverage Audit: complete and verified; committed in f63c2d5.
 - Phase 10D-1A Academic Setup Web Pages: complete and verified.
 - MySQL fixed by removing obsolete MySQL 8.4 settings:
   - innodb_file_format=Barracuda
@@ -79,7 +79,7 @@ Use this file before broad project reinspection.
 - BuildDuesDashboardReport is read-only and reads stored StudentDueItem snapshot balances.
 - Dashboard filters: academic year, grade, section, date range, fee category, family.
 - grade_id or section_id require academic_year_id because enrollment is year-specific.
-- Family and student balance summaries are available; no UI/controllers/routes exist yet.
+- Family and student balance summaries are available through the admin dues dashboard web page.
 - payment_reminders is an internal outbox table. No external channel sends anything.
 - Reminder eligibility requires an outstanding balance, an unpaid or partially_paid status, and a due date.
 - Guardian reminder eligibility uses explicit guardian_student links, never family membership alone.
@@ -102,13 +102,13 @@ Use this file before broad project reinspection.
 - Provenance pointers null out on source deletion so the local record survives.
 - Balance correctness is enforced in the payment action, including against sequential payments.
 - No DB CHECK constraint currently prevents a negative balance_amount; that remains an open decision.
-- All business workflows live in app/Actions. Controllers, routes, and requests still do not exist.
+- All business workflows live in app/Actions; web controllers validate and delegate to them.
 - RegisterStudent defaults to pending_registration, links only explicit Guardians, and never generates due items.
 - LinkGuardianToStudent is the only path to Guardian access and requires the same Family.
 - Student activation after registration payment is deferred because registration dues are not identifiable.
 - Web controllers live in app/Http/Controllers/Web and only validate plus delegate to app/Actions.
-- Web validation lives in app/Http/Requests/Web. Views use a single plain-HTML layout.
-- Web routes have no auth middleware yet, so FormRequest::authorize() returns true.
+- Web validation lives in app/Http/Requests/Web. Views use the shared admin layout with public/css/admin.css.
+- All web routes are protected: auth middleware plus role checks, with FormRequest::authorize() repeating the Admin check.
 - No delete route, API controller, or frontend framework exists.
 - Minimal session login and logout exist. No auth package is installed.
 - Family and student registration web routes require auth plus role:Admin.
@@ -158,7 +158,7 @@ Use this file before broad project reinspection.
 - Read docs/system-overview.md and docs/data-flow.md to understand the system without re-reading the code.
 - Use docs/user-workflows.md to see how each Admin task is performed and where it is limited.
 - docs/ui-ux-roadmap.md and docs/production-gap-register.md record what the interface and the release still need.
-- Academic setup has no web screen yet. Years, terms, grades, and sections still need console access.
+- Academic setup web screens now exist (Phase 10D-1A); archive/deactivate still needs a lifecycle-status decision.
 - The admin UI is a static plain-CSS design system in public/css/admin.css. No build step and no npm packages.
 - Navigation lives once in the sidebar. New pages must add their link there, not repeat markup.
 - Shared UI pieces live in resources/views/components. Reuse them instead of restyling per view.

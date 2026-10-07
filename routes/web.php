@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Web\AcademicYearController;
 use App\Http\Controllers\Web\AdminDashboardController;
+use App\Http\Controllers\Web\AuditLogController;
 use App\Http\Controllers\Web\DueGenerationController;
 use App\Http\Controllers\Web\DuesDashboardController;
 use App\Http\Controllers\Web\EventChargeController;
@@ -37,6 +38,9 @@ Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
 Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
+    Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+    Route::get('/audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('audit-logs.show');
 
     Route::resource('academic-years', AcademicYearController::class)->except('destroy');
     Route::resource('terms', TermController::class)->except('destroy');

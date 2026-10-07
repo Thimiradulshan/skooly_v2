@@ -215,3 +215,9 @@ Do not invent answers for these.
 - Archive/deactivate remains deferred: none of the four tables has a lifecycle status, and archive semantics remain unresolved.
 - No hard delete or archive route exists for academic setup.
 - SchoolSetting.active_academic_year_id may be selected by an Admin but remains inert until a separate decision assigns downstream behaviour.
+
+## Phase 10D-1B Rules
+- Audit-log viewing is Admin-only and read-only.
+- Audit pages display only stored AuditLog data and never create, update, delete, or recompute an audit entry.
+- Audit-log filtering, export, and retention remain deferred; no retention period or export format has been chosen.
+- Audit viewing must remain readable when actor_user_id or the polymorphic auditable source is null.

@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D-1A: Academic Setup Web Pages
+Phase 10D-1B: Audit Log Viewing
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -35,10 +35,12 @@ Phase 10D-1A: Academic Setup Web Pages
 - Phase 10C-4: Admin UI/UX Foundation & Login Redesign - complete
 - Phase 10C-4B: Commercial Admin UI/UX Redesign - complete
 - Phase 10C-4C: Commercial UI/UX Defect Audit & Workflow Completion - complete
-- Phase 10C-5: Backend-Frontend Feature Parity & CRUD Coverage Audit - complete / pending commit
+- Phase 10C-5: Backend-Frontend Feature Parity & CRUD Coverage Audit - complete (committed in f63c2d5)
+- Phase 10D-1A: Academic Setup Web Pages - complete (committed in 1891bf6)
+- Phase 10D-1B: Audit Log Viewing - complete / pending commit
 
 ## Current Status
-Phase 10D-1A is complete and verified. Academic setup archive/deactivate remains deferred because the schema has no lifecycle status.
+Phase 10D-1B is complete and verified. It adds an Admin-only, read-only audit-log index and detail view. Audit-log filtering, export, retention, update, and deletion remain deferred.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -227,9 +229,20 @@ Phase 10D-1A is complete and verified. Academic setup archive/deactivate remains
 - Key finding: Audit logs are written for every sensitive action but cannot be viewed anywhere.
 - Key finding: SchoolSetting.active_academic_year_id is seeded but read by nothing in the application.
 - Key finding: there is no correction path for a mistaken payment, which is a genuine operational blocker.
+- Admin-only audit-log index and detail pages display stored action, actor, auditable record reference, occurred_at, and metadata without writing or modifying AuditLog records.
+- Audit viewing never follows auditable records, so a historical entry remains readable when its subject no longer exists.
+- No audit-log filter, export, retention, create, update, or delete route was added.
 
 ## Verification Result
-Passed on 2026-10-01:
+Passed on 2026-10-07:
+- php artisan test --compact: 415 tests, 1935 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (non-blocking optional Fontaine font-fallback warning)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
+Previously passed on 2026-10-01:
 - php artisan migrate:fresh --no-interaction
 - php artisan db:seed --class=DemoDataSeeder --no-interaction
 - php artisan test --compact: 410 tests, 1913 assertions
@@ -249,4 +262,5 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-Review git status, then commit Phase 10C-5.
+1. Review and commit Phase 10D-1B if approved.
+2. Pick the next phase from docs/frontend-missing-feature-backlog.md; user/role/teacher/subject/assignment management is next in the documented sequence.

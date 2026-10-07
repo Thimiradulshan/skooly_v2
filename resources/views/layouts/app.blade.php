@@ -75,6 +75,12 @@
                     <a class="sidebar-link {{ request()->routeIs('payment-reminders.*') ? 'is-active' : '' }}"
                        href="{{ route('payment-reminders.index') }}">Payment Reminders</a>
                 </div>
+
+                <div>
+                    <p class="sidebar-section-title">Governance</p>
+                    <a class="sidebar-link {{ request()->routeIs('audit-logs.*') ? 'is-active' : '' }}"
+                       href="{{ route('audit-logs.index') }}">Audit Log</a>
+                </div>
             </nav>
 
             <div class="sidebar-footer">

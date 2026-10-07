@@ -1,6 +1,6 @@
 # CRUD and Action Coverage Matrix
 
-Phase 10C-5 audit, updated by Phase 10D-1A. What the web UI supports today.
+Phase 10C-5 audit, updated by Phase 10D-1B. What the web UI supports today.
 
 Statuses used:
 
@@ -101,7 +101,7 @@ Statuses used:
 
 | Module | List | Create | View | Edit | Update | Archive | Delete | Restore | Generate | Confirm | Export/Print | Search/Filter | Status change | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Audit Log | **No** | Automatic | **No** | Not Applicable | Not Applicable | Not Applicable | **Not Recommended** | Not Applicable | Not Applicable | Not Applicable | **No** | **No** | Not Applicable | Written on every sensitive action, never readable. Append-only by design |
+| Audit Log | **Yes** | Automatic | **Yes** | Not Applicable | Not Applicable | Not Applicable | **Not Recommended** | Not Applicable | Not Applicable | Not Applicable | **No** | **No** | Not Applicable | Admin-only read-only index and detail. Append-only by design; no filtering, export, or retention policy |
 | Dues Dashboard | Yes | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | Yes | Not Applicable | Filters work well |
 | Admin Dashboard | Yes | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | No | Not Applicable | Counts only |
 | Login | Not Applicable | Not Applicable | Yes | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | Not Applicable | No | No | Not Applicable | No rate limit, no reset |

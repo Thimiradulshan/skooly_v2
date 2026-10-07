@@ -141,6 +141,8 @@ Laravel modular monolith.
 - Promotion batch creation and confirmation are logged inside their existing transactions.
 - Recurring, event, and reminder generation log once per run.
 - A failed transaction writes no audit entries, so the log never claims a change that rolled back.
+- AuditLogController provides Admin-only index and show pages. They eager-load only actors and render stored action, subject reference, occurred_at, and metadata.
+- The audit viewer is read-only. It has no filtering, export, retention, create, update, or delete workflow.
 
 ## Backend Hardening
 - Historical and financial tables are protected by the database with restrictOnDelete, not by application code.

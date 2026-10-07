@@ -1,6 +1,6 @@
 # Frontend Missing Feature Backlog
 
-Phase 10C-5 audit, updated by Phase 10D-1A. Items are ordered by whether they block
+Phase 10C-5 audit, updated by Phase 10D-1B. Items are ordered by whether they block
 real school use, not by effort.
 
 ---
@@ -14,10 +14,11 @@ console.
 | --- | --- | --- | --- | --- | --- |
 | Academic setup archive/deactivate | List, create, view, edit, and update now exist for academic years, terms, grades, and sections. Old configuration cannot yet be hidden safely. | No status columns | No | Required. Define archive semantics before a migration and UI | 10D-4 |
 | Active year behaviour | School Setting can now select the active year, but no existing workflow reads the setting. | Yes, `SchoolSetting` | Edit/update | Whether anything should *depend* on it | Later decision |
-| Audit log viewing | The strongest governance feature is invisible. A payment discrepancy cannot be investigated in the app. | Yes, `AuditLog` | No | Retention period. Viewing needs no decision | 10D-1 |
+| Audit log filtering, export, and retention | Admins can now review entries and stored metadata, but cannot narrow, export, or retain them by policy. | Yes, `AuditLog` | Read-only index and detail | Retention policy and export format | 10D-6 |
 
-**Phase 10D-1A removes the academic setup console dependency.** Audit log viewing
-remains a separate missing feature and is deliberately outside this phase.
+**Phase 10D-1A removes the academic setup console dependency. Phase 10D-1B adds
+Admin-only, read-only audit-log viewing.** Audit filtering, export, and retention
+remain deferred.
 
 Completed in Phase 10D-1A: **Academic Year**, Term, **Grade**, **Section**, and
 School Setting list/create/view/edit/update web surfaces. Archive/deactivate remains
