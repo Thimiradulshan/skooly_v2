@@ -228,6 +228,7 @@ it('filters by academic year', function () {
     $guardian->students()->attach($student);
     $matchedYear = AcademicYear::factory()->create();
     $otherYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($matchedYear);
     $matchedDueItem = StudentDueItem::factory()->for($student)->for($matchedYear)->for(FeeCategory::factory())->create([
         'due_date' => '2026-10-10',
         'balance_amount' => 100,

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Academic\ActiveAcademicYear;
 use Database\Factories\EnrollmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -91,6 +92,8 @@ class Enrollment extends Model
      */
     public function placeIn(Grade $grade, Section $section): EnrollmentPlacement
     {
+        (new ActiveAcademicYear)->ensure($this->academicYear);
+
         return DB::transaction(function () use ($grade, $section): EnrollmentPlacement {
             $hasPlacementHistory = $this->placements()->exists();
 

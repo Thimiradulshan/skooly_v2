@@ -2,6 +2,7 @@
 
 namespace App\Actions\Promotion;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Audit\RecordAuditLog;
 use App\Models\AcademicYear;
 use App\Models\AuditLog;
@@ -27,6 +28,8 @@ class CreatePromotionBatch
         array $sourceSectionIds,
         ?User $createdBy = null,
     ): PromotionBatch {
+        (new ActiveAcademicYear)->ensure($targetAcademicYear);
+
         return DB::transaction(function () use ($sourceAcademicYear, $targetAcademicYear, $sourceSectionIds, $createdBy): PromotionBatch {
             $batch = PromotionBatch::query()->create([
                 'source_academic_year_id' => $sourceAcademicYear->id,
@@ -35,7 +38,7 @@ class CreatePromotionBatch
                 'status' => PromotionBatch::STATUS_DRAFT,
             ]);
 
-            $sections = Section::query()->active()->whereIn('id', $sourceSectionIds)->get();
+            $sections = Section::query()->whereIn('id', $sourceSectionIds)->get();
 
             foreach ($sections as $section) {
                 $batch->sections()->create(['source_section_id' => $section->id]);

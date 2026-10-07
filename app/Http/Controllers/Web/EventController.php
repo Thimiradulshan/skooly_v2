@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Events\CreateEvent;
 use App\Actions\Events\UpdateEvent;
 use App\Http\Controllers\Controller;
@@ -45,15 +46,15 @@ class EventController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(ActiveAcademicYear $activeAcademicYear)
     {
-        return view('events.create', $this->formData());
+        return view('events.create', $this->formData(activeAcademicYear: $activeAcademicYear));
     }
 
     public function store(StoreEventRequest $request, CreateEvent $createEvent)
     {
         $event = $createEvent->handle(
-            AcademicYear::query()->active()->findOrFail($request->integer('academic_year_id')),
+            AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
             FeeCategory::query()->findOrFail($request->integer('fee_category_id')),
             $this->eventData($request),
         );
@@ -93,10 +94,12 @@ class EventController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function formData(?Event $event = null): array
+    private function formData(?Event $event = null, ?ActiveAcademicYear $activeAcademicYear = null): array
     {
         return [
-            'academicYears' => AcademicYear::query()->active()->when($event, fn ($query) => $query->orWhereKey($event->academic_year_id))->orderBy('id')->get(),
+            'academicYears' => $event
+                ? AcademicYear::query()->active()->orWhereKey($event->academic_year_id)->orderBy('id')->get()
+                : collect([$activeAcademicYear?->current()]),
             'feeCategories' => FeeCategory::query()->orderBy('name')->get(),
         ];
     }

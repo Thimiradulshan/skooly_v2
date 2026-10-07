@@ -156,6 +156,7 @@ it('logs promotion batch creation when an actor is provided', function () {
     $actor = User::factory()->create();
     $source = AcademicYear::factory()->create();
     $target = AcademicYear::factory()->create();
+    setActiveAcademicYear($target);
     $grade = Grade::factory()->create();
     $section = Section::factory()->for($grade)->create();
     $student = Student::factory()->create(['status' => Student::STATUS_ACTIVE]);
@@ -180,6 +181,7 @@ it('logs promotion batch confirmation inside the transaction', function () {
     $actor = User::factory()->create();
     $source = AcademicYear::factory()->create();
     $target = AcademicYear::factory()->create();
+    setActiveAcademicYear($target);
     $grade = Grade::factory()->create(['sequence_order' => 1]);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
@@ -209,6 +211,7 @@ it('logs promotion batch confirmation inside the transaction', function () {
 it('does not log promotion confirmation when confirmation fails', function () {
     $source = AcademicYear::factory()->create();
     $target = AcademicYear::factory()->create();
+    setActiveAcademicYear($target);
     $grade = Grade::factory()->create(['sequence_order' => 1]);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
@@ -230,6 +233,7 @@ it('does not log promotion confirmation when confirmation fails', function () {
 it('logs one entry per recurring due generation run', function () {
     $actor = User::factory()->create();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     $section = Section::factory()->for($grade)->create();
     $student = Student::factory()->create();
@@ -256,6 +260,7 @@ it('logs one entry per recurring due generation run', function () {
 it('logs one entry per event due generation run', function () {
     $actor = User::factory()->create();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     $section = Section::factory()->for($grade)->create();
     $student = Student::factory()->create();
@@ -339,6 +344,7 @@ it('does not generate due items during promotion confirmation', function () {
     $actor = User::factory()->create();
     $source = AcademicYear::factory()->create();
     $target = AcademicYear::factory()->create();
+    setActiveAcademicYear($target);
     $grade = Grade::factory()->create(['sequence_order' => 1]);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
     Section::factory()->for($nextGrade)->create(['name' => 'A']);

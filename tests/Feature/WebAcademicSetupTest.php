@@ -43,6 +43,7 @@ it('lets an admin create view and update an academic year', function () {
 it('lets an admin create view and update a term', function () {
     $admin = adminUser();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $this->actingAs($admin)->post(route('terms.store'), [
         'academic_year_id' => $academicYear->id, 'name' => 'First Term', 'start_date' => '2026-09-01', 'end_date' => '2026-12-15',
     ])->assertRedirect();

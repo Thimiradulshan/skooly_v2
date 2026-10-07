@@ -10,6 +10,7 @@ use App\Http\Requests\Web\UpdateEventChargeRequest;
 use App\Models\Event;
 use App\Models\EventCharge;
 use App\Models\Grade;
+use InvalidArgumentException;
 use RuntimeException;
 
 class EventChargeController extends Controller
@@ -26,11 +27,15 @@ class EventChargeController extends Controller
 
     public function store(StoreEventChargeRequest $request, Event $event, CreateEventCharge $createEventCharge)
     {
-        $createEventCharge->handle(
-            $event,
-            Grade::query()->active()->findOrFail($request->integer('grade_id')),
-            (string) $request->input('amount'),
-        );
+        try {
+            $createEventCharge->handle(
+                $event,
+                Grade::query()->active()->findOrFail($request->integer('grade_id')),
+                (string) $request->input('amount'),
+            );
+        } catch (InvalidArgumentException $exception) {
+            return back()->withErrors(['event_charge' => $exception->getMessage()]);
+        }
 
         return redirect()
             ->route('events.show', $event)

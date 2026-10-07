@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,7 +25,7 @@ class StoreTermRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year_id' => ['required', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
+            'academic_year_id' => ['required', 'integer', (new ActiveAcademicYear)->validationRule()],
             'name' => ['required', 'string', 'max:255', Rule::unique('terms', 'name')->where('academic_year_id', $this->integer('academic_year_id'))],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after:start_date'],

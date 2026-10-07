@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Models\Role;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
@@ -39,7 +40,7 @@ class RegisterStudentRequest extends FormRequest
             'status' => ['nullable', 'string', Rule::in($statuses)],
             'guardian_ids' => ['nullable', 'array'],
             'guardian_ids.*' => ['integer', 'exists:guardians,id'],
-            'academic_year_id' => ['nullable', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
+            'academic_year_id' => ['nullable', 'integer', (new ActiveAcademicYear)->validationRule()],
             'grade_id' => ['nullable', 'integer', Rule::exists('grades', 'id')->where('is_archived', 0)],
             'section_id' => ['nullable', 'integer', Rule::exists('sections', 'id')->where('is_archived', 0)],
         ];

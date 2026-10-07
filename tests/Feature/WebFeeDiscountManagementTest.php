@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
 
+beforeEach(function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
+});
+
 it('denies guests the fee category index', function () {
     $this->get(route('fee-categories.index'))->assertRedirect(route('login'));
 });
@@ -79,6 +83,7 @@ it('lets an admin create a fee structure without creating due items', function (
     $feeCategory = FeeCategory::factory()->create();
     $grade = Grade::factory()->create();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
 
     $this->actingAs(adminUser())->get(route('fee-structures.create'))->assertOk();
 
@@ -101,6 +106,7 @@ it('rejects a duplicate fee structure', function () {
     $feeCategory = FeeCategory::factory()->create();
     $grade = Grade::factory()->create();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $payload = [
         'fee_category_id' => $feeCategory->id,
         'grade_id' => $grade->id,
@@ -196,6 +202,7 @@ it('lets an admin subscribe a student to an opt-in category', function () {
     $student = Student::factory()->create();
     $optInCategory = FeeCategory::factory()->create(['name' => 'Transport', 'is_opt_in' => true]);
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
 
     $this->actingAs(adminUser())->get(route('students.fee-subscriptions.create', $student))->assertOk();
 
@@ -244,6 +251,7 @@ it('keeps fee structure versioned by academic year', function () {
     $grade = Grade::factory()->create();
     $firstYear = AcademicYear::factory()->create();
     $secondYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($firstYear);
 
     $this->actingAs(adminUser())->post(route('fee-structures.store'), [
         'fee_category_id' => $feeCategory->id,
@@ -252,6 +260,8 @@ it('keeps fee structure versioned by academic year', function () {
         'amount' => '100.00',
         'frequency' => 'monthly',
     ]);
+
+    setActiveAcademicYear($secondYear);
 
     $this->actingAs(adminUser())->post(route('fee-structures.store'), [
         'fee_category_id' => $feeCategory->id,

@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
 
+beforeEach(function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
+});
+
 function webReminderStudent(Family $family): Student
 {
     return Student::factory()->for($family)->create();

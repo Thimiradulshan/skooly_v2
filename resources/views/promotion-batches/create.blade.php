@@ -15,7 +15,7 @@
                     <label class="form-label" for="source_academic_year_id">Source academic year <span class="req">*</span></label>
                     <select class="form-control" id="source_academic_year_id" name="source_academic_year_id" required>
                         <option value="">-- choose --</option>
-                        @foreach ($academicYears as $academicYear)
+                        @foreach ($sourceAcademicYears as $academicYear)
                             <option value="{{ $academicYear->id }}" {{ (int) old('source_academic_year_id') === $academicYear->id ? 'selected' : '' }}>
                                 {{ $academicYear->name }}
                             </option>
@@ -27,11 +27,7 @@
                     <label class="form-label" for="target_academic_year_id">Target academic year <span class="req">*</span></label>
                     <select class="form-control" id="target_academic_year_id" name="target_academic_year_id" required>
                         <option value="">-- choose --</option>
-                        @foreach ($academicYears as $academicYear)
-                            <option value="{{ $academicYear->id }}" {{ (int) old('target_academic_year_id') === $academicYear->id ? 'selected' : '' }}>
-                                {{ $academicYear->name }}
-                            </option>
-                        @endforeach
+                        <option value="{{ $targetAcademicYear->id }}" {{ (int) old('target_academic_year_id', $targetAcademicYear->id) === $targetAcademicYear->id ? 'selected' : '' }}>{{ $targetAcademicYear->name }}</option>
                     </select>
                     <span class="form-help">Must differ from the source year.</span>
                 </div>

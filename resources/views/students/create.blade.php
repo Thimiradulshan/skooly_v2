@@ -73,7 +73,7 @@
                     <select class="form-control" id="academic_year_id" name="academic_year_id">
                         <option value="">-- none --</option>
                         @foreach ($academicYears as $academicYear)
-                            <option value="{{ $academicYear->id }}" {{ (int) old('academic_year_id') === $academicYear->id ? 'selected' : '' }}>
+                            <option value="{{ $academicYear->id }}" {{ (int) old('academic_year_id', $academicYears->sole()->id) === $academicYear->id ? 'selected' : '' }}>
                                 {{ $academicYear->name }}
                             </option>
                         @endforeach

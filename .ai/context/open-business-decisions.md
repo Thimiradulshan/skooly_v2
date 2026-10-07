@@ -216,7 +216,7 @@ Do not invent answers for these.
 - Archived records are excluded only from new-selection/configuration flows. Existing indexes, details, history, reports, and existing-update references remain readable.
 - The active SchoolSetting academic year must be changed before that year can be archived. SchoolSetting rejects archived academic years.
 - Archive and restore transitions are explicitly audited.
-- SchoolSetting.active_academic_year_id otherwise remains inert until a separate decision assigns downstream behaviour.
+- SchoolSetting.active_academic_year_id strictly governs new year-scoped operational and configuration workflows. Historical reads, reports, existing edits, and academic-year creation remain unaffected. Promotion sources may be historical; promotion targets must be the active year.
 
 ## Audit Log Workflow Rules
 - Audit-log viewing, filtering, and export are Admin-only and read-only.

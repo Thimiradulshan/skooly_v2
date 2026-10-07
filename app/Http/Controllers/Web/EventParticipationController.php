@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\StoreEventParticipationRequest;
 use App\Models\Event;
 use App\Models\Student;
+use InvalidArgumentException;
 
 class EventParticipationController extends Controller
 {
@@ -27,11 +28,15 @@ class EventParticipationController extends Controller
 
     public function store(StoreEventParticipationRequest $request, Event $event, SetEventParticipation $setEventParticipation)
     {
-        $updated = $setEventParticipation->handle(
-            $event,
-            array_map('intval', $request->input('student_ids')),
-            $request->string('status')->toString(),
-        );
+        try {
+            $updated = $setEventParticipation->handle(
+                $event,
+                array_map('intval', $request->input('student_ids')),
+                $request->string('status')->toString(),
+            );
+        } catch (InvalidArgumentException $exception) {
+            return back()->withErrors(['event_participation' => $exception->getMessage()]);
+        }
 
         return redirect()
             ->route('events.show', $event)

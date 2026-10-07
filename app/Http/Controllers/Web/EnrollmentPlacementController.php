@@ -8,6 +8,7 @@ use App\Models\Enrollment;
 use App\Models\Grade;
 use App\Models\Section;
 use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 
 class EnrollmentPlacementController extends Controller
 {
@@ -30,7 +31,11 @@ class EnrollmentPlacementController extends Controller
             throw ValidationException::withMessages(['section_id' => 'The selected section must belong to the selected grade.']);
         }
 
-        $enrollment->placeIn($grade, $section);
+        try {
+            $enrollment->placeIn($grade, $section);
+        } catch (InvalidArgumentException $exception) {
+            return back()->withErrors(['enrollment' => $exception->getMessage()]);
+        }
 
         return redirect()->route('students.show', $enrollment->student_id)->with('status', 'Enrollment placement recorded.');
     }

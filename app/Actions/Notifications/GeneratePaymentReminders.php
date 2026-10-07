@@ -2,7 +2,9 @@
 
 namespace App\Actions\Notifications;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Audit\RecordAuditLog;
+use App\Models\AcademicYear;
 use App\Models\AuditLog;
 use App\Models\Family;
 use App\Models\Guardian;
@@ -29,6 +31,10 @@ class GeneratePaymentReminders
         ?int $familyId = null,
         ?User $actor = null,
     ): int {
+        if ($academicYearId !== null) {
+            (new ActiveAcademicYear)->ensure(AcademicYear::query()->findOrFail($academicYearId));
+        }
+
         return DB::transaction(function () use ($asOfDate, $upcomingWindowDays, $academicYearId, $familyId, $actor): int {
             $upcomingLimit = date('Y-m-d', strtotime($asOfDate.' +'.$upcomingWindowDays.' days'));
 

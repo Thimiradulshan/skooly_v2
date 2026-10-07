@@ -2,7 +2,9 @@
 
 namespace App\Actions\Promotion;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Audit\RecordAuditLog;
+use App\Models\AcademicYear;
 use App\Models\AuditLog;
 use App\Models\Enrollment;
 use App\Models\PromotionBatch;
@@ -23,6 +25,8 @@ class ConfirmPromotionBatch
      */
     public function handle(PromotionBatch $batch, ?User $actor = null): PromotionBatch
     {
+        (new ActiveAcademicYear)->ensure(AcademicYear::query()->findOrFail($batch->target_academic_year_id));
+
         return DB::transaction(function () use ($batch, $actor): PromotionBatch {
             $batch = PromotionBatch::query()->lockForUpdate()->findOrFail($batch->id);
 

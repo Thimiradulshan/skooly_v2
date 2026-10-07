@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fees;
 
+use App\Academic\ActiveAcademicYear;
 use App\Models\AcademicYear;
 use App\Models\FeeCategory;
 use App\Models\Student;
@@ -25,6 +26,8 @@ class CreateStudentFeeSubscription
         if (! $feeCategory->is_opt_in) {
             throw new InvalidArgumentException('Only opt-in fee categories can be subscribed.');
         }
+
+        (new ActiveAcademicYear)->ensure($academicYear);
 
         return DB::transaction(fn (): StudentFeeSubscription => StudentFeeSubscription::query()->create([
             'student_id' => $student->id,

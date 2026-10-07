@@ -1,11 +1,16 @@
 <?php
 
+use App\Models\AcademicYear;
 use App\Models\Family;
 use App\Models\Role;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
+});
 
 it('renders a login page with Skooly branding', function () {
     $this->get(route('login'))

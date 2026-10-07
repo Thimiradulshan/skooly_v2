@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreSectionYearAssignmentRequest;
@@ -10,8 +11,10 @@ use App\Models\Role;
 use App\Models\Section;
 use App\Models\SectionYearAssignment;
 use App\Models\User;
+use App\Teachers\CreateSectionYearAssignment;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 
 class SectionYearAssignmentController extends Controller
 {
@@ -49,25 +52,25 @@ class SectionYearAssignmentController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(ActiveAcademicYear $activeAcademicYear)
     {
         return view('section-year-assignments.create', [
-            'academicYears' => AcademicYear::query()->active()->orderByDesc('start_date')->get(),
+            'academicYears' => collect([$activeAcademicYear->current()]),
             'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
             'teachers' => $this->teachers()->get(),
         ]);
     }
 
-    public function store(StoreSectionYearAssignmentRequest $request)
+    public function store(StoreSectionYearAssignmentRequest $request, CreateSectionYearAssignment $createSectionYearAssignment)
     {
-        $teacher = User::query()->findOrFail($request->integer('class_in_charge_id'));
-
-        if (! $teacher->hasRole(Role::TEACHER)) {
-            throw ValidationException::withMessages(['class_in_charge_id' => 'The selected user must have the Teacher role.']);
-        }
-
         try {
-            $assignment = SectionYearAssignment::query()->create($request->validated());
+            $assignment = $createSectionYearAssignment->handle(
+                AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
+                Section::query()->findOrFail($request->integer('section_id')),
+                User::query()->findOrFail($request->integer('class_in_charge_id')),
+            );
+        } catch (InvalidArgumentException $exception) {
+            return back()->withErrors(['class_in_charge_id' => $exception->getMessage()]);
         } catch (QueryException) {
             throw ValidationException::withMessages(['section_id' => 'This section already has a class-in-charge for the selected academic year.']);
         }

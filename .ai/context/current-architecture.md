@@ -240,7 +240,7 @@ Laravel modular monolith.
 - Academic setup routes provide index, create, store, show, edit, and update; SchoolSetting provides edit and update.
 - Form Requests repeat the Admin role check as defense in depth.
 - Academic year details show terms, grade details show sections, and section details show its grade.
-- SchoolSetting.active_academic_year_id is editable but no existing workflow reads it.
+- SchoolSetting.active_academic_year_id is enforced by ActiveAcademicYear for new year-scoped operations. Historical reads, reports, and existing edits remain unfiltered; promotion accepts a historical source but requires the active year as target.
 - AcademicYear, Term, Grade, and Section have `is_archived` flags with explicit local `active()` scopes, never global scopes.
 - Archive/restore is Admin-only, confirmed, and audited. It preserves all history, does not cascade from AcademicYear, and hides records only from new-selection/configuration flows.
 - SchoolSetting excludes archived academic years and blocks selection of one; its current active academic year cannot be archived.

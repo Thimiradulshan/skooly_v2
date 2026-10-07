@@ -61,6 +61,7 @@ it('records qualifications before creating teaching and class-in-charge assignme
     $admin = adminUser();
     $teacher = userWithRole(Role::TEACHER);
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $section = Section::factory()->for(Grade::factory())->create();
     $subject = Subject::factory()->create();
 
@@ -93,8 +94,11 @@ it('records qualifications before creating teaching and class-in-charge assignme
 it('requires a teaching qualification before assigning a teacher to a subject', function () {
     $teacher = userWithRole(Role::TEACHER);
 
+    $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
+
     $this->actingAs(adminUser())->post(route('teacher-assignments.store'), [
-        'academic_year_id' => AcademicYear::factory()->create()->id,
+        'academic_year_id' => $academicYear->id,
         'section_id' => Section::factory()->for(Grade::factory())->create()->id,
         'teacher_id' => $teacher->id,
         'subject_id' => Subject::factory()->create()->id,

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Academic\ActiveAcademicYear;
+use App\Academic\CreateTerm;
 use App\Actions\Academic\SetAcademicRecordArchived;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ArchiveAcademicRecordRequest;
@@ -45,14 +47,17 @@ class TermController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(ActiveAcademicYear $activeAcademicYear)
     {
-        return view('terms.create', $this->formData());
+        return view('terms.create', ['academicYears' => collect([$activeAcademicYear->current()])]);
     }
 
-    public function store(StoreTermRequest $request)
+    public function store(StoreTermRequest $request, CreateTerm $createTerm)
     {
-        $term = Term::query()->create($request->validated());
+        $term = $createTerm->handle(
+            AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
+            $request->safe()->only(['name', 'start_date', 'end_date']),
+        );
 
         return redirect()->route('terms.show', $term)->with('status', 'Term created.');
     }

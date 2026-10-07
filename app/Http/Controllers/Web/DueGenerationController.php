@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Events\GenerateEventDueItems;
 use App\Actions\Fees\GenerateRecurringDueItems;
 use App\Http\Controllers\Controller;
@@ -12,17 +13,17 @@ use App\Models\Event;
 
 class DueGenerationController extends Controller
 {
-    public function recurringCreate()
+    public function recurringCreate(ActiveAcademicYear $activeAcademicYear)
     {
         return view('due-generation.recurring', [
-            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
+            'academicYears' => collect([$activeAcademicYear->current()]),
         ]);
     }
 
     public function recurringStore(GenerateRecurringDuesRequest $request, GenerateRecurringDueItems $generateRecurringDueItems)
     {
         $created = $generateRecurringDueItems->handle(
-            AcademicYear::query()->active()->findOrFail($request->integer('academic_year_id')),
+            AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
             $request->string('due_date')->toString(),
             $request->input('cycle_key'),
             $request->user(),
@@ -33,10 +34,10 @@ class DueGenerationController extends Controller
             ->with('status', "Recurring dues generated. {$created} due item(s) created.");
     }
 
-    public function eventCreate()
+    public function eventCreate(ActiveAcademicYear $activeAcademicYear)
     {
         return view('due-generation.events', [
-            'events' => Event::query()->with('feeCategory')->orderBy('id')->get(),
+            'events' => Event::query()->with('feeCategory')->where('academic_year_id', $activeAcademicYear->current()->id)->orderBy('id')->get(),
         ]);
     }
 

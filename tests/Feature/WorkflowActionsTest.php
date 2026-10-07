@@ -171,6 +171,7 @@ it('creates an initial enrollment when valid year grade and section are provided
     $academicYear = AcademicYear::factory()->create();
     $grade = Grade::factory()->create();
     $section = Section::factory()->for($grade)->create();
+    setActiveAcademicYear($academicYear);
 
     $student = app(RegisterStudent::class)->handle($family, studentPayload(), [], [
         'academic_year_id' => $academicYear->id,
@@ -188,11 +189,13 @@ it('creates an initial enrollment when valid year grade and section are provided
 
 it('rejects registration when the section does not belong to the grade', function () {
     $family = Family::factory()->create();
+    $academicYear = AcademicYear::factory()->create();
     $grade = Grade::factory()->create();
     $otherSection = Section::factory()->for(Grade::factory())->create();
+    setActiveAcademicYear($academicYear);
 
     expect(fn () => app(RegisterStudent::class)->handle($family, studentPayload(), [], [
-        'academic_year_id' => AcademicYear::factory()->create()->id,
+        'academic_year_id' => $academicYear->id,
         'grade_id' => $grade->id,
         'section_id' => $otherSection->id,
     ]))->toThrow(InvalidArgumentException::class);
@@ -288,6 +291,7 @@ it('creates an academic year scoped fee structure without touching due items', f
     $feeCategory = FeeCategory::factory()->create(['is_recurring' => true]);
     $grade = Grade::factory()->create();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $student = Student::factory()->create();
     $dueItem = StudentDueItem::factory()
         ->for($student)
@@ -317,6 +321,7 @@ it('rejects a duplicate fee structure for the same category grade year and frequ
     $feeCategory = FeeCategory::factory()->create();
     $grade = Grade::factory()->create();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     app(CreateFeeStructure::class)->handle($feeCategory, $grade, $academicYear, '100.00', 'monthly');
 
     expect(fn () => app(CreateFeeStructure::class)->handle($feeCategory, $grade, $academicYear, '120.00', 'monthly'))

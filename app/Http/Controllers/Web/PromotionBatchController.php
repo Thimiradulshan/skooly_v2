@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Promotion\ConfirmPromotionBatch;
 use App\Actions\Promotion\CreatePromotionBatch;
 use App\Actions\Promotion\DiscardPromotionBatch;
@@ -53,19 +54,20 @@ class PromotionBatchController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(ActiveAcademicYear $activeAcademicYear)
     {
         return view('promotion-batches.create', [
-            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
-            'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
+            'sourceAcademicYears' => AcademicYear::query()->orderBy('id')->get(),
+            'targetAcademicYear' => $activeAcademicYear->current(),
+            'sections' => Section::query()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
         ]);
     }
 
     public function store(StorePromotionBatchRequest $request, CreatePromotionBatch $createPromotionBatch)
     {
         $batch = $createPromotionBatch->handle(
-            AcademicYear::query()->active()->findOrFail($request->integer('source_academic_year_id')),
-            AcademicYear::query()->active()->findOrFail($request->integer('target_academic_year_id')),
+            AcademicYear::query()->findOrFail($request->integer('source_academic_year_id')),
+            AcademicYear::query()->findOrFail($request->integer('target_academic_year_id')),
             array_map('intval', $request->input('source_section_ids')),
             $request->user(),
         );

@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Students\RegisterStudent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\RegisterStudentRequest;
-use App\Models\AcademicYear;
 use App\Models\Family;
 use App\Models\Grade;
 use App\Models\Section;
 
 class StudentRegistrationController extends Controller
 {
-    public function create(Family $family)
+    public function create(Family $family, ActiveAcademicYear $activeAcademicYear)
     {
         $family->load('guardians');
 
         return view('students.create', [
             'family' => $family,
-            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
+            'academicYears' => collect([$activeAcademicYear->current()]),
             'grades' => Grade::query()->active()->orderBy('sequence_order')->get(),
             'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
         ]);

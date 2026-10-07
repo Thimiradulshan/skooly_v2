@@ -18,6 +18,7 @@ it('records placement history instead of overwriting an enrollment', function ()
     $secondGrade = Grade::factory()->create();
     $secondSection = Section::factory()->for($secondGrade)->create();
     $enrollment = Enrollment::factory()->for($student)->for($academicYear)->for($firstGrade)->for($firstSection)->create();
+    setActiveAcademicYear($academicYear);
 
     $this->actingAs(adminUser())->post(route('enrollments.placements.store', $enrollment), [
         'grade_id' => $secondGrade->id,
@@ -33,6 +34,7 @@ it('records placement history instead of overwriting an enrollment', function ()
 it('rejects a placement with a section from another grade', function () {
     $student = Student::factory()->create();
     $enrollment = Enrollment::factory()->for($student)->create();
+    setActiveAcademicYear($enrollment->academicYear);
     $otherSection = Section::factory()->for(Grade::factory())->create();
 
     $this->actingAs(adminUser())->post(route('enrollments.placements.store', $enrollment), [
@@ -45,6 +47,7 @@ it('rejects a placement with a section from another grade', function () {
 
 it('blocks teachers and accountants from placement management', function () {
     $enrollment = Enrollment::factory()->create();
+    setActiveAcademicYear($enrollment->academicYear);
 
     $this->actingAs(userWithRole(Role::TEACHER))->get(route('enrollments.placements.create', $enrollment))->assertForbidden();
     $this->actingAs(userWithRole(Role::ACCOUNTANT))->post(route('enrollments.placements.store', $enrollment), [])->assertForbidden();

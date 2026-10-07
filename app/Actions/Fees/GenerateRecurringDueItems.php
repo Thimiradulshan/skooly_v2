@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fees;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Audit\RecordAuditLog;
 use App\Models\AcademicYear;
 use App\Models\AuditLog;
@@ -27,6 +28,8 @@ class GenerateRecurringDueItems
         ?string $cycleKey = null,
         ?User $actor = null,
     ): int {
+        (new ActiveAcademicYear)->ensure($academicYear);
+
         $cycleKey ??= substr($dueDate, 0, 7);
 
         return DB::transaction(function () use ($academicYear, $dueDate, $cycleKey, $actor): int {

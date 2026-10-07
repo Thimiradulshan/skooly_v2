@@ -88,6 +88,8 @@ it('retains the initial and changed placements for an enrollment', function () {
         ->for($firstSection)
         ->create();
 
+    setActiveAcademicYear($academicYear);
+
     $enrollment->placeIn($secondGrade, $secondSection);
 
     $placements = $enrollment->placements()->orderBy('id')->get();
@@ -113,6 +115,8 @@ it('rolls back a placement change when the grade does not own the section', func
         ->for($enrollmentGrade)
         ->for($enrollmentSection)
         ->create();
+
+    setActiveAcademicYear($academicYear);
 
     expect(fn () => $enrollment->placeIn($otherGrade, $enrollmentSection))
         ->toThrow(QueryException::class);

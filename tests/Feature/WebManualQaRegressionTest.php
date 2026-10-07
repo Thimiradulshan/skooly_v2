@@ -22,6 +22,10 @@ use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
 
+beforeEach(function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
+});
+
 function qaActiveStudent(AcademicYear $academicYear, Grade $grade, Section $section): Student
 {
     $student = Student::factory()->for(Family::factory())->create(['status' => Student::STATUS_ACTIVE]);
@@ -96,6 +100,7 @@ it('keeps destructive and api routes absent', function () {
 it('renders the event show page when the event has charges participation and dues', function () {
     $admin = adminUser();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create(['sequence_order' => 1]);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
     $section = Section::factory()->for($grade)->create();
@@ -122,6 +127,7 @@ it('renders the promotion batch show page after confirmation', function () {
     $admin = adminUser();
     $source = AcademicYear::factory()->create();
     $target = AcademicYear::factory()->create();
+    setActiveAcademicYear($target);
     $promoteGrade = Grade::factory()->create(['sequence_order' => 1]);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
@@ -267,6 +273,7 @@ it('completes the core admin journey from login through payment receipt and even
 
     $academicYear = AcademicYear::factory()->create(['name' => '2026/2027']);
     $nextYear = AcademicYear::factory()->create(['name' => '2027/2028']);
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create(['sequence_order' => 1, 'name' => 'Grade 1']);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2, 'name' => 'Grade 2']);
     $section = Section::factory()->for($grade)->create(['name' => 'A']);
@@ -400,6 +407,8 @@ it('completes the core admin journey from login through payment receipt and even
 
     $this->get(route('payment-reminders.index'))->assertOk();
     $this->get(route('payment-reminders.show', PaymentReminder::query()->sole()))->assertOk();
+
+    setActiveAcademicYear($nextYear);
 
     $this->post(route('promotion-batches.store'), [
         'source_academic_year_id' => $academicYear->id,

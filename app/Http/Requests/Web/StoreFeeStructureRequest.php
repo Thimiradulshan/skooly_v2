@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -31,7 +32,7 @@ class StoreFeeStructureRequest extends FormRequest
                     ->where('frequency', $this->input('frequency'))),
             ],
             'grade_id' => ['required', 'integer', Rule::exists('grades', 'id')->where('is_archived', 0)],
-            'academic_year_id' => ['required', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
+            'academic_year_id' => ['required', 'integer', (new ActiveAcademicYear)->validationRule()],
             'amount' => ['required', 'numeric', 'min:0'],
             'frequency' => ['required', 'string', 'max:255'],
         ];

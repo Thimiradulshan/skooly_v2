@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fees;
 
+use App\Academic\ActiveAcademicYear;
 use App\Models\AcademicYear;
 use App\Models\FeeCategory;
 use App\Models\FeeStructure;
@@ -22,6 +23,8 @@ class CreateFeeStructure
         string $amount,
         string $frequency,
     ): FeeStructure {
+        (new ActiveAcademicYear)->ensure($academicYear);
+
         return DB::transaction(fn (): FeeStructure => FeeStructure::query()->create([
             'fee_category_id' => $feeCategory->id,
             'grade_id' => $grade->id,

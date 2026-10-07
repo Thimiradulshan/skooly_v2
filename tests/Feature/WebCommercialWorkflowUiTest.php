@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AcademicYear;
 use App\Models\Event;
 use App\Models\Family;
 use App\Models\Payment;
@@ -11,6 +12,10 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
+});
 
 it('shows workflow cards and primary links on the dashboard', function () {
     $this->actingAs(adminUser())
@@ -101,7 +106,7 @@ it('gives the fee structure index a create action', function () {
 });
 
 it('marks the due generation pages with confirmation and dashboard links', function () {
-    Event::factory()->create();
+    Event::factory()->for(AcademicYear::query()->sole())->create();
 
     $this->actingAs(adminUser())
         ->get(route('due-generation.recurring.create'))

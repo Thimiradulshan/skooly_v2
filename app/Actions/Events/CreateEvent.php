@@ -2,6 +2,7 @@
 
 namespace App\Actions\Events;
 
+use App\Academic\ActiveAcademicYear;
 use App\Models\AcademicYear;
 use App\Models\Event;
 use App\Models\FeeCategory;
@@ -16,6 +17,8 @@ class CreateEvent
      */
     public function handle(AcademicYear $academicYear, FeeCategory $feeCategory, array $data): Event
     {
+        (new ActiveAcademicYear)->ensure($academicYear);
+
         return DB::transaction(fn (): Event => Event::query()->create([
             'academic_year_id' => $academicYear->id,
             'fee_category_id' => $feeCategory->id,

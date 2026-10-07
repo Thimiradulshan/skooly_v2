@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class GeneratePaymentRemindersRequest extends FormRequest
 {
@@ -23,7 +23,7 @@ class GeneratePaymentRemindersRequest extends FormRequest
         return [
             'as_of_date' => ['required', 'date'],
             'upcoming_window_days' => ['nullable', 'integer', 'min:0'],
-            'academic_year_id' => ['nullable', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
+            'academic_year_id' => ['nullable', 'integer', (new ActiveAcademicYear)->validationRule()],
             'family_id' => ['nullable', 'integer', 'exists:families,id'],
         ];
     }

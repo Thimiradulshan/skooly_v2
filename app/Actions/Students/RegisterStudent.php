@@ -2,6 +2,7 @@
 
 namespace App\Actions\Students;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Audit\RecordAuditLog;
 use App\Models\AcademicYear;
 use App\Models\AuditLog;
@@ -44,7 +45,8 @@ class RegisterStudent
             }
 
             if ($enrollment !== null) {
-                AcademicYear::query()->active()->findOrFail($enrollment['academic_year_id']);
+                $academicYear = AcademicYear::query()->active()->findOrFail($enrollment['academic_year_id']);
+                (new ActiveAcademicYear)->ensure($academicYear);
                 Grade::query()->active()->findOrFail($enrollment['grade_id']);
                 $section = Section::query()->active()->findOrFail($enrollment['section_id']);
 

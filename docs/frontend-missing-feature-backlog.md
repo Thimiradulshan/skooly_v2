@@ -13,7 +13,7 @@ console.
 | Gap | Why it matters | Backend exists | Frontend exists | Decision needed | Suggested phase |
 | --- | --- | --- | --- | --- | --- |
 | Academic setup archive/deactivate | Admins can archive and restore academic years, terms, grades, and sections. Archived records remain visible in history and are excluded only from new configuration selections. | `is_archived` lifecycle flags | Yes | Complete in 10D archive workflow | Complete |
-| Active year behaviour | School Setting can now select the active year, but no existing workflow reads the setting. | Yes, `SchoolSetting` | Edit/update | Whether anything should *depend* on it | Later decision |
+| Active year behaviour | New year-scoped operational and configuration workflows enforce the selected active year; historical reads, reports, and edits remain available. | Yes, `SchoolSetting` | Active-only creation selectors | Complete | Complete |
 | Audit log filtering, export, and retention | Admins can filter stored rows, download CSV or PDF exports, and retain logs forever. | Yes, `AuditLog` | Index, detail, CSV, PDF | Complete | Complete |
 
 **Phase 10D-1A removes the academic setup console dependency. Phase 10D-1B adds

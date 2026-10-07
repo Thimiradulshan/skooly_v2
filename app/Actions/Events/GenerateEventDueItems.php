@@ -2,7 +2,9 @@
 
 namespace App\Actions\Events;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Audit\RecordAuditLog;
+use App\Models\AcademicYear;
 use App\Models\AuditLog;
 use App\Models\Discount;
 use App\Models\Enrollment;
@@ -23,6 +25,8 @@ class GenerateEventDueItems
      */
     public function handle(Event $event, ?User $actor = null): int
     {
+        (new ActiveAcademicYear)->ensure(AcademicYear::query()->findOrFail($event->academic_year_id));
+
         return DB::transaction(function () use ($event, $actor): int {
             if ($event->confirmed_at === null) {
                 $event->update(['confirmed_at' => now()]);

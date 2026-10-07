@@ -33,6 +33,8 @@ function activeStudentIn(AcademicYear $academicYear, Grade $grade, Section $sect
 
 function makeBatch(AcademicYear $source, AcademicYear $target, array $sectionIds)
 {
+    setActiveAcademicYear($target);
+
     return app(CreatePromotionBatch::class)->handle($source, $target, $sectionIds);
 }
 

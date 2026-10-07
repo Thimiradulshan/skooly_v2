@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Fees\CreateFeeStructure;
 use App\Actions\Fees\UpdateFeeStructure;
 use App\Http\Controllers\Controller;
@@ -49,12 +50,12 @@ class FeeStructureController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(ActiveAcademicYear $activeAcademicYear)
     {
         return view('fee-structures.create', [
             'feeCategories' => FeeCategory::query()->orderBy('name')->get(),
             'grades' => Grade::query()->active()->orderBy('sequence_order')->get(),
-            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
+            'academicYears' => collect([$activeAcademicYear->current()]),
         ]);
     }
 
@@ -63,7 +64,7 @@ class FeeStructureController extends Controller
         $createFeeStructure->handle(
             FeeCategory::query()->findOrFail($request->integer('fee_category_id')),
             Grade::query()->active()->findOrFail($request->integer('grade_id')),
-            AcademicYear::query()->active()->findOrFail($request->integer('academic_year_id')),
+            AcademicYear::query()->findOrFail($request->integer('academic_year_id')),
             (string) $request->input('amount'),
             $request->string('frequency')->toString(),
         );

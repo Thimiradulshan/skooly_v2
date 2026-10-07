@@ -35,6 +35,13 @@ function eventStudent(AcademicYear $academicYear, Grade $grade, ?Family $family 
     return $student;
 }
 
+function generateEventDues(Event $event): int
+{
+    setActiveAcademicYear($event->academicYear);
+
+    return app(GenerateEventDueItems::class)->handle($event);
+}
+
 it('generates due items for enrolled students in the applicable grade', function () {
     $academicYear = AcademicYear::factory()->create();
     $grade = Grade::factory()->create();
@@ -46,7 +53,7 @@ it('generates due items for enrolled students in the applicable grade', function
     ]);
     EventCharge::factory()->for($event)->for($grade)->create(['amount' => 40]);
 
-    $created = app(GenerateEventDueItems::class)->handle($event);
+    $created = generateEventDues($event);
 
     $dueItem = StudentDueItem::query()->sole();
 
@@ -72,7 +79,7 @@ it('confirms the event when generating dues', function () {
     $event = Event::factory()->for($academicYear)->create(['confirmed_at' => null]);
     EventCharge::factory()->for($event)->for($grade)->create(['amount' => 10]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     expect($event->refresh()->confirmed_at)->not->toBeNull();
 });
@@ -85,7 +92,7 @@ it('does not generate due items for students in another academic year', function
     $event = Event::factory()->for($academicYear)->create();
     EventCharge::factory()->for($event)->for($grade)->create(['amount' => 10]);
 
-    $created = app(GenerateEventDueItems::class)->handle($event);
+    $created = generateEventDues($event);
 
     expect($created)->toBe(0);
     expect(StudentDueItem::count())->toBe(0);
@@ -100,7 +107,7 @@ it('does not generate due items for students in another grade', function () {
     $event = Event::factory()->for($academicYear)->create();
     EventCharge::factory()->for($event)->for($grade)->create(['amount' => 10]);
 
-    $created = app(GenerateEventDueItems::class)->handle($event);
+    $created = generateEventDues($event);
 
     expect($created)->toBe(0);
     expect($otherGradeStudent->studentDueItems()->count())->toBe(0);
@@ -116,7 +123,7 @@ it('snapshots grade-specific charge amounts', function () {
     EventCharge::factory()->for($event)->for($firstGrade)->create(['amount' => 30]);
     EventCharge::factory()->for($event)->for($secondGrade)->create(['amount' => 45]);
 
-    $created = app(GenerateEventDueItems::class)->handle($event);
+    $created = generateEventDues($event);
 
     expect($created)->toBe(2);
     expect($firstStudent->studentDueItems()->sole()->original_amount)->toBe('30.00');
@@ -133,7 +140,7 @@ it('represents a uniform charge across multiple event charge rows', function () 
     EventCharge::factory()->for($event)->for($firstGrade)->create(['amount' => 20]);
     EventCharge::factory()->for($event)->for($secondGrade)->create(['amount' => 20]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     expect($firstStudent->studentDueItems()->sole()->net_amount)->toBe('20.00');
     expect($secondStudent->studentDueItems()->sole()->net_amount)->toBe('20.00');
@@ -154,7 +161,7 @@ it('generates due items only for opted-in students on an opt-in event', function
         'status' => EventParticipation::STATUS_OPTED_OUT,
     ]);
 
-    $created = app(GenerateEventDueItems::class)->handle($event);
+    $created = generateEventDues($event);
 
     expect($created)->toBe(1);
     expect(StudentDueItem::query()->sole()->student_id)->toBe($optedIn->id);
@@ -169,8 +176,8 @@ it('prevents duplicate due items when the action runs twice', function () {
     $event = Event::factory()->for($academicYear)->create();
     EventCharge::factory()->for($event)->for($grade)->create(['amount' => 12]);
 
-    $first = app(GenerateEventDueItems::class)->handle($event);
-    $second = app(GenerateEventDueItems::class)->handle($event);
+    $first = generateEventDues($event);
+    $second = generateEventDues($event);
 
     expect($first)->toBe(1);
     expect($second)->toBe(0);
@@ -185,7 +192,7 @@ it('links generated due items back through event_due_items', function () {
     $event = Event::factory()->for($academicYear)->create();
     EventCharge::factory()->for($event)->for($grade)->create(['amount' => 18]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     $link = EventDueItem::query()->sole();
     $dueItem = $student->studentDueItems()->sole();
@@ -203,7 +210,7 @@ it('does not rewrite the due snapshot when the event charge changes later', func
     $event = Event::factory()->for($academicYear)->create();
     $charge = EventCharge::factory()->for($event)->for($grade)->create(['amount' => 22]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     $charge->update(['amount' => 99]);
 
@@ -226,7 +233,7 @@ it('applies an active amount discount and snapshots it', function () {
         'ends_on' => null,
     ]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     $dueItem = StudentDueItem::query()->sole();
     $snapshot = $dueItem->dueItemDiscounts()->sole();
@@ -253,7 +260,7 @@ it('applies an active percentage discount and snapshots it', function () {
         'ends_on' => null,
     ]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     $dueItem = StudentDueItem::query()->sole();
 
@@ -276,7 +283,7 @@ it('never lets an event discount make the net amount negative', function () {
         'ends_on' => null,
     ]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     $dueItem = StudentDueItem::query()->sole();
 
@@ -301,7 +308,7 @@ it('ignores an inactive event discount', function () {
         'ends_on' => null,
     ]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     $dueItem = StudentDueItem::query()->sole();
 
@@ -316,7 +323,7 @@ it('does not create payments or receipts during event generation', function () {
     $event = Event::factory()->for($academicYear)->create();
     EventCharge::factory()->for($event)->for($grade)->create(['amount' => 60]);
 
-    app(GenerateEventDueItems::class)->handle($event);
+    generateEventDues($event);
 
     $dueItem = StudentDueItem::query()->sole();
 

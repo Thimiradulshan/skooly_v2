@@ -33,6 +33,13 @@ function enrolledStudent(AcademicYear $academicYear, Grade $grade, ?Family $fami
     return $student;
 }
 
+function generateRecurringDues(AcademicYear $academicYear, string $dueDate, string $cycleKey): int
+{
+    setActiveAcademicYear($academicYear);
+
+    return app(GenerateRecurringDueItems::class)->handle($academicYear, $dueDate, $cycleKey);
+}
+
 it('generates due items for enrolled students from recurring fee structures', function () {
     $academicYear = AcademicYear::factory()->create();
     $grade = Grade::factory()->create();
@@ -44,7 +51,7 @@ it('generates due items for enrolled students from recurring fee structures', fu
         ->for($academicYear)
         ->create(['amount' => 100, 'frequency' => 'monthly']);
 
-    $created = app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    $created = generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     $dueItem = StudentDueItem::query()->sole();
 
@@ -67,7 +74,7 @@ it('does not generate due items for non-recurring fee categories', function () {
     $feeCategory = FeeCategory::factory()->create(['is_recurring' => false]);
     FeeStructure::factory()->for($feeCategory)->for($grade)->for($academicYear)->create(['frequency' => 'monthly']);
 
-    $created = app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    $created = generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     expect($created)->toBe(0);
     expect(StudentDueItem::count())->toBe(0);
@@ -84,7 +91,7 @@ it('does not generate due items for students not enrolled in that academic year 
     $feeCategory = FeeCategory::factory()->create(['is_recurring' => true]);
     FeeStructure::factory()->for($feeCategory)->for($grade)->for($academicYear)->create(['frequency' => 'monthly']);
 
-    $created = app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    $created = generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     expect($created)->toBe(0);
     expect(StudentDueItem::count())->toBe(0);
@@ -104,7 +111,7 @@ it('keeps generated due amounts unchanged when the fee structure later changes',
         ->for($academicYear)
         ->create(['amount' => 100, 'frequency' => 'monthly']);
 
-    app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     $feeStructure->update(['amount' => 250]);
 
@@ -119,9 +126,9 @@ it('prevents duplicate due items for the same cycle', function () {
     $feeCategory = FeeCategory::factory()->create(['is_recurring' => true]);
     FeeStructure::factory()->for($feeCategory)->for($grade)->for($academicYear)->create(['frequency' => 'monthly']);
 
-    $first = app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
-    $second = app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
-    $nextCycle = app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-11-05', '2026-11');
+    $first = generateRecurringDues($academicYear, '2026-10-05', '2026-10');
+    $second = generateRecurringDues($academicYear, '2026-10-05', '2026-10');
+    $nextCycle = generateRecurringDues($academicYear, '2026-11-05', '2026-11');
 
     expect($first)->toBe(1);
     expect($second)->toBe(0);
@@ -143,7 +150,7 @@ it('applies and snapshots a fixed amount discount', function () {
         'ends_on' => null,
     ]);
 
-    app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     $dueItem = StudentDueItem::query()->sole();
     $discountSnapshot = $dueItem->dueItemDiscounts()->sole();
@@ -170,7 +177,7 @@ it('applies a percentage discount', function () {
         'ends_on' => null,
     ]);
 
-    app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     $dueItem = StudentDueItem::query()->sole();
 
@@ -191,7 +198,7 @@ it('never lets a discount make the net amount negative', function () {
         'ends_on' => null,
     ]);
 
-    app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     $dueItem = StudentDueItem::query()->sole();
 
@@ -215,7 +222,7 @@ it('ignores an inactive discount', function () {
         'ends_on' => null,
     ]);
 
-    app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     $dueItem = StudentDueItem::query()->sole();
 
@@ -235,7 +242,7 @@ it('ignores a discount outside its date range', function () {
         'starts_on' => '2026-11-01',
     ]);
 
-    app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     expect(StudentDueItem::query()->sole()->discount_amount)->toBe('0.00');
 });
@@ -253,7 +260,7 @@ it('generates an opt-in fee only for students with an active subscription', func
         ->for($academicYear)
         ->create(['is_active' => true]);
 
-    $created = app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    $created = generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     expect($created)->toBe(1);
     expect(StudentDueItem::query()->sole()->student_id)->toBe($subscribedStudent->id);
@@ -272,7 +279,7 @@ it('skips an opt-in fee when the subscription is inactive', function () {
         ->for($academicYear)
         ->create(['is_active' => false]);
 
-    $created = app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    $created = generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     expect($created)->toBe(0);
     expect(StudentDueItem::count())->toBe(0);
@@ -285,7 +292,7 @@ it('does not create payments or receipts during generation', function () {
     $feeCategory = FeeCategory::factory()->create(['is_recurring' => true]);
     FeeStructure::factory()->for($feeCategory)->for($grade)->for($academicYear)->create(['amount' => 100, 'frequency' => 'monthly']);
 
-    app(GenerateRecurringDueItems::class)->handle($academicYear, '2026-10-05', '2026-10');
+    generateRecurringDues($academicYear, '2026-10-05', '2026-10');
 
     expect(StudentDueItem::query()->sole()->paid_amount)->toBe('0.00');
     expect(StudentDueItem::query()->sole()->paymentAllocations)->toBeEmpty();

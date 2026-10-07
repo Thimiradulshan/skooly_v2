@@ -16,6 +16,7 @@ uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->actingAs(adminUser());
+    setActiveAcademicYear(AcademicYear::factory()->create());
 });
 
 it('loads the families index page', function () {
@@ -105,7 +106,8 @@ it('rejects a duplicate family code', function () {
 it('loads the student registration page for a family', function () {
     $family = Family::factory()->create(['family_code' => 'FAM-REG']);
     Guardian::factory()->for($family)->create(['name' => 'Reg Parent']);
-    AcademicYear::factory()->create(['name' => '2026/2027']);
+    $academicYear = AcademicYear::factory()->create(['name' => '2026/2027']);
+    setActiveAcademicYear($academicYear);
     Grade::factory()->create(['name' => 'Grade 1']);
     Section::factory()->create(['name' => 'A']);
 
@@ -156,6 +158,7 @@ it('links only the guardians selected on the web form', function () {
 it('creates an initial enrollment from the web form', function () {
     $family = Family::factory()->create();
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     $section = Section::factory()->for($grade)->create();
 

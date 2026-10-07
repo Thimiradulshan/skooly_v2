@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AcademicYear;
 use App\Models\Family;
 use App\Models\Role;
 use App\Models\Student;
@@ -7,6 +8,10 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
+});
 
 it('shows the login page with branding and a login card', function () {
     $this->get(route('login'))

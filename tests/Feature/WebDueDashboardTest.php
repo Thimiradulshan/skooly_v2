@@ -52,6 +52,7 @@ it('denies teacher and accountant the recurring due generation page', function (
 
 it('lets an admin open the recurring due generation page', function () {
     AcademicYear::factory()->create(['name' => '2026/2027']);
+    setActiveAcademicYear(AcademicYear::query()->sole());
 
     $this->actingAs(adminUser())
         ->get(route('due-generation.recurring.create'))
@@ -61,6 +62,7 @@ it('lets an admin open the recurring due generation page', function () {
 
 it('generates recurring due items through the web route', function () {
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     $feeCategory = recurringSetup($academicYear, $grade);
     $student = enrolled($academicYear, $grade);
@@ -84,6 +86,7 @@ it('generates recurring due items through the web route', function () {
 
 it('does not duplicate recurring due items when run twice', function () {
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     recurringSetup($academicYear, $grade);
     enrolled($academicYear, $grade);
@@ -100,12 +103,14 @@ it('does not duplicate recurring due items when run twice', function () {
 });
 
 it('lets an admin open the event due generation page', function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
     $this->actingAs(adminUser())->get(route('due-generation.events.create'))->assertOk();
     $this->actingAs(adminUser())->get(route('due-generation.events.create'))->assertSee('No events exist yet');
 });
 
 it('generates event due items through the web route', function () {
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     $student = enrolled($academicYear, $grade);
     $event = Event::factory()->for($academicYear)->create(['name' => 'Sports Day']);
@@ -125,6 +130,7 @@ it('generates event due items through the web route', function () {
 
 it('does not duplicate event due items when run twice', function () {
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     enrolled($academicYear, $grade);
     $event = Event::factory()->for($academicYear)->create();
@@ -138,6 +144,7 @@ it('does not duplicate event due items when run twice', function () {
 
 it('creates no payment receipt or allocation records during due generation', function () {
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     recurringSetup($academicYear, $grade);
     enrolled($academicYear, $grade);

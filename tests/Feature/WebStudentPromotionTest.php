@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
 
+beforeEach(function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
+});
+
 function promotedWebStudent(AcademicYear $academicYear, Grade $grade, Section $section): Student
 {
     $student = Student::factory()->create(['status' => Student::STATUS_ACTIVE]);
@@ -27,11 +31,20 @@ function promotedWebStudent(AcademicYear $academicYear, Grade $grade, Section $s
 
 function promotionWebPayload(AcademicYear $source, AcademicYear $target, Section $section): array
 {
+    setActiveAcademicYear($target);
+
     return [
         'source_academic_year_id' => $source->id,
         'target_academic_year_id' => $target->id,
         'source_section_ids' => [$section->id],
     ];
+}
+
+function createWebPromotionBatch(AcademicYear $source, AcademicYear $target, array $sectionIds): PromotionBatch
+{
+    setActiveAcademicYear($target);
+
+    return app(CreatePromotionBatch::class)->handle($source, $target, $sectionIds);
 }
 
 /**
@@ -41,12 +54,13 @@ function editablePromotionBatchItem(): array
 {
     $source = AcademicYear::factory()->create();
     $target = AcademicYear::factory()->create();
+    setActiveAcademicYear($target);
     $grade = Grade::factory()->create(['sequence_order' => 1]);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
     $section = Section::factory()->for($grade)->create(['name' => 'A']);
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
     promotedWebStudent($source, $grade, $section);
-    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$section->id]);
+    $batch = createWebPromotionBatch($source, $target, [$section->id]);
 
     return [$batch, $batch->items()->sole()];
 }
@@ -68,6 +82,7 @@ it('lets an admin view the promotion batch index and create page', function () {
 it('lets an admin create a draft promotion batch through the existing action', function () {
     $source = AcademicYear::factory()->create();
     $target = AcademicYear::factory()->create();
+    setActiveAcademicYear($target);
     $grade = Grade::factory()->create(['sequence_order' => 1]);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
@@ -95,7 +110,7 @@ it('shows a promotion batch and its items', function () {
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
     $section = Section::factory()->for($grade)->create(['name' => 'A']);
     $student = promotedWebStudent($source, $grade, $section);
-    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$section->id]);
+    $batch = createWebPromotionBatch($source, $target, [$section->id]);
 
     $this->actingAs(adminUser())
         ->get(route('promotion-batches.show', $batch))
@@ -109,6 +124,7 @@ it('shows a promotion batch and its items', function () {
 it('lets an admin change a draft item to a custom promotion target and audits the edit', function () {
     $source = AcademicYear::factory()->create();
     $target = AcademicYear::factory()->create();
+    setActiveAcademicYear($target);
     $grade = Grade::factory()->create(['sequence_order' => 1]);
     $nextGrade = Grade::factory()->create(['sequence_order' => 2]);
     $customGrade = Grade::factory()->create(['sequence_order' => 3]);
@@ -116,7 +132,7 @@ it('lets an admin change a draft item to a custom promotion target and audits th
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
     $customSection = Section::factory()->for($customGrade)->create(['name' => 'B']);
     promotedWebStudent($source, $grade, $sourceSection);
-    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$sourceSection->id]);
+    $batch = createWebPromotionBatch($source, $target, [$sourceSection->id]);
     $item = $batch->items()->sole();
     $admin = adminUser();
 
@@ -146,7 +162,7 @@ it('lets an admin retain a student in a selected target-year grade and section',
     $retainedSection = Section::factory()->for($grade)->create(['name' => 'B']);
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
     $student = promotedWebStudent($source, $grade, $sourceSection);
-    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$sourceSection->id]);
+    $batch = createWebPromotionBatch($source, $target, [$sourceSection->id]);
     $item = $batch->items()->sole();
 
     $this->actingAs(adminUser())
@@ -171,7 +187,7 @@ it('clears targets for excluded and graduated draft items', function () {
     $section = Section::factory()->for($grade)->create(['name' => 'A']);
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
     promotedWebStudent($source, $grade, $section);
-    $secondBatch = app(CreatePromotionBatch::class)->handle($source, $target, [$section->id]);
+    $secondBatch = createWebPromotionBatch($source, $target, [$section->id]);
     $graduatedItem = $secondBatch->items()->sole();
 
     $this->actingAs(adminUser())
@@ -276,7 +292,7 @@ it('rejects a second confirmation without duplicating enrollments', function () 
     Section::factory()->for($nextGrade)->create(['name' => 'A']);
     $section = Section::factory()->for($grade)->create(['name' => 'A']);
     promotedWebStudent($source, $grade, $section);
-    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$section->id]);
+    $batch = createWebPromotionBatch($source, $target, [$section->id]);
 
     $this->actingAs(adminUser())->post(route('promotion-batches.confirm', $batch))->assertRedirect();
     $this->actingAs(adminUser())
@@ -292,7 +308,7 @@ it('lets an admin discard a draft promotion batch without changing students or e
     $grade = Grade::factory()->create(['sequence_order' => 1]);
     $section = Section::factory()->for($grade)->create();
     $student = promotedWebStudent($source, $grade, $section);
-    $batch = app(CreatePromotionBatch::class)->handle($source, $target, [$section->id]);
+    $batch = createWebPromotionBatch($source, $target, [$section->id]);
 
     $this->actingAs(adminUser())
         ->post(route('promotion-batches.discard', $batch))

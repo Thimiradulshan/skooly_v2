@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Academic\ActiveAcademicYear;
 use App\Actions\Notifications\CancelPaymentReminder;
 use App\Actions\Notifications\GeneratePaymentReminders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\CancelPaymentReminderRequest;
 use App\Http\Requests\Web\GeneratePaymentRemindersRequest;
 use App\Http\Requests\Web\PaymentReminderFilterRequest;
-use App\Models\AcademicYear;
 use App\Models\Family;
 use App\Models\Guardian;
 use App\Models\PaymentReminder;
@@ -35,10 +35,11 @@ class PaymentReminderController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(ActiveAcademicYear $activeAcademicYear)
     {
         return view('payment-reminders.create', [
-            'academicYears' => AcademicYear::query()->active()->orderBy('id')->get(),
+            'academicYears' => collect([$activeAcademicYear->current()]),
+            'activeAcademicYear' => $activeAcademicYear->current(),
             'families' => Family::query()->orderBy('family_code')->get(),
         ]);
     }

@@ -70,8 +70,9 @@ class DemoDataSeeder extends Seeder
         $this->generateRecurringDues($currentYear);
         $this->recordPayment($chloe);
         $this->event($categories, $grades, $chloe, $currentYear);
-        $this->promotionBatch($currentYear, $nextYear, $sections);
         $this->reminders($currentYear);
+        SchoolSetting::query()->updateOrCreate(['id' => 1], ['active_academic_year_id' => $nextYear->id]);
+        $this->promotionBatch($currentYear, $nextYear, $sections);
 
         $this->command?->info('Demo data ready. Sign in with '.self::ADMIN_EMAIL.' / password');
     }
@@ -122,7 +123,7 @@ class DemoDataSeeder extends Seeder
             'end_date' => '2026-12-31',
         ]);
 
-        SchoolSetting::query()->firstOrCreate(
+        SchoolSetting::query()->updateOrCreate(
             ['id' => 1],
             ['active_academic_year_id' => $year->id],
         );

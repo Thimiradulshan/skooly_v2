@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
 
+beforeEach(function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
+});
+
 function enrolledForEvent(AcademicYear $academicYear, Grade $grade): Student
 {
     $student = Student::factory()->for(Family::factory())->create();
@@ -58,6 +62,7 @@ it('lets an admin access the event index and create page', function () {
 
 it('lets an admin create an event without creating dues or payment records', function () {
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $feeCategory = FeeCategory::factory()->create();
 
     $this->actingAs(adminUser())
@@ -94,6 +99,7 @@ it('lets an admin update an event using existing fields', function () {
         'is_mandatory' => true,
     ]);
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $feeCategory = FeeCategory::factory()->create();
 
     $this->actingAs(adminUser())
@@ -116,6 +122,7 @@ it('lets an admin update an event using existing fields', function () {
 
 it('lets an admin add a grade specific event charge', function () {
     $event = Event::factory()->create();
+    setActiveAcademicYear($event->academicYear);
     $grade = Grade::factory()->create();
 
     $this->actingAs(adminUser())
@@ -162,6 +169,8 @@ it('rejects negative and duplicate event charges', function () {
 
 it('lets an admin create and update selected student participation safely', function () {
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     $student = enrolledForEvent($academicYear, $grade);
     $event = Event::factory()->for($academicYear)->create(['is_mandatory' => false]);
@@ -196,6 +205,7 @@ it('lets an admin create and update selected student participation safely', func
 
 it('uses the existing due generation flow after web event setup', function () {
     $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
     $grade = Grade::factory()->create();
     $student = enrolledForEvent($academicYear, $grade);
     $feeCategory = FeeCategory::factory()->create();

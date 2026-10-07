@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\AcademicYear;
 use App\Models\Role;
+use App\Models\SchoolSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -62,4 +64,12 @@ function userWithRole(string $role): User
 function adminUser(): User
 {
     return userWithRole(Role::ADMIN);
+}
+
+function setActiveAcademicYear(AcademicYear $academicYear): void
+{
+    SchoolSetting::query()->updateOrCreate(
+        ['id' => 1],
+        ['active_academic_year_id' => $academicYear->id],
+    );
 }

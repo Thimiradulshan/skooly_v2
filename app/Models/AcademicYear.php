@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/** @property bool $is_archived */
 #[Fillable(['name', 'start_date', 'end_date', 'is_archived'])]
 class AcademicYear extends Model
 {
