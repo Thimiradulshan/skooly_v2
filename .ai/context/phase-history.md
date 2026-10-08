@@ -821,6 +821,24 @@ Verification:
 - `php artisan test --compact`: 481 tests / 2324 assertions passed.
 - PHPStan, Pint, npm build, Composer audit, and `git diff --check` passed.
 
+## Roadmap Step 2: Security Hardening
+Status: complete and verified on 2026-10-08; pending commit.
+
+Implemented:
+- Login throttling after five failed attempts per normalized email and IP address, with a successful login clearing the limiter.
+- Laravel password-broker reset flow with opaque reset-link responses, password reset views, and token-reset coverage.
+- Laravel MustVerifyEmail support, signed verification links, resend throttling, and verified middleware on protected application routes.
+- MySQL StudentDueItem CHECK constraint for non-negative money fields and `paid_amount + balance_amount = net_amount`; SQLite test triggers provide equivalent test-environment enforcement.
+- Production secure-cookie documentation and verified local/demo seed accounts.
+- Authenticator-app TOTP setup with a session-only pending secret, encrypted confirmed secret, manual secret and provisioning URI, valid-code confirmation, and one-time recovery codes stored only as hashes.
+- Password-first login challenge that remains unauthenticated until valid TOTP or recovery verification, account-and-IP challenge throttling, session regeneration on completion, and password plus valid-code disablement that clears all state.
+
+Verification:
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 520 tests / 2622 assertions passed.
+- PHPStan, Pint, npm build (optional Fontaine warning), and Composer audit passed.
+- `git diff --check` passed.
+
 ## Phase 8: Student Promotion
 Status: complete. Verified on 2026-09-30.
 

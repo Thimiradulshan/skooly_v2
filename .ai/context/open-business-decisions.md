@@ -173,12 +173,16 @@ Do not invent answers for these.
 - Demo credentials are throwaway and must be changed before any real deployment.
 - Demo reminders are internal outbox records and must never be sent anywhere.
 
+## Roadmap Step 2 Rules
+- Login throttling, password reset, email verification, and StudentDueItem money constraints are implemented.
+- Authenticator-app TOTP is the selected two-factor method. TOTP secrets are encrypted, recovery codes are hashed and single-use, and disabling requires the current password plus a valid TOTP or recovery code.
+
 ## Phase 10C-2 Rules
 - .env.example must contain placeholders only, never a real APP_KEY, password, or token.
 - DemoDataSeeder and DatabaseSeeder must both stay inert when APP_ENV=production.
 - Production deployment must never rely on a seeded account. Admin credentials are created on the server.
 - Known security gaps are documented rather than silently fixed, so no auth redesign happens without a decision.
-- Login throttling, password reset, email verification, and 2FA remain deferred until explicitly requested.
+- Two-factor authentication remains deferred until its method is explicitly chosen.
 
 ## Phase 10C-3 Rules
 - Documentation only. Do not change business logic, models, migrations, or controllers to make the docs look nicer.

@@ -7,10 +7,10 @@ about risk to real student and money data, not effort.
 | --- | --- | --- | --- | --- | --- |
 | GAP-01 | Deployment | No hosting provisioned or configured | Nothing is deployed. No server, domain, TLS, or process supervision exists yet. | Blocker | 10D-1 |
 | GAP-02 | Deployment | No real Admin account created for production | The only Admin available comes from a demo seeder with a known password. | Blocker | 10D-1 |
-| GAP-03 | Auth | No password reset | A forgotten Admin password requires console access, causing delays and pressure to use weak passwords. | High | 10C-4 |
-| GAP-04 | Auth | No email verification | Any address paired with a valid password is accepted as a real user. | High | 10C-4 |
-| GAP-05 | Auth | No login rate limiting or lockout | Password guessing is unmitigated on the only reachable surface. | High | 10C-4 |
-| GAP-06 | Auth | No two-factor authentication | A single stolen password gives full Admin access including money. | Medium | Deferred |
+| GAP-03 | Auth | Password reset via Laravel password broker | Reset-link requests have an opaque response for existing and unknown email addresses. | Resolved | Step 2 |
+| GAP-04 | Auth | Email verification | Unverified users cannot access protected application routes; signed links verify ownership. | Resolved | Step 2 |
+| GAP-05 | Auth | Login throttling | Five failed attempts per normalized email and IP are allowed per minute; successful login clears the limiter. | Resolved | Step 2 |
+| GAP-06 | Auth | Two-factor authentication method undecided | A single stolen password gives full Admin access including money. | Medium | Decision required |
 | GAP-07 | Roles | Accountant and Teacher have no web permissions | Finance staff cannot use the system at all. Every financial task needs an Admin. | High | 10C-5 |
 | GAP-08 | Roles | Coarse single-role authorization | There is no per-resource permission model; either you are Admin or you see nothing. | Medium | 10C-5 |
 | GAP-09 | Guardian | No Guardian login or Guardian-to-User link | Parents cannot see balances or receipts. No self-service exists. | High | 10C-7 |
@@ -21,7 +21,7 @@ about risk to real student and money data, not effort.
 | GAP-14 | Finance | No payment edit, refund, or reversal policy | Payments are immutable by design with no correction path. Real refunds and mistakes have no route. | High | 10C-9 |
 | GAP-15 | Finance | Automatic payment allocation rule unresolved | Allocating a payment is fully manual. Large family balances require many entries. | Medium | 10C-9 |
 | GAP-16 | Finance | Sibling discount rule unresolved | No sibling discount exists, and none is safe to guess. | Low | Deferred |
-| GAP-17 | Finance | No database-level non-negative money constraints | Balances are protected in application code only. A bug or direct SQL could write a negative balance. | Medium | 10C-9 |
+| GAP-17 | Finance | StudentDueItem database money constraints | MySQL CHECK constraint enforces non-negative amounts and `paid_amount + balance_amount = net_amount`. | Resolved | Step 2 |
 | GAP-18 | Promotion | Reversal safety window unresolved | A confirmed promotion batch cannot be undone, so a mistake is only fixable by direct database work. | High | 10C-10 |
 | GAP-19 | Audit | Audit log workflow | Admins can filter stored audit rows, download CSV/PDF exports, and logs are retained forever without archive or purge. | Resolved | Complete |
 | GAP-20 | Audit | Audit retention policy | Forever retention is approved. Audit logs remain append-only with no archive, purge, or deletion route. | Resolved | Complete |
@@ -36,8 +36,8 @@ about risk to real student and money data, not effort.
 ## Severity summary
 
 - **Blocker (4):** GAP-01 hosting, GAP-02 real Admin, GAP-21 backups, GAP-22 real-user testing
-- **High (10):** GAP-03, GAP-04, GAP-05, GAP-07, GAP-09, GAP-10, GAP-11, GAP-14, GAP-18, GAP-23, GAP-24, GAP-26
-- **Medium (9):** GAP-06, GAP-08, GAP-12, GAP-13, GAP-15, GAP-17, GAP-19, GAP-25, GAP-27
+- **High (9):** GAP-07, GAP-09, GAP-10, GAP-11, GAP-14, GAP-18, GAP-23, GAP-24, GAP-26
+- **Medium (8):** GAP-06, GAP-08, GAP-12, GAP-13, GAP-15, GAP-19, GAP-25, GAP-27
 - **Low (3):** GAP-16, GAP-20
 
 ## Decision dependencies

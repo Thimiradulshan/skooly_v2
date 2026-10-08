@@ -1,8 +1,7 @@
 # Deployment Readiness
 
-This project is a Laravel 13 application backed by MySQL. The backend is feature
-complete through Phase 10C-2, but it is **not yet hardened for a public production
-deployment**. Read the blockers section at the end before going live.
+This project is a Laravel 13 application backed by MySQL. Read the blockers section
+at the end before going live.
 
 ## Local verification
 
@@ -115,9 +114,10 @@ shipped `.env.example` contains placeholders only.
    chmod -R ug+rwX storage bootstrap/cache
    ```
 
-10. **Serve over HTTPS.** Set `SESSION_SECURE_COOKIE=true`. Do not expose the app
-    over plain HTTP, because the session cookie is the only thing protecting the
-    admin area.
+10. **Serve over HTTPS.** Set `SESSION_SECURE_COOKIE=true` in the production
+     environment before running `php artisan config:cache`. Do not expose the app
+     over plain HTTP, because the session cookie is the only thing protecting the
+     admin area.
 
 ## Rollback basics
 
@@ -132,17 +132,14 @@ shipped `.env.example` contains placeholders only.
 
 These are known and unresolved. Resolve them before serving real student data.
 
-1. **No password reset flow.** A forgotten Admin password currently requires server
-   access to reset.
-2. **No email verification.** Any user with a valid password is accepted.
-3. **No login rate limiting.** Brute-force protection is not implemented.
-4. **Default demo credentials.** `admin@skooly.test` / `password` exists only in
+1. **Two-factor authentication method is undecided.** Email verification, password
+   reset, and login throttling are implemented, but a second factor is still needed
+   before public production use.
+2. **Default demo credentials.** `admin@skooly.test` / `password` exists only in
    local and testing seeds, but must be verified absent from any real database.
-5. **Admin-only access.** Accountant and Teacher have no web access at all yet, so
+3. **Admin-only access.** Accountant and Teacher have no web access at all yet, so
    the Accountant and Teacher demo accounts cannot sign in to anything.
-6. **Single-role authorization model.** Permissions are coarse: a user either has
+4. **Single-role authorization model.** Permissions are coarse: a user either has
    Admin or does not.
-7. **Database-level money constraints are still open.** Balances are protected in
-   application code, not by a database check constraint.
-8. **No automated scheduling.** Recurring and event due generation is manual.
-9. **No notification delivery.** Reminders are internal outbox records only.
+5. **No automated scheduling.** Recurring and event due generation is manual.
+6. **No notification delivery.** Reminders are internal outbox records only.

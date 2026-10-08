@@ -20,6 +20,16 @@ class LoginController extends Controller
     {
         $request->authenticate();
 
+        if ($request->user()?->two_factor_confirmed_at !== null) {
+            $userId = $request->user()->getKey();
+
+            Auth::logout();
+            $request->session()->regenerate();
+            $request->session()->put('two_factor_login_id', $userId);
+
+            return redirect()->route('two-factor.challenge');
+        }
+
         $request->session()->regenerate();
 
         return redirect()->intended(route('families.index'));

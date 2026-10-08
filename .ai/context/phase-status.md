@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Phase 10D Audit Log Workflow
+Roadmap Step 2 Security Hardening
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -50,9 +50,12 @@ Phase 10D Audit Log Workflow
 - Phase 10D-9: Print-Friendly Detail Pages & Receipt PDF Download - complete / pending commit
 - Phase 10D Archive/Deactivate Workflow - complete / pending commit
 - Phase 10D Audit Log Workflow - complete / pending commit
+- Roadmap Step 2: Security Hardening - complete / pending commit
 
 ## Current Status
 User-approved Accountant payment collection is implemented. An Accountant starts at a finance-only exact family-code lookup, sees only the selected Family's student due-item allocation data, and records the existing manual payment transaction. Family browsing, reversal approval, reminder mutation, and all non-finance pages remain denied. Refunds remain deferred.
+
+Roadmap Step 2 adds login throttling, Laravel password reset, email verification, `verified` route protection, production secure-cookie documentation, MySQL StudentDueItem money CHECK constraints, and authenticator-app TOTP two-factor authentication.
 
 ## Schema Decisions
 - FeeCategory identifies recurring and non-recurring charges.
@@ -278,6 +281,23 @@ User-approved Accountant payment collection is implemented. An Accountant starts
 ## Verification Result
 Passed on 2026-10-08:
 - php artisan migrate:fresh --no-interaction
+- php artisan test --compact: 520 tests, 2622 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (optional Fontaine font-fallback warning only)
+- composer audit: no security vulnerability advisories
+- git diff --check passed
+
+Passed on 2026-10-08:
+- php artisan migrate:fresh --no-interaction
+- php artisan test --compact: 513 tests, 2569 assertions
+- php vendor/bin/phpstan analyse: 0 errors
+- php vendor/bin/pint --dirty --format agent
+- npm run build passed (optional Fontaine font-fallback warning only)
+- composer audit: no security vulnerability advisories
+
+Passed on 2026-10-08:
+- php artisan migrate:fresh --no-interaction
 - php artisan test --compact: 499 tests, 2444 assertions
 - php vendor/bin/phpstan analyse: 0 errors
 - php vendor/bin/pint --dirty --format agent
@@ -395,6 +415,7 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Review and commit Phases 10D-5, 10D-6B, 10D-6C, 10D-7, 10D-8, and 10D-9 if approved.
-2. Do not implement Phase 10D-9 report exports, dashboard charts, or reports without their outstanding product decisions.
-3. Refunds remain deferred.
+1. Choose a two-factor authentication method before implementing 2FA.
+2. Review and commit pending work if approved.
+3. Do not implement report exports, dashboard charts, or reports without their outstanding product decisions.
+4. Refunds remain deferred.

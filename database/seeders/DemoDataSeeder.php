@@ -96,21 +96,21 @@ class DemoDataSeeder extends Seeder
      */
     private function users(array $roles): User
     {
-        $admin = User::query()->firstOrCreate(
+        $admin = User::query()->updateOrCreate(
             ['email' => self::ADMIN_EMAIL],
-            ['name' => 'Demo Admin', 'password' => 'password'],
+            ['name' => 'Demo Admin', 'password' => 'password', 'email_verified_at' => now()],
         );
 
         $admin->roles()->syncWithoutDetaching([$roles[Role::ADMIN]->id]);
 
-        User::query()->firstOrCreate(
+        User::query()->updateOrCreate(
             ['email' => 'accountant@skooly.test'],
-            ['name' => 'Demo Accountant', 'password' => 'password'],
+            ['name' => 'Demo Accountant', 'password' => 'password', 'email_verified_at' => now()],
         )->roles()->syncWithoutDetaching([$roles[Role::ACCOUNTANT]->id]);
 
-        User::query()->firstOrCreate(
+        User::query()->updateOrCreate(
             ['email' => 'teacher@skooly.test'],
-            ['name' => 'Demo Teacher', 'password' => 'password'],
+            ['name' => 'Demo Teacher', 'password' => 'password', 'email_verified_at' => now()],
         )->roles()->syncWithoutDetaching([$roles[Role::TEACHER]->id]);
 
         return $admin;

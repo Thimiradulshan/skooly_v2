@@ -19,8 +19,9 @@ reachable from the navigation row at the top of the screen.
 
 **Writes:** nothing. A session is created and the session ID is regenerated.
 
-**Limits:** no password reset, no email verification, no lockout after repeated
-failures. There is no "forgot password" link.
+**Limits:** email verification is required before application access. Login is limited
+to five failed attempts per normalized email and IP address per minute. Use the
+"Forgot your password?" link for recovery. Two-factor authentication remains pending.
 
 **Note:** after signing in you land on the Families list, not the dashboard. Use the
 `/admin` link or the Dashboard navigation entry to reach the dashboard.

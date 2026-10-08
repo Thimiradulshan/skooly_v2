@@ -127,6 +127,7 @@
                     @csrf
                     <button type="submit" class="btn btn-secondary btn-small">Sign out</button>
                 </form>
+                <a class="sidebar-link" href="{{ route('two-factor.show') }}">Security</a>
             </div>
         </aside>
 

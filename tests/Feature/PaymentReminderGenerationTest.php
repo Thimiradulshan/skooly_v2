@@ -22,17 +22,23 @@ function reminderStudent(Family $family): Student
 
 function eligibleDueItem(Student $student, array $attributes = []): StudentDueItem
 {
+    $attributes = array_merge([
+        'due_date' => '2026-10-10',
+        'net_amount' => 100,
+        'paid_amount' => 0,
+        'balance_amount' => 100,
+        'status' => StudentDueItem::STATUS_UNPAID,
+    ], $attributes);
+
+    if (! array_key_exists('net_amount', $attributes) || (float) $attributes['net_amount'] !== (float) $attributes['paid_amount'] + (float) $attributes['balance_amount']) {
+        $attributes['net_amount'] = (float) $attributes['paid_amount'] + (float) $attributes['balance_amount'];
+    }
+
     return StudentDueItem::factory()
         ->for($student)
         ->for(AcademicYear::factory())
         ->for(FeeCategory::factory())
-        ->create(array_merge([
-            'due_date' => '2026-10-10',
-            'net_amount' => 100,
-            'paid_amount' => 0,
-            'balance_amount' => 100,
-            'status' => StudentDueItem::STATUS_UNPAID,
-        ], $attributes));
+        ->create($attributes);
 }
 
 function remindersFor(string $asOfDate = '2026-10-05', int $window = 7, ?int $academicYearId = null, ?int $familyId = null): int
@@ -231,11 +237,13 @@ it('filters by academic year', function () {
     setActiveAcademicYear($matchedYear);
     $matchedDueItem = StudentDueItem::factory()->for($student)->for($matchedYear)->for(FeeCategory::factory())->create([
         'due_date' => '2026-10-10',
+        'net_amount' => 100,
         'balance_amount' => 100,
         'status' => StudentDueItem::STATUS_UNPAID,
     ]);
     StudentDueItem::factory()->for($student)->for($otherYear)->for(FeeCategory::factory())->create([
         'due_date' => '2026-10-10',
+        'net_amount' => 50,
         'balance_amount' => 50,
         'status' => StudentDueItem::STATUS_UNPAID,
     ]);

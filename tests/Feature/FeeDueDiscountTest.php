@@ -116,6 +116,7 @@ it('stores a due item for one student with its amount snapshot and description',
             'original_amount' => 100,
             'discount_amount' => 15,
             'net_amount' => 85,
+            'balance_amount' => 85,
         ]);
 
     expect($dueItem->student->is($student))->toBeTrue();

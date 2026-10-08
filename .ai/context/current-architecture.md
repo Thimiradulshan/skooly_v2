@@ -158,6 +158,7 @@ Laravel modular monolith.
 - Provenance pointers deliberately null out on source deletion so the local record survives.
 - Balance correctness is enforced in the payment action, including against sequential payments.
 - Snapshot tables (receipts, due_item_discounts, audit_logs.metadata) are never recomputed from live records.
+- MySQL CHECK constraints require non-negative StudentDueItem monetary fields and `paid_amount + balance_amount = net_amount`.
 
 ## Backend Workflow Actions
 - app/Actions holds every business workflow. Controllers, routes, and requests are still absent.
@@ -177,6 +178,9 @@ Laravel modular monolith.
 
 ## Web Auth
 - Session login and logout live in app/Http/Controllers/Auth/LoginController with LoginRequest validation.
+- Login throttling allows five failed attempts per normalized email and IP address each minute, and a successful login clears the limiter.
+- PasswordResetController uses Laravel's password broker with opaque reset-link responses. EmailVerificationController uses Laravel signed verification links; every protected application route also requires verified email.
+- Authenticator-app TOTP setup keeps a pending secret in the session until a valid code confirms it. Confirmed secrets use an encrypted User cast, recovery codes use an encrypted array of hashes, and login remains unauthenticated until a valid TOTP or consumed recovery code completes the rate-limited challenge and regenerates the session. Disabling requires the current password plus a valid second factor and clears all TOTP state.
 - EnsureUserHasRole is registered as the role middleware alias in bootstrap/app.php.
 - Family and student registration routes require auth plus role:Admin. Admin is the only allowed role today.
 - Web Form Requests repeat the Admin check, so protection does not depend on route configuration alone.

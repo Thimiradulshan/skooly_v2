@@ -10,6 +10,24 @@ git diff --check
 git status
 
 ## Latest Known Good
+Authenticator-app TOTP two-factor authentication passed on 2026-10-08:
+- `php artisan test tests/Feature/TwoFactorAuthenticationTest.php --compact`: 7 tests / 53 assertions passed.
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 520 tests / 2622 assertions passed.
+- PHPStan passed with 0 errors.
+- Pint passed.
+- `npm run build` passed; Vite reported only the optional Fontaine font-fallback warning.
+- Composer audit found no vulnerabilities.
+- `git diff --check` passed.
+
+Roadmap Step 2 security hardening passed on 2026-10-08:
+- `php artisan migrate:fresh --no-interaction` passed.
+- `php artisan test --compact`: 513 tests / 2569 assertions passed.
+- PHPStan passed with 0 errors.
+- Pint passed.
+- `npm run build` passed; Vite reported only the optional Fontaine font-fallback warning.
+- Composer audit found no vulnerabilities.
+
 Accountant payment collection passed on 2026-10-08:
 - `php artisan test tests/Feature/WebPaymentCollectionTest.php tests/Feature/WebAccountantAuthorizationTest.php tests/Feature/PaymentReversalTest.php --compact`: 25 tests / 198 assertions passed.
 - `php artisan migrate:fresh --no-interaction` passed.

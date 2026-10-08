@@ -1,6 +1,6 @@
 # Security Review
 
-Status: reviewed at Phase 10C-2. This documents the **current** security posture,
+Status: updated for roadmap Step 2. This documents the **current** security posture,
 what is deliberately not built yet, and what to do next.
 
 ## Authentication state
@@ -10,14 +10,15 @@ what is deliberately not built yet, and what to do next.
   on logout, then regenerates the CSRF token. This prevents session fixation.
 - Failed logins return a single generic validation message on the `email` field, so
   the response does not reveal whether an account exists.
-- No password reset flow.
-- No email verification.
-- No two-factor authentication.
+- Login attempts are limited to five failed attempts per normalized email address and IP address each minute. A successful login clears the limit.
+- Password reset uses Laravel's password broker. Reset-link responses are identical for existing and unknown email addresses.
+- Users must verify their email address before accessing protected application routes. Signed verification links and resend throttling use Laravel's built-in features.
+- No two-factor authentication. The method remains an open product decision.
 - No `remember me`.
 
 ## Authorization state
 
-- All admin pages are wrapped in `auth` plus the `role:Admin` middleware, registered
+- All protected application pages are wrapped in `auth`, `verified`, and their existing role middleware, registered
   as the `role` alias in `bootstrap/app.php`.
 - `EnsureUserHasRole` redirects unauthenticated users to login and aborts with 403
   for authenticated users without the role.
@@ -57,6 +58,8 @@ what is deliberately not built yet, and what to do next.
 
 - Historical and financial tables are protected by the database using
   `restrictOnDelete` foreign keys rather than application code.
+- MySQL enforces non-negative `StudentDueItem` money columns and requires
+  `paid_amount + balance_amount = net_amount` with a CHECK constraint.
 - Receipts, due item discounts, and audit metadata are immutable snapshots.
 - Audit logs are append-only.
 - Payment, promotion, and reminder generation all run inside database
@@ -80,25 +83,20 @@ what is deliberately not built yet, and what to do next.
 
 | Risk | Severity | Note |
 | --- | --- | --- |
-| No login rate limiting | High | Brute force is currently unmitigated. |
 | Default demo password | High | `admin@skooly.test` / `password` must not exist in production. |
-| No password reset | Medium | Recovery requires server access. |
-| No email verification | Medium | Any known email with the password is accepted. |
+| No two-factor authentication | Medium | The authentication method has not been selected. |
 | Coarse single-role model | Medium | Accountant and Teacher cannot use the app at all yet. |
 | Receipt numbering rule unresolved | Medium | Receipt numbers are entered manually, so uniqueness is operator-controlled. |
 | Automatic payment allocation unresolved | Medium | Manual only by design; no automatic strategy exists. |
 | Promotion reversal safety window unresolved | Low | Reversal is deliberately not implemented. |
-| No database money constraints | Low | Balances are guarded in application code, not by a check constraint. |
 | No HTTPS enforcement in app | Low | Depends on `SESSION_SECURE_COOKIE=true` and the web server. |
 
 ## Recommended next security steps
 
-1. Add login throttling and a temporary lockout on repeated failures.
-2. Remove or replace the demo Admin account on any real environment, and add a
+1. Remove or replace the demo Admin account on any real environment, and add a
    deployment check that fails if `admin@skooly.test` exists.
-3. Add a password reset flow, then email verification.
-4. Decide Accountant and Teacher permissions, then replace the coarse Admin-only
+2. Choose a two-factor authentication method before enabling public production access.
+3. Decide Accountant and Teacher permissions, then replace the coarse Admin-only
    model with per-resource policies.
-5. Enforce `SESSION_SECURE_COOKIE=true` in production and confirm TLS termination.
-6. Add database check constraints for non-negative money columns.
-7. Resolve the receipt numbering rule so numbers are generated, not typed.
+4. Enforce `SESSION_SECURE_COOKIE=true` in production and confirm TLS termination.
+5. Resolve the receipt numbering rule so numbers are generated, not typed.

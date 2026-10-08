@@ -156,7 +156,7 @@ Use this file before broad project reinspection.
 - docs/deployment-readiness.md and docs/security-review.md record the production checklist, deploy steps, and current security posture.
 - .env.example ships mysql keys, an empty APP_KEY and DB_PASSWORD, and a SESSION_SECURE_COOKIE hint.
 - Both seeders return early when APP_ENV=production, and tests lock that behaviour in.
-- Known production blockers are documented, not fixed: no login throttling, no password reset, no email verification, coarse Admin-only authorization, and no database money constraints.
+- Login throttling, password reset, email verification, StudentDueItem MySQL money constraints, and authenticator-app TOTP two-factor authentication are implemented. TOTP setup uses a session-only pending secret before confirmation; confirmed secrets are encrypted and recovery codes are hashed and one-time.
 - Read docs/system-overview.md and docs/data-flow.md to understand the system without re-reading the code.
 - Use docs/user-workflows.md to see how each Admin task is performed and where it is limited.
 - docs/ui-ux-roadmap.md and docs/production-gap-register.md record what the interface and the release still need.
@@ -202,7 +202,7 @@ Use this file before broad project reinspection.
 - Reminder sending UI.
 - Accountant and Teacher web access.
 - API auth, API controllers, and mobile endpoints.
-- Advanced user management, password reset, and email verification.
+- Advanced user management.
 - Delete and destructive web routes.
 - Audit entries for fee category and fee subscription workflows.
 - Automatic sibling discount rule.
@@ -226,4 +226,4 @@ git diff --check
 git status
 
 ## Latest Verification
-- 2026-10-08: receipt PDF scope focused tests passed (37 tests / 267 assertions); full suite passed (496 tests / 2395 assertions); PHPStan and Pint passed; npm build passed with only the optional Fontaine warning; Composer audit found no advisories; git diff --check passed.
+- 2026-10-08: authenticator-app TOTP focused tests passed (7 tests / 53 assertions); `migrate:fresh` passed; full suite passed (520 tests / 2622 assertions); PHPStan and Pint passed; npm build passed with only the optional Fontaine warning; Composer audit found no advisories; git diff --check passed.

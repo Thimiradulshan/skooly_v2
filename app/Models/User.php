@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,8 +13,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password', 'is_active'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+#[Hidden(['password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes'])]
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -43,6 +43,18 @@ class User extends Authenticatable
     public function hasAnyRole(array $roles): bool
     {
         return $this->roles()->whereIn('name', $roles)->exists();
+    }
+
+    /**
+     * Get the hashed recovery codes without exposing the encrypted database value.
+     *
+     * @return array<int, string>
+     */
+    public function twoFactorRecoveryCodes(): array
+    {
+        $recoveryCodes = $this->getAttribute('two_factor_recovery_codes');
+
+        return is_array($recoveryCodes) ? $recoveryCodes : [];
     }
 
     /**
@@ -80,6 +92,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'two_factor_secret' => 'encrypted',
+            'two_factor_recovery_codes' => 'encrypted:array',
+            'two_factor_confirmed_at' => 'datetime',
         ];
     }
 }

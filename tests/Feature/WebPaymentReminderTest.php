@@ -27,18 +27,24 @@ function webReminderStudent(Family $family): Student
 
 function webReminderDueItem(Student $student, array $attributes = []): StudentDueItem
 {
+    $attributes = array_merge([
+        'due_date' => '2026-10-10',
+        'net_amount' => 100,
+        'paid_amount' => 0,
+        'balance_amount' => 100,
+        'status' => StudentDueItem::STATUS_UNPAID,
+        'description' => 'Reminder due item',
+    ], $attributes);
+
+    if ((float) $attributes['net_amount'] !== (float) $attributes['paid_amount'] + (float) $attributes['balance_amount']) {
+        $attributes['net_amount'] = (float) $attributes['paid_amount'] + (float) $attributes['balance_amount'];
+    }
+
     return StudentDueItem::factory()
         ->for($student)
         ->for(AcademicYear::factory())
         ->for(FeeCategory::factory())
-        ->create(array_merge([
-            'due_date' => '2026-10-10',
-            'net_amount' => 100,
-            'paid_amount' => 0,
-            'balance_amount' => 100,
-            'status' => StudentDueItem::STATUS_UNPAID,
-            'description' => 'Reminder due item',
-        ], $attributes));
+        ->create($attributes);
 }
 
 function reminderGenerationPayload(array $overrides = []): array

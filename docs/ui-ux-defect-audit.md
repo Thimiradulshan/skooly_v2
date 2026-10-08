@@ -20,7 +20,7 @@ still submit normally, flash messages remain readable, and nothing is lost.
 
 | Screen | Current problem | Fix applied | Remaining limitation |
 | --- | --- | --- | --- |
-| Login | No submission state, so a double click could submit twice | Added `data-loading` so the button disables and shows a spinner | No "forgot password" link; password reset is not built |
+| Login | No submission state, so a double click could submit twice | Added `data-loading` so the button disables and shows a spinner; added password reset link | Two-factor authentication is not selected |
 | Admin dashboard | Good structure, but no guidance on what to do first | Kept the grouped workflow cards and added eyebrow labelling so each group reads as a stage | Counts only; no "needs attention" list, because that would need new queries |
 | Families index | Empty state was dead text with no way forward | Empty state now explains the prerequisite and offers a Create family button | No search, sort, or pagination |
 | Family show | All actions looked equal, and there was no way back to the list | Added a breadcrumb, made Edit the primary action, kept the rest secondary | No per-student detail route exists, so student rows cannot be opened |

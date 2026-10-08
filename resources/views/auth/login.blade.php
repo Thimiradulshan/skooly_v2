@@ -47,6 +47,7 @@
                     <button type="submit" class="btn">Sign in</button>
                 </form>
 
+                <p class="auth-note"><a href="{{ route('password.request') }}">Forgot your password?</a></p>
                 <p class="auth-note">Local demo: admin&#64;skooly.test / password</p>
             </div>
         </section>

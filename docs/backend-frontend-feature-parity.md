@@ -121,7 +121,7 @@ role, teacher, subject, and assignment setup remain backend-only.
 
 | Module | Backend | Web controller | Routes | Views | Tests | Frontend | Missing UI | Risk / notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Login | `Auth::attempt` | `LoginController` | login, login.store | auth/login | `WebAuthProtectionTest` | **Complete** | No password reset, no 2FA, no rate limit | Reset is the blocking gap |
+| Authentication recovery and verification | Laravel password broker, email verification, and rate limiter | `PasswordResetController`, `EmailVerificationController`, `LoginController` | password, verification, login routes | auth/login, forgot-password, reset-password, verify-email | `AuthenticationHardeningTest` | **Complete** | No 2FA | 2FA method remains a decision |
 | Logout | session invalidate | `LoginController` | logout | layout | `WebAuthProtectionTest` | **Complete** | none | none |
 | Role middleware | `EnsureUserHasRole` | n/a | alias `role` | n/a | `DeploymentReadinessTest` | **Complete** | Accountant and Teacher have no pages at all | Role model exists but grants nothing today |
 | Route protection | `auth` + `role:Admin` group | n/a | all admin routes | n/a | `DeploymentReadinessTest` | **Complete** | none | Every non-public route is covered |

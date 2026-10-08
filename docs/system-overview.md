@@ -67,7 +67,7 @@ there is a working web page for each one. What is missing is production hardenin
 
 | Area | What is missing |
 | --- | --- |
-| Authentication hardening | No password reset, email verification, 2FA, or login rate limiting. |
+| Authentication hardening | Login throttling, password reset, and email verification are complete; 2FA method remains undecided. |
 | Role-based web access | Accountant and Teacher exist but have no permissions wired. |
 | Guardian portal | No Guardian login, no parent view. |
 | Reminder delivery | Reminders are stored but nothing sends them. |
@@ -94,18 +94,15 @@ Demo login: `admin@skooly.test` / `password`. See [local-demo.md](local-demo.md)
 
 ## What is not production-ready
 
-1. **No login rate limiting.** Password guessing is unmitigated.
+1. **No two-factor authentication.** The method has not been selected.
 2. **Default demo password.** `admin@skooly.test` / `password` must not exist in production.
-3. **No password recovery.** A locked-out Admin needs server access.
-4. **Accountant and Teacher cannot use the app.** Finance workflows are unusable by
+3. **Accountant and Teacher cannot use the app.** Finance workflows are unusable by
    anyone but an Admin.
-5. **No Guardian access at all.** Parents cannot see balances or receipts.
-6. **No scheduled jobs.** Nothing runs automatically.
-7. **No notification delivery.** Reminders sit in an outbox forever.
-8. **No money constraints at the database level.** Balances are protected in
-   application code only.
-9. **No real user acceptance testing.** The QA pass was done by the development team.
-10. **Plain UI.** No design system, and tables are hard to read on small screens.
+4. **No Guardian access at all.** Parents cannot see balances or receipts.
+5. **No scheduled jobs.** Nothing runs automatically.
+6. **No notification delivery.** Reminders sit in an outbox forever.
+7. **No real user acceptance testing.** The QA pass was done by the development team.
+8. **Plain UI.** No design system, and tables are hard to read on small screens.
 
 See [production-gap-register.md](production-gap-register.md) for the full list.
 

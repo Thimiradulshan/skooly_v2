@@ -33,6 +33,14 @@ function reportStudent(AcademicYear $academicYear, Grade $grade, Section $sectio
 
 function dueItem(Student $student, AcademicYear $academicYear, FeeCategory $feeCategory, array $attributes = []): StudentDueItem
 {
+    if (! array_key_exists('net_amount', $attributes) && (array_key_exists('paid_amount', $attributes) || array_key_exists('balance_amount', $attributes))) {
+        $attributes['net_amount'] = (float) ($attributes['paid_amount'] ?? 0) + (float) ($attributes['balance_amount'] ?? 100);
+    }
+
+    if (array_key_exists('net_amount', $attributes) && ! array_key_exists('balance_amount', $attributes)) {
+        $attributes['balance_amount'] = (float) $attributes['net_amount'] - (float) ($attributes['paid_amount'] ?? 0);
+    }
+
     return StudentDueItem::factory()->for($student)->for($academicYear)->for($feeCategory)->create($attributes);
 }
 

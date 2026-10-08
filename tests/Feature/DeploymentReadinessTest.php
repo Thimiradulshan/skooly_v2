@@ -141,6 +141,7 @@ it('protects every admin route with auth and the role middleware', function () {
         $middleware = $route->gatherMiddleware();
 
         expect($middleware)->toContain('auth');
+        expect($middleware)->toContain('verified');
         expect(implode(',', $middleware))->toContain(
             str_starts_with($route->uri(), 'payments/') && str_contains($route->uri(), '/reversals')
                 ? 'role:Accountant'

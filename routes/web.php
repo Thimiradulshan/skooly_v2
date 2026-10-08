@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\TwoFactorAuthenticationController;
 use App\Http\Controllers\Web\AcademicYearController;
 use App\Http\Controllers\Web\AdminDashboardController;
 use App\Http\Controllers\Web\AuditLogController;
@@ -46,11 +49,45 @@ Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
-Route::middleware(['auth', 'role:'.Role::ADMIN.','.Role::SUPERADMIN])->group(function (): void {
+Route::middleware('guest')->group(function (): void {
+    Route::get('/two-factor-challenge', [TwoFactorAuthenticationController::class, 'createChallenge'])
+        ->name('two-factor.challenge');
+    Route::post('/two-factor-challenge', [TwoFactorAuthenticationController::class, 'storeChallenge'])
+        ->name('two-factor.challenge.store');
+});
+
+Route::middleware('guest')->group(function (): void {
+    Route::get('/forgot-password', [PasswordResetController::class, 'createLinkRequest'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'storeLinkRequest'])->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'createResetForm'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+});
+
+Route::get('/email/verify', [EmailVerificationController::class, 'notice'])
+    ->middleware('auth')
+    ->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
+Route::post('/email/verification-notification', [EmailVerificationController::class, 'send'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
+
+Route::middleware(['auth', 'verified'])->group(function (): void {
+    Route::get('/two-factor-authentication', [TwoFactorAuthenticationController::class, 'show'])
+        ->name('two-factor.show');
+    Route::post('/two-factor-authentication/confirm', [TwoFactorAuthenticationController::class, 'confirm'])
+        ->name('two-factor.confirm');
+    Route::delete('/two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy'])
+        ->middleware('throttle:6,1')
+        ->name('two-factor.destroy');
+});
+
+Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN.','.Role::SUPERADMIN])->group(function (): void {
     Route::resource('users', UserController::class)->except('destroy');
 });
 
-Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
+Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function (): void {
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
@@ -202,7 +239,7 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
         ->name('promotion-batches.items.update');
 });
 
-Route::middleware(['auth', 'role:'.Role::ADMIN.','.Role::ACCOUNTANT])->group(function (): void {
+Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN.','.Role::ACCOUNTANT])->group(function (): void {
     Route::get('/dues-dashboard', [DuesDashboardController::class, 'index'])->name('dues-dashboard.index');
     Route::get('/payments/collect', [PaymentCollectionController::class, 'collect'])
         ->can('create', Payment::class)
@@ -226,14 +263,14 @@ Route::middleware(['auth', 'role:'.Role::ADMIN.','.Role::ACCOUNTANT])->group(fun
         ->name('payment-reminders.show');
 });
 
-Route::middleware(['auth', 'role:'.Role::ACCOUNTANT])->group(function (): void {
+Route::middleware(['auth', 'verified', 'role:'.Role::ACCOUNTANT])->group(function (): void {
     Route::get('/payments/{payment}/reversals/create', [PaymentReversalController::class, 'create'])
         ->name('payments.reversals.create');
     Route::post('/payments/{payment}/reversals', [PaymentReversalController::class, 'store'])
         ->name('payments.reversals.store');
 });
 
-Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function (): void {
+Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function (): void {
     Route::post('/payment-reversals/{paymentReversal}/approve', [PaymentReversalController::class, 'approve'])
         ->name('payment-reversals.approve');
 });

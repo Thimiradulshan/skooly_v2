@@ -30,9 +30,9 @@ class DatabaseSeeder extends Seeder
 
         $adminRole = Role::query()->where('name', Role::ADMIN)->first();
 
-        $admin = User::query()->firstOrCreate(
+        $admin = User::query()->updateOrCreate(
             ['email' => 'admin@skooly.test'],
-            ['name' => 'Demo Admin', 'password' => 'password'],
+            ['name' => 'Demo Admin', 'password' => 'password', 'email_verified_at' => now()],
         );
 
         $admin->roles()->syncWithoutDetaching([$adminRole->id]);
