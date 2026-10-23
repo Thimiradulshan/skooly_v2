@@ -1,14 +1,15 @@
 {
-    "$schema": "https://opencode.ai/config.json",
-    "mcp": {
-        "laravel-boost": {
-            "type": "local",
-            "enabled": true,
-            "command": [
-                "php",
-                "artisan",
-                "boost:mcp"
-            ]
-        }
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "laravel-boost": {
+      "type": "local",
+      "command": [
+        "C:\\wamp64\\bin\\php\\php8.4.15\\php.exe",
+        "artisan",
+        "boost:mcp"
+      ],
+      "enabled": true,
+      "timeout": 15000
     }
+  }
 }

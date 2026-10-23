@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,11 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('families.index'));
+        if ($request->user()?->hasRole(Role::ADMIN)) {
+            return redirect()->intended(route('families.index'));
+        }
+
+        return redirect()->to($this->homeRoute($request));
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -43,5 +48,18 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+
+    private function homeRoute(Request $request): string
+    {
+        $user = $request->user();
+
+        return match (true) {
+            $user?->hasRole(Role::ADMIN) => route('families.index'),
+            $user?->hasRole(Role::ACCOUNTANT) => route('payments.collect'),
+            $user?->guardian_id !== null => route('guardian.portal'),
+            $user?->hasRole(Role::TEACHER) => route('teacher.portal'),
+            default => route('login'),
+        };
     }
 }

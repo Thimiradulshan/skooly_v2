@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -59,6 +60,7 @@ it('confirms setup with a valid code and stores only encrypted secrets and hashe
 it('requires a second factor after a valid password and regenerates an authenticated session only after a valid totp code', function () {
     $secret = TOTP::generate()->getSecret();
     $user = userWithTwoFactorAuthentication($secret);
+    $user->roles()->attach(Role::query()->firstOrCreate(['name' => Role::ADMIN]));
 
     $this->post(route('login.store'), [
         'email' => $user->email,
@@ -71,6 +73,17 @@ it('requires a second factor after a valid password and regenerates an authentic
         ->assertRedirect(route('families.index'));
 
     $this->assertAuthenticatedAs($user);
+});
+
+it('redirects a Teacher to their authorized workspace after completing a two-factor challenge', function () {
+    $secret = TOTP::generate()->getSecret();
+    $user = userWithTwoFactorAuthentication($secret);
+    $user->roles()->attach(Role::query()->firstOrCreate(['name' => Role::TEACHER]));
+
+    $this->post(route('login.store'), ['email' => $user->email, 'password' => 'password'])
+        ->assertRedirect(route('two-factor.challenge'));
+    $this->post(route('two-factor.challenge.store'), ['code' => TOTP::createFromSecret($secret)->now()])
+        ->assertRedirect(route('teacher.portal'));
 });
 
 it('keeps a two-factor challenge unauthenticated when the code is invalid', function () {
@@ -86,6 +99,7 @@ it('keeps a two-factor challenge unauthenticated when the code is invalid', func
 it('consumes a recovery code when it completes a two-factor challenge', function () {
     $recoveryCode = 'A1B2C3D4E5';
     $user = userWithTwoFactorAuthentication(TOTP::generate()->getSecret(), [$recoveryCode]);
+    $user->roles()->attach(Role::query()->firstOrCreate(['name' => Role::ADMIN]));
 
     $this->post(route('login.store'), ['email' => $user->email, 'password' => 'password']);
     $this->post(route('two-factor.challenge.store'), ['code' => $recoveryCode])

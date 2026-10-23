@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\Reports\BuildDuesDashboardReport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\FindPaymentFamilyRequest;
 use App\Http\Requests\Web\ListPaymentsRequest;
@@ -37,12 +38,17 @@ class PaymentCollectionController extends Controller
         return view('payments.index', compact('payments', 'search', 'sort', 'direction'));
     }
 
-    public function create(Family $family)
+    public function create(Family $family, BuildDuesDashboardReport $buildDuesDashboardReport)
     {
         $this->ensureAccountantSelectedFamily($family);
 
+        $family->load('students');
+        $familyReport = $buildDuesDashboardReport->handle(['family_id' => $family->id]);
+
         return view('payments.create', [
             'family' => $family,
+            'familyBalanceSummary' => $familyReport['summary'],
+            'studentBalances' => collect($familyReport['student_balances'])->keyBy('student_id'),
             'dueItems' => StudentDueItem::query()
                 ->with('student')
                 ->whereHas('student', fn ($student) => $student->where('family_id', $family->id))
@@ -94,7 +100,7 @@ class PaymentCollectionController extends Controller
                 'student_due_item_id' => (int) $allocation['student_due_item_id'],
                 'amount' => (string) $allocation['amount'],
             ], $allocations),
-            null,
+            $request->filled('payment_reference') ? $request->string('payment_reference')->toString() : null,
             $request->input('notes'),
             Carbon::parse($request->string('paid_at')->toString()),
             $request->user(),

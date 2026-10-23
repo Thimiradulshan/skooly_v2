@@ -6,11 +6,14 @@ use App\Models\Enrollment;
 use App\Models\Family;
 use App\Models\Grade;
 use App\Models\Guardian;
+use App\Models\Role;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudentDueItem;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -25,6 +28,72 @@ it('loads the families index page', function () {
     $this->get(route('families.index'))
         ->assertOk()
         ->assertSee('FAM-INDEX');
+});
+
+it('keeps student registration discoverable from the student directory', function () {
+    $this->get(route('students.index'))
+        ->assertOk()
+        ->assertSee('Register student')
+        ->assertSee(route('families.index'), false);
+});
+
+it('stores a validated student photo outside the public disk', function () {
+    Storage::fake('local');
+    $family = Family::factory()->create();
+    $academicYear = AcademicYear::factory()->create();
+    setActiveAcademicYear($academicYear);
+    $grade = Grade::factory()->create();
+    $section = Section::factory()->for($grade)->create();
+
+    $this->post(route('families.students.store', $family), [
+        'name' => 'Photo Student',
+        'admission_no' => 'PHOTO-001',
+        'dob' => '2015-01-01',
+        'gender' => 'female',
+        'photo' => UploadedFile::fake()->image('student.jpg', 300, 300),
+        'academic_year_id' => $academicYear->id,
+        'grade_id' => $grade->id,
+        'section_id' => $section->id,
+    ])->assertRedirect(route('families.show', $family));
+
+    $student = Student::query()->sole();
+    expect($student->photo_path)->toStartWith('student-photos/');
+    Storage::disk('local')->assertExists($student->photo_path);
+});
+
+it('renders a stored student photo through an admin-only route', function () {
+    Storage::fake('local');
+    $student = Student::factory()->for(Family::factory())->create([
+        'photo_path' => UploadedFile::fake()->image('student.png')->store('student-photos', 'local'),
+    ]);
+
+    $this->post(route('logout'))->assertRedirect(route('login'));
+    $this->get(route('students.photo', $student))->assertRedirect(route('login'));
+    $this->actingAs(userWithRole(Role::TEACHER))->get(route('students.photo', $student))->assertForbidden();
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))->get(route('students.photo', $student))->assertForbidden();
+    $photoResponse = $this->actingAs(adminUser())->get(route('students.photo', $student));
+    $photoResponse->assertOk();
+    expect((string) $photoResponse->headers->get('Content-Disposition'))->toStartWith('inline;');
+    $this->actingAs(adminUser())->get(route('students.show', $student))
+        ->assertSee(route('students.photo', $student, false), false)
+        ->assertSee('Stored privately');
+});
+
+it('searches families by guardian name contact number and NIC', function () {
+    $family = Family::factory()->create(['family_code' => 'FAM-GUARDIAN-SEARCH']);
+    Guardian::factory()->for($family)->create([
+        'name' => 'Searchable Guardian',
+        'contact_no' => '0771234567',
+        'nic' => 'NIC-SEARCH-001',
+    ]);
+    Family::factory()->create(['family_code' => 'FAM-UNRELATED']);
+
+    foreach (['Searchable Guardian', '0771234567', 'NIC-SEARCH-001'] as $search) {
+        $this->get(route('families.index', ['search' => $search]))
+            ->assertOk()
+            ->assertSee('FAM-GUARDIAN-SEARCH')
+            ->assertDontSee('FAM-UNRELATED');
+    }
 });
 
 it('loads the family create page', function () {
@@ -133,6 +202,36 @@ it('registers a pending_registration student through the web route', function ()
     expect($student->family_id)->toBe($family->id);
     expect($student->status)->toBe(Student::STATUS_PENDING_REGISTRATION);
     expect(AuditLog::query()->where('action', AuditLog::ACTION_STUDENT_REGISTERED)->count())->toBe(1);
+});
+
+it('prevents a registration request from bypassing pending registration status', function () {
+    $family = Family::factory()->create();
+
+    $this->post(route('families.students.store', $family), [
+        'name' => 'Still Pending',
+        'dob' => '2015-04-05',
+        'gender' => 'female',
+        'admission_no' => 'ADM-WEB-PENDING',
+        'status' => Student::STATUS_ACTIVE,
+    ])->assertRedirect(route('families.show', $family));
+
+    expect(Student::query()->sole()->status)->toBe(Student::STATUS_PENDING_REGISTRATION);
+});
+
+it('prevents a pending student from being manually activated through the profile update', function () {
+    $student = Student::factory()->for(Family::factory())->create([
+        'status' => Student::STATUS_PENDING_REGISTRATION,
+    ]);
+
+    $this->put(route('students.update', $student), [
+        'name' => $student->name,
+        'dob' => $student->dob->toDateString(),
+        'gender' => $student->gender,
+        'admission_no' => $student->admission_no,
+        'status' => Student::STATUS_ACTIVE,
+    ])->assertSessionHasErrors('status');
+
+    expect($student->refresh()->status)->toBe(Student::STATUS_PENDING_REGISTRATION);
 });
 
 it('links only the guardians selected on the web form', function () {

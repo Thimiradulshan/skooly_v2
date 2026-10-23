@@ -9,7 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property string $balance_amount
+ * @property Carbon|null $due_date
+ */
 #[Fillable(['student_id', 'academic_year_id', 'fee_category_id', 'fee_structure_id', 'description', 'frequency', 'original_amount', 'discount_amount', 'net_amount', 'paid_amount', 'balance_amount', 'due_date', 'status', 'generation_key'])]
 class StudentDueItem extends Model
 {

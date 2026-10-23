@@ -1,5 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('reminders:schedule-delivery')->hourly()->withoutOverlapping(30)->onOneServer();
+
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 

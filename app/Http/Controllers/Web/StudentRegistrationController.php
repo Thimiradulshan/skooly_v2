@@ -32,9 +32,12 @@ class StudentRegistrationController extends Controller
                 'name' => $request->string('name')->toString(),
                 'dob' => $request->string('dob')->toString(),
                 'gender' => $request->string('gender')->toString(),
+                'address_override' => $request->input('address_override'),
+                'contact_no_override' => $request->input('contact_no_override'),
                 'admission_no' => $request->string('admission_no')->toString(),
-                'photo_path' => $request->input('photo_path'),
-                'status' => $request->input('status'),
+                'photo_path' => $request->hasFile('photo')
+                    ? $request->file('photo')->store('student-photos', 'local')
+                    : null,
             ],
             array_map('intval', (array) $request->input('guardian_ids', [])),
             $this->enrollment($request),

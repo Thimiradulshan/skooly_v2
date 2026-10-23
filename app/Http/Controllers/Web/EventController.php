@@ -10,6 +10,7 @@ use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreEventRequest;
 use App\Http\Requests\Web\UpdateEventRequest;
 use App\Models\AcademicYear;
+use App\Models\Enrollment;
 use App\Models\Event;
 use App\Models\FeeCategory;
 
@@ -70,6 +71,24 @@ class EventController extends Controller
         $event->loadCount('eventDueItems');
 
         return view('events.show', ['event' => $event]);
+    }
+
+    public function status(Event $event)
+    {
+        $event->load(['charges.grade', 'participations']);
+        $charges = $event->charges->keyBy('grade_id');
+        $participationByStudent = $event->participations->keyBy('student_id');
+        $dueItemsByStudent = $event->eventDueItems()->with('studentDueItem')->get()
+            ->keyBy(fn ($eventDueItem) => $eventDueItem->studentDueItem->student_id);
+
+        $enrollments = Enrollment::query()
+            ->where('academic_year_id', $event->academic_year_id)
+            ->whereIn('grade_id', $charges->keys())
+            ->with(['student.family', 'grade'])
+            ->orderBy('student_id')
+            ->paginate(20);
+
+        return view('events.status', compact('event', 'charges', 'participationByStudent', 'dueItemsByStudent', 'enrollments'));
     }
 
     public function edit(Event $event)

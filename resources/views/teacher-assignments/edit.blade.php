@@ -1,0 +1,12 @@
+@extends('layouts.app')
+@section('title', 'Correct teaching assignment')
+@section('content')
+    <div class="breadcrumb"><a href="{{ route('teacher-assignments.index') }}">Teaching assignments</a><span class="breadcrumb-sep">/</span><a href="{{ route('teacher-assignments.show', $teacherAssignment) }}">Assignment {{ $teacherAssignment->id }}</a><span class="breadcrumb-sep">/</span><span>Correct</span></div>
+    <x-page-header title="Correct teaching assignment" subtitle="The academic year and section are preserved. Only the qualified Teacher and subject may be corrected." eyebrow="Staff" />
+    <x-card title="Stored placement"><dl class="kv"><div class="kv-row"><dt>Academic year</dt><dd>{{ $teacherAssignment->academicYear->name }}</dd></div><div class="kv-row"><dt>Section</dt><dd>{{ $teacherAssignment->section->grade->name }} {{ $teacherAssignment->section->name }}</dd></div></dl></x-card>
+    <x-card title="Correct assignment"><form method="POST" action="{{ route('teacher-assignments.update', $teacherAssignment) }}" data-confirm="Confirm this teaching assignment correction? The previous Teacher and subject will be recorded in the audit log." data-loading>@csrf @method('PUT')
+        <div class="form-field"><label class="form-label" for="teacher_id">Teacher <span class="req">*</span></label><select class="form-control" id="teacher_id" name="teacher_id" required><option value="">-- select --</option>@foreach ($teachers as $teacher)<option value="{{ $teacher->id }}" @selected(old('teacher_id', $teacherAssignment->teacher_id) == $teacher->id)>{{ $teacher->name }}</option>@endforeach</select></div>
+        <div class="form-field"><label class="form-label" for="subject_id">Subject <span class="req">*</span></label><select class="form-control" id="subject_id" name="subject_id" required><option value="">-- select --</option>@foreach ($subjects as $subject)<option value="{{ $subject->id }}" @selected(old('subject_id', $teacherAssignment->subject_id) == $subject->id)>{{ $subject->code }} — {{ $subject->name }}</option>@endforeach</select><span class="form-help">The selected Teacher must already be qualified for this subject.</span></div>
+        <div class="btn-row"><button type="submit" class="btn">Confirm correction</button><x-button-link :href="route('teacher-assignments.show', $teacherAssignment)" variant="secondary">Cancel</x-button-link></div>
+    </form></x-card>
+@endsection

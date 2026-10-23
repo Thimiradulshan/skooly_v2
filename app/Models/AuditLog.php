@@ -42,6 +42,22 @@ class AuditLog extends Model
 
     public const ACTION_GUARDIAN_STUDENT_UNLINKED = 'guardian_student_unlinked';
 
+    public const ACTION_GUARDIAN_PAYMENT_REMINDER_EMAIL_CONSENT_GRANTED = 'guardian_payment_reminder_email_consent_granted';
+
+    public const ACTION_GUARDIAN_PAYMENT_REMINDER_EMAIL_CONSENT_REVOKED = 'guardian_payment_reminder_email_consent_revoked';
+
+    public const ACTION_PAYMENT_REMINDER_DELIVERY_ATTEMPT_QUEUED = 'payment_reminder_delivery_attempt_queued';
+
+    public const ACTION_PAYMENT_REMINDER_DELIVERY_ATTEMPT_TRANSPORT_ACCEPTED = 'payment_reminder_delivery_attempt_transport_accepted';
+
+    public const ACTION_PAYMENT_REMINDER_DELIVERY_ATTEMPT_FAILED = 'payment_reminder_delivery_attempt_failed';
+
+    public const ACTION_GUARDIAN_EMAIL_VERIFICATION_REQUESTED = 'guardian_email_verification_requested';
+
+    public const ACTION_GUARDIAN_EMAIL_VERIFIED = 'guardian_email_verified';
+
+    public const ACTION_TEACHER_ASSIGNMENT_UPDATED = 'teacher_assignment_updated';
+
     public const ACTION_ACADEMIC_YEAR_ARCHIVED = 'academic_year_archived';
 
     public const ACTION_ACADEMIC_YEAR_RESTORED = 'academic_year_restored';

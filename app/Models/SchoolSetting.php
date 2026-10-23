@@ -32,6 +32,8 @@ class SchoolSetting extends Model
 
     /**
      * Get the active academic year.
+     *
+     * @return BelongsTo<AcademicYear, $this>
      */
     public function activeAcademicYear(): BelongsTo
     {

@@ -11,6 +11,15 @@
         <x-button-link :href="auth()->user()->hasRole(\App\Models\Role::ADMIN) ? route('families.show', $family) : route('payments.collect')" variant="secondary">Back</x-button-link>
     </div>
 
+    <x-card title="Family balance">
+        <dl class="kv">
+            <div class="kv-row"><dt>Family</dt><dd>{{ $family->family_code }}</dd></div>
+            <div class="kv-row"><dt>Billing mode</dt><dd>{{ $family->combined_billing_enabled ? 'Combined family billing' : 'Separate student billing' }}</dd></div>
+            <div class="kv-row"><dt>{{ $family->combined_billing_enabled ? 'Combined outstanding balance' : 'Family outstanding balance' }}</dt><dd>{{ $familyBalanceSummary['total_balance_amount'] }}</dd></div>
+        </dl>
+        <div class="table-wrap"><table class="table"><thead><tr><th>Linked student</th><th>Admission no.</th><th class="num">Outstanding balance</th></tr></thead><tbody>@forelse ($family->students as $student)<tr><td>{{ $student->name }}</td><td>{{ $student->admission_no }}</td><td class="num">{{ $studentBalances->get($student->id)['total_balance_amount'] ?? '0.00' }}</td></tr>@empty<tr class="table-empty"><td colspan="3">No students are linked to this family.</td></tr>@endforelse</tbody></table></div>
+    </x-card>
+
     @if ($dueItems->isEmpty())
         <x-empty-state title="No outstanding due items"
                        description="Generate due items before recording a payment for this family." />
@@ -27,7 +36,7 @@
         </div>
 
         <x-card>
-            <form method="POST" action="{{ route('families.payments.store', $family) }}"
+            <form method="POST" action="{{ route('families.payments.store', $family) }}" data-payment-allocation-form
                   data-confirm="Record this payment? Due item balances will be reduced and a receipt will be created. Payments cannot be edited or reversed from this screen."
                   data-confirm-title="Record payment"
                   data-confirm-action="Record payment"
@@ -40,7 +49,14 @@
                         <label class="form-label" for="receipt_no">Receipt number <span class="req">*</span></label>
                         <input class="form-control" type="text" id="receipt_no" name="receipt_no"
                                value="{{ old('receipt_no') }}" required>
-                        <span class="form-help">Must be unique. There is no generated sequence yet, so a duplicate is rejected.</span>
+                        <span class="form-help">Must be unique. This staff-entered identifier is immutable; duplicates are rejected by validation and the database.</span>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label" for="payment_reference">Payment reference</label>
+                        <input class="form-control" type="text" id="payment_reference" name="payment_reference"
+                               value="{{ old('payment_reference') }}">
+                        <span class="form-help">Optional external cash, bank, or online reference. If supplied, it must be unique.</span>
                     </div>
 
                     <div class="form-field">
@@ -57,7 +73,7 @@
 
                     <div class="form-field">
                         <label class="form-label" for="amount">Total payment amount <span class="req">*</span></label>
-                        <input class="form-control" type="number" min="0.01" step="0.01" id="amount" name="amount"
+                        <input class="form-control" type="number" min="0.01" step="0.01" id="amount" name="amount" data-payment-total
                                value="{{ old('amount') }}" required>
                         <span class="form-help">Must equal the sum of the allocations below.</span>
                     </div>
@@ -70,6 +86,7 @@
 
                 <h2 class="section-heading">Manual allocations</h2>
                 <p class="note">Enter an amount against a due item only if you are settling it. Leave a row blank to skip it.</p>
+                <div class="callout"><p><strong>Total allocated:</strong> <span data-allocation-total>0.00</span><br><strong>Unallocated payment amount:</strong> <span data-unallocated-payment>—</span></p></div>
 
                 <div class="table-wrap">
                     <table class="table">
@@ -89,7 +106,7 @@
                                 <td class="num">{{ $dueItem->balance_amount }}</td>
                                 <td class="num">
                                     <input type="hidden" name="allocations[{{ $index }}][student_due_item_id]" value="{{ $dueItem->id }}">
-                                    <input class="form-control compact-input" type="number" min="0.01" step="0.01"
+                                    <input class="form-control compact-input" type="number" min="0.01" step="0.01" data-allocation-amount
                                            name="allocations[{{ $index }}][amount]"
                                            value="{{ old("allocations.$index.amount") }}">
                                 </td>
@@ -105,4 +122,5 @@
                 </div>            </form>
         </x-card>
     @endif
+    <script src="{{ asset('js/payment-allocation-preview.js') }}" defer></script>
 @endsection

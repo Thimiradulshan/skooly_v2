@@ -16,7 +16,7 @@
                    eyebrow="Registration" />
 
     <x-card>
-        <form method="POST" action="{{ route('families.students.store', $family) }}" data-loading>
+        <form method="POST" action="{{ route('families.students.store', $family) }}" enctype="multipart/form-data" data-loading>
             @csrf
 
             <div class="form-grid">
@@ -24,6 +24,8 @@
                     <label class="form-label" for="name">Student name <span class="req">*</span></label>
                     <input class="form-control" type="text" id="name" name="name" value="{{ old('name') }}" required autofocus>
                 </div>
+                <div class="form-field"><label class="form-label" for="address_override">Student address override</label><input class="form-control" id="address_override" name="address_override" value="{{ old('address_override') }}"><span class="form-help">Leave blank to use the Family address.</span></div>
+                <div class="form-field"><label class="form-label" for="contact_no_override">Student contact override</label><input class="form-control" id="contact_no_override" name="contact_no_override" value="{{ old('contact_no_override') }}"><span class="form-help">Leave blank to use the Family contact.</span></div>
 
                 <div class="form-field">
                     <label class="form-label" for="admission_no">Admission number <span class="req">*</span></label>
@@ -43,9 +45,9 @@
                 </div>
 
                 <div class="form-field form-field-full">
-                    <label class="form-label" for="photo_path">Photo path</label>
-                    <input class="form-control" type="text" id="photo_path" name="photo_path"
-                           value="{{ old('photo_path') }}">
+                    <label class="form-label" for="photo">Student photo</label>
+                    <input class="form-control" type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp">
+                    <span class="form-help">Optional JPG, PNG, or WebP image up to 2 MB. Stored privately.</span>
                 </div>
             </div>
 

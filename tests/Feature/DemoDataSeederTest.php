@@ -16,10 +16,13 @@ use App\Models\PaymentReminder;
 use App\Models\PromotionBatch;
 use App\Models\Receipt;
 use App\Models\Role;
+use App\Models\SchoolSetting;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudentDueItem;
 use App\Models\StudentFeeSubscription;
+use App\Models\Subject;
+use App\Models\TeacherAssignment;
 use App\Models\User;
 use Database\Seeders\DemoDataSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -45,6 +48,34 @@ it('creates the accountant and teacher demo users for access testing', function 
 
     expect(User::query()->where('email', 'accountant@skooly.test')->sole()->hasRole(Role::ACCOUNTANT))->toBeTrue();
     expect(User::query()->where('email', 'teacher@skooly.test')->sole()->hasRole(Role::TEACHER))->toBeTrue();
+});
+
+it('creates a qualified Teacher assignment for the active demo year', function () {
+    seedDemoData($this);
+
+    $teacher = User::query()->where('email', 'teacher@skooly.test')->sole();
+    $assignment = TeacherAssignment::query()->with(['academicYear', 'section.grade', 'subject'])->sole();
+
+    expect($teacher->is_active)->toBeTrue();
+    expect($teacher->qualifiedSubjects()->pluck('subjects.id')->all())->toContain($assignment->subject_id);
+    expect($assignment->academicYear->name)->toBe('2026/2027');
+    expect($assignment->section->grade->name)->toBe('Grade 1');
+    expect($assignment->subject)->toBeInstanceOf(Subject::class);
+    expect(AcademicYear::query()->findOrFail(SchoolSetting::query()->findOrFail(1)->active_academic_year_id)->name)
+        ->toBe('2026/2027');
+});
+
+it('creates a verified linked Guardian portal account without reminder consent', function () {
+    seedDemoData($this);
+
+    $guardian = Guardian::query()->where('email', 'alice@skooly.test')->sole();
+    $user = User::query()->where('email', 'alice@skooly.test')->sole();
+
+    expect($user->guardian_id)->toBe($guardian->id);
+    expect($user->email_verified_at)->not->toBeNull();
+    expect($user->is_active)->toBeTrue();
+    expect($guardian->payment_reminder_email_verified_at)->not->toBeNull();
+    expect($guardian->payment_reminder_email_opt_in_at)->toBeNull();
 });
 
 it('creates the fixed roles', function () {

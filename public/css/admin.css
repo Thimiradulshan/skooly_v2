@@ -142,6 +142,16 @@ small,
     border: 0;
 }
 
+.student-photo {
+    display: block;
+    width: 112px;
+    height: 112px;
+    margin: 0 0 1.25rem;
+    border-radius: 18px;
+    object-fit: cover;
+    box-shadow: var(--shadow-sm);
+}
+
 /* App shell */
 
 .sidebar-toggle-control {

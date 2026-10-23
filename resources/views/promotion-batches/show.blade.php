@@ -7,6 +7,7 @@
 
     <div class="page-actions">
         <a class="btn btn-secondary" href="{{ route('promotion-batches.index') }}">Back to promotion batches</a>
+        @if ($promotionBatch->status === \App\Models\PromotionBatch::STATUS_CONFIRMED)<x-button-link :href="route('promotion-batches.export.csv', $promotionBatch)" variant="secondary">Download CSV</x-button-link><x-button-link :href="route('promotion-batches.export.pdf', $promotionBatch)" variant="secondary">Download PDF</x-button-link>@endif
     </div>
 
     <x-card title="Batch">

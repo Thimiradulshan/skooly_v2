@@ -26,7 +26,10 @@ use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudentDueItem;
 use App\Models\StudentFeeSubscription;
+use App\Models\Subject;
+use App\Models\TeacherAssignment;
 use App\Models\User;
+use App\Teachers\CreateTeacherAssignment;
 use Illuminate\Database\Seeder;
 
 /**
@@ -63,6 +66,8 @@ class DemoDataSeeder extends Seeder
 
         $students = $this->students($grades, $sections, $currentYear);
         $chloe = $students['chloe'];
+        $this->guardianPortalAccount();
+        $this->teacherAssignment($currentYear, $sections);
 
         $this->discount($chloe, $categories);
         $this->feeSubscription($chloe, $categories, $currentYear);
@@ -73,6 +78,7 @@ class DemoDataSeeder extends Seeder
         $this->reminders($currentYear);
         SchoolSetting::query()->updateOrCreate(['id' => 1], ['active_academic_year_id' => $nextYear->id]);
         $this->promotionBatch($currentYear, $nextYear, $sections);
+        SchoolSetting::query()->updateOrCreate(['id' => 1], ['active_academic_year_id' => $currentYear->id]);
 
         $this->command?->info('Demo data ready. Sign in with '.self::ADMIN_EMAIL.' / password');
     }
@@ -98,19 +104,19 @@ class DemoDataSeeder extends Seeder
     {
         $admin = User::query()->updateOrCreate(
             ['email' => self::ADMIN_EMAIL],
-            ['name' => 'Demo Admin', 'password' => 'password', 'email_verified_at' => now()],
+            ['name' => 'Demo Admin', 'password' => 'password', 'email_verified_at' => now(), 'is_active' => true],
         );
 
         $admin->roles()->syncWithoutDetaching([$roles[Role::ADMIN]->id]);
 
         User::query()->updateOrCreate(
             ['email' => 'accountant@skooly.test'],
-            ['name' => 'Demo Accountant', 'password' => 'password', 'email_verified_at' => now()],
+            ['name' => 'Demo Accountant', 'password' => 'password', 'email_verified_at' => now(), 'is_active' => true],
         )->roles()->syncWithoutDetaching([$roles[Role::ACCOUNTANT]->id]);
 
         User::query()->updateOrCreate(
             ['email' => 'teacher@skooly.test'],
-            ['name' => 'Demo Teacher', 'password' => 'password', 'email_verified_at' => now()],
+            ['name' => 'Demo Teacher', 'password' => 'password', 'email_verified_at' => now(), 'is_active' => true],
         )->roles()->syncWithoutDetaching([$roles[Role::TEACHER]->id]);
 
         return $admin;
@@ -290,6 +296,49 @@ class DemoDataSeeder extends Seeder
         $carol->students()->syncWithoutDetaching([$mia->id]);
 
         return ['chloe' => $chloe, 'liam' => $liam, 'mia' => $mia];
+    }
+
+    /**
+     * @param  array<string, Section>  $sections
+     */
+    private function teacherAssignment(AcademicYear $academicYear, array $sections): void
+    {
+        $teacher = User::query()->where('email', 'teacher@skooly.test')->sole();
+        $subject = Subject::query()->firstOrCreate(
+            ['code' => 'MATH-1'],
+            ['name' => 'Mathematics'],
+        );
+
+        $teacher->qualifiedSubjects()->syncWithoutDetaching([$subject->id]);
+
+        if (TeacherAssignment::query()->where([
+            'academic_year_id' => $academicYear->id,
+            'section_id' => $sections['grade_1_a']->id,
+            'teacher_id' => $teacher->id,
+            'subject_id' => $subject->id,
+        ])->exists()) {
+            return;
+        }
+
+        app(CreateTeacherAssignment::class)->handle($academicYear, $sections['grade_1_a'], $teacher, $subject);
+    }
+
+    private function guardianPortalAccount(): void
+    {
+        $guardian = Guardian::query()->where('email', 'alice@skooly.test')->sole();
+
+        $guardian->forceFill(['payment_reminder_email_verified_at' => now()])->save();
+
+        User::query()->updateOrCreate(
+            ['email' => $guardian->email],
+            [
+                'name' => 'Demo Guardian',
+                'password' => 'password',
+                'email_verified_at' => now(),
+                'is_active' => true,
+                'guardian_id' => $guardian->id,
+            ],
+        );
     }
 
     /**

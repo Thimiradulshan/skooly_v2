@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/** @property bool $is_archived */
 #[Fillable(['grade_id', 'name', 'capacity', 'is_archived'])]
 class Section extends Model
 {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ConfirmTwoFactorSetupRequest;
 use App\Http\Requests\Auth\DisableTwoFactorAuthenticationRequest;
 use App\Http\Requests\Auth\VerifyTwoFactorChallengeRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -128,7 +129,7 @@ class TwoFactorAuthenticationController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->intended(route('families.index'));
+        return redirect()->intended($this->homeRoute($user));
     }
 
     public function destroy(DisableTwoFactorAuthenticationRequest $request): RedirectResponse
@@ -216,5 +217,16 @@ class TwoFactorAuthenticationController extends Controller
 
             return null;
         });
+    }
+
+    private function homeRoute(User $user): string
+    {
+        return match (true) {
+            $user->hasRole(Role::ADMIN) => route('families.index'),
+            $user->hasRole(Role::ACCOUNTANT) => route('payments.collect'),
+            $user->guardian_id !== null => route('guardian.portal'),
+            $user->hasRole(Role::TEACHER) => route('teacher.portal'),
+            default => route('login'),
+        };
     }
 }

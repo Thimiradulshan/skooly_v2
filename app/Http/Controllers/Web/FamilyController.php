@@ -25,7 +25,12 @@ class FamilyController extends Controller
                 $query->where(function ($query) use ($search): void {
                     $query->where('family_code', 'like', "%{$search}%")
                         ->orWhere('address', 'like', "%{$search}%")
-                        ->orWhere('home_contact_no', 'like', "%{$search}%");
+                        ->orWhere('home_contact_no', 'like', "%{$search}%")
+                        ->orWhereHas('guardians', function ($guardians) use ($search): void {
+                            $guardians->where('name', 'like', "%{$search}%")
+                                ->orWhere('contact_no', 'like', "%{$search}%")
+                                ->orWhere('nic', 'like', "%{$search}%");
+                        });
                 });
             });
 

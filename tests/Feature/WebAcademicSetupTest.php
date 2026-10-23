@@ -3,6 +3,7 @@
 use App\Models\AcademicYear;
 use App\Models\AuditLog;
 use App\Models\Grade;
+use App\Models\PromotionBatch;
 use App\Models\Role;
 use App\Models\SchoolSetting;
 use App\Models\Section;
@@ -55,6 +56,16 @@ it('lets an admin create view and update a term', function () {
     expect($term->refresh()->name)->toBe('Autumn Term');
 });
 
+it('shows the active academic year in the create term selector', function () {
+    $activeYear = AcademicYear::factory()->create(['name' => 'Active Year']);
+    setActiveAcademicYear($activeYear);
+
+    $this->actingAs(adminUser())->get(route('terms.create'))
+        ->assertOk()
+        ->assertSee('Active Year')
+        ->assertSee('value="'.$activeYear->id.'" selected', false);
+});
+
 it('lets an admin create view and update a grade', function () {
     $admin = adminUser();
     $this->actingAs($admin)->post(route('grades.store'), ['name' => 'Grade 1', 'sequence_order' => 1])->assertRedirect();
@@ -81,6 +92,33 @@ it('lets an admin update the active academic year setting', function () {
     $setting = SchoolSetting::factory()->for($firstYear, 'activeAcademicYear')->create();
     $this->actingAs($admin)->put(route('school-settings.update'), ['active_academic_year_id' => $secondYear->id])->assertRedirect(route('school-settings.edit'));
     expect($setting->refresh()->activeAcademicYear->is($secondYear))->toBeTrue();
+});
+
+it('warns and requires acknowledgement before switching years with an incomplete promotion batch', function () {
+    $admin = adminUser();
+    $currentYear = AcademicYear::factory()->create(['name' => 'Current year']);
+    $nextYear = AcademicYear::factory()->create(['name' => 'Next year']);
+    SchoolSetting::factory()->for($currentYear, 'activeAcademicYear')->create();
+    PromotionBatch::factory()->create([
+        'source_academic_year_id' => $currentYear->id,
+        'target_academic_year_id' => $nextYear->id,
+        'status' => PromotionBatch::STATUS_DRAFT,
+    ]);
+
+    $this->actingAs($admin)->get(route('school-settings.edit'))
+        ->assertOk()
+        ->assertSee('draft promotion batch')
+        ->assertSee('I have reviewed the incomplete promotion batches');
+
+    $this->actingAs($admin)->put(route('school-settings.update'), ['active_academic_year_id' => $nextYear->id])
+        ->assertSessionHasErrors('acknowledge_incomplete_promotions');
+
+    $this->actingAs($admin)->put(route('school-settings.update'), [
+        'active_academic_year_id' => $nextYear->id,
+        'acknowledge_incomplete_promotions' => true,
+    ])->assertRedirect(route('school-settings.edit'));
+
+    expect(SchoolSetting::query()->sole()->active_academic_year_id)->toBe($nextYear->id);
 });
 
 it('shows academic setup navigation and dashboard links', function () {

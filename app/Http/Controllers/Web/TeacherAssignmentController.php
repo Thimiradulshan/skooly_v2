@@ -6,6 +6,7 @@ use App\Academic\ActiveAcademicYear;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ListSearchRequest;
 use App\Http\Requests\Web\StoreTeacherAssignmentRequest;
+use App\Http\Requests\Web\UpdateTeacherAssignmentRequest;
 use App\Models\AcademicYear;
 use App\Models\Role;
 use App\Models\Section;
@@ -13,6 +14,7 @@ use App\Models\Subject;
 use App\Models\TeacherAssignment;
 use App\Models\User;
 use App\Teachers\CreateTeacherAssignment;
+use App\Teachers\UpdateTeacherAssignment;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
@@ -90,11 +92,42 @@ class TeacherAssignmentController extends Controller
     {
         $teacherAssignment->load(['academicYear', 'section.grade', 'teacher', 'subject']);
 
-        return view('teacher-assignments.show', ['teacherAssignment' => $teacherAssignment]);
+        return view('teacher-assignments.show', ['teacherAssignment' => $teacherAssignment, 'canCorrect' => $this->canCorrect($teacherAssignment)]);
+    }
+
+    public function edit(TeacherAssignment $teacherAssignment)
+    {
+        abort_unless($this->canCorrect($teacherAssignment), 403);
+
+        $teacherAssignment->load(['academicYear', 'section.grade', 'teacher', 'subject']);
+
+        return view('teacher-assignments.edit', ['teacherAssignment' => $teacherAssignment, 'teachers' => $this->teachers()->get(), 'subjects' => Subject::query()->orderBy('code')->get()]);
+    }
+
+    public function update(UpdateTeacherAssignmentRequest $request, TeacherAssignment $teacherAssignment, UpdateTeacherAssignment $updateTeacherAssignment)
+    {
+        try {
+            $updateTeacherAssignment->handle($teacherAssignment, User::query()->findOrFail($request->integer('teacher_id')), Subject::query()->findOrFail($request->integer('subject_id')), $request->user());
+        } catch (InvalidArgumentException $exception) {
+            return back()->withErrors(['teacher_id' => $exception->getMessage()]);
+        } catch (QueryException) {
+            throw ValidationException::withMessages(['subject_id' => 'This teaching assignment already exists.']);
+        }
+
+        return redirect()->route('teacher-assignments.index')->with('status', 'Teaching assignment corrected.');
     }
 
     private function teachers()
     {
         return User::query()->where('is_active', true)->whereHas('roles', fn ($roles) => $roles->where('name', Role::TEACHER))->orderBy('name');
+    }
+
+    private function canCorrect(TeacherAssignment $teacherAssignment): bool
+    {
+        $teacherAssignment->loadMissing(['academicYear', 'section']);
+
+        return ! $teacherAssignment->academicYear->is_archived
+            && ! $teacherAssignment->section->is_archived
+            && (new ActiveAcademicYear)->current()->is($teacherAssignment->academicYear);
     }
 }

@@ -47,13 +47,15 @@ The app is then available at <http://127.0.0.1:8000>.
 | Admin     | `admin@skooly.test`       | `password` |
 | Accountant| `accountant@skooly.test`  | `password` |
 | Teacher   | `teacher@skooly.test`     | `password` |
+| Guardian  | `alice@skooly.test`       | `password` |
 
-Only Admin can reach the admin pages. Accountant and Teacher accounts are included so
-you can confirm that they are correctly denied access.
+Only Admin can reach the admin pages. Accountant access is limited to finance workflows.
+Teacher and Guardian accounts open their respective read-only portals.
 
 ## What the demo data contains
 
-- Two academic years, two grades, two sections, and an active school setting.
+- Two academic years, two grades, two sections, and an active school setting for the
+  year that contains the demo enrollments.
 - Two families with three guardians and three students.
   - Chloe and Liam are active and enrolled in Grade 1.
   - Mia is `pending_registration` and enrolled in Grade 2.
@@ -65,6 +67,10 @@ you can confirm that they are correctly denied access.
 - Recurring due items, one partial payment with receipt `DEMO-REC-001`, and unpaid
   or partially paid balances for the dashboard.
 - A `Demo Sports Day` event with a charge, one participation record, and its due items.
+- One active Teacher qualification and teaching assignment for Grade 1 A, so the Teacher
+  portal can demonstrate classes, subjects, and authorized students.
+- One verified, explicitly linked Guardian portal account. It has no reminder-email
+  consent, so it cannot cause a delivery attempt.
 - One draft promotion batch, left unconfirmed so you can walk the confirm page.
 - Internal payment reminder records. Nothing is sent anywhere.
 
@@ -82,6 +88,8 @@ you can confirm that they are correctly denied access.
 | Payment reminders                   | `/payment-reminders`                     |
 | Events                              | `/events`                                |
 | Promotion batches                   | `/promotion-batches`                     |
+| Guardian portal                     | `/guardian`                              |
+| Teacher portal                      | `/teacher`                               |
 
 Payments are recorded from a family page: open a family and use **Record payment**.
 

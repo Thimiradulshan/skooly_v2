@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['family_id', 'name', 'dob', 'gender', 'admission_no', 'photo_path', 'status'])]
+#[Fillable(['family_id', 'address_override', 'contact_no_override', 'name', 'dob', 'gender', 'admission_no', 'photo_path', 'status'])]
 class Student extends Model
 {
     public const STATUS_PENDING_REGISTRATION = 'pending_registration';

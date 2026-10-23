@@ -50,10 +50,10 @@ it('shows cheap workflow counts on the dashboard', function () {
         ->get(route('admin.dashboard'))
         ->assertOk()
         ->assertSee('Families')
-        ->assertSee('Students')
-        ->assertSee('Outstanding due items')
+        ->assertSee('Registered students')
+        ->assertSee('Outstanding fees')
         ->assertSee('Draft promotion batches')
-        ->assertSee('Payment reminders');
+        ->assertSee('Pending reminder records');
 });
 
 it('shows recent stored audit activity on the dashboard', function () {

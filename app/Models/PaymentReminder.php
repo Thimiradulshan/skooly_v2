@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/** @property array<int, int|string> $due_item_ids */
 #[Fillable(['family_id', 'guardian_id', 'student_due_item_id', 'reminder_type', 'status', 'due_item_ids', 'message_snapshot', 'reminder_key', 'scheduled_for', 'sent_at'])]
 class PaymentReminder extends Model
 {
@@ -46,6 +49,20 @@ class PaymentReminder extends Model
     public function studentDueItem(): BelongsTo
     {
         return $this->belongsTo(StudentDueItem::class);
+    }
+
+    /**
+     * @return HasMany<PaymentReminderDeliveryAttempt, $this>
+     */
+    public function deliveryAttempts(): HasMany
+    {
+        return $this->hasMany(PaymentReminderDeliveryAttempt::class)->orderBy('attempt_number');
+    }
+
+    /** @return HasOne<PaymentReminderDeliveryAttempt, $this> */
+    public function latestDeliveryAttempt(): HasOne
+    {
+        return $this->hasOne(PaymentReminderDeliveryAttempt::class)->latestOfMany();
     }
 
     /**

@@ -15,6 +15,7 @@
         <x-button-link :href="route('events.edit', $event)">Edit event</x-button-link>
         <x-button-link :href="route('events.charges.create', $event)" variant="secondary">Add charge</x-button-link>
         <x-button-link :href="route('events.participation.create', $event)" variant="secondary">Manage participation</x-button-link>
+        <x-button-link :href="route('events.status', $event)" variant="secondary">Participation & payment status</x-button-link>
         <x-button-link :href="route('due-generation.events.create')" variant="secondary">Generate event dues</x-button-link>
     </div>
 

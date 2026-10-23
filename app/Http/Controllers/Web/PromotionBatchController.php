@@ -18,8 +18,11 @@ use App\Models\Grade;
 use App\Models\PromotionBatch;
 use App\Models\PromotionBatchItem;
 use App\Models\Section;
+use Dompdf\Dompdf;
+use Illuminate\Http\Response;
 use InvalidArgumentException;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PromotionBatchController extends Controller
 {
@@ -95,6 +98,45 @@ class PromotionBatchController extends Controller
             'grades' => Grade::query()->active()->orderBy('sequence_order')->get(),
             'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
         ]);
+    }
+
+    public function exportCsv(PromotionBatch $promotionBatch): StreamedResponse
+    {
+        abort_unless($promotionBatch->status === PromotionBatch::STATUS_CONFIRMED, 404);
+        $promotionBatch->load(['sourceAcademicYear', 'targetAcademicYear']);
+        $items = PromotionBatchItem::query()->where('promotion_batch_id', $promotionBatch->id)->with(['student', 'sourceSection.grade', 'targetGrade', 'targetSection'])->get();
+
+        return response()->streamDownload(function () use ($promotionBatch, $items): void {
+            $stream = fopen('php://output', 'w');
+            fputcsv($stream, ['Student', 'Admission number', 'Source year', 'Source section', 'Target year', 'Target grade', 'Target section', 'Outcome']);
+            foreach ($items as $item) {
+                fputcsv($stream, array_map(fn (?string $value): string => $this->csvValue($value), [
+                    $item->student->getAttribute('name'), $item->student->getAttribute('admission_no'), $promotionBatch->sourceAcademicYear->getAttribute('name'),
+                    $item->sourceSection->grade->getAttribute('name').' '.$item->sourceSection->getAttribute('name'), $promotionBatch->targetAcademicYear->getAttribute('name'),
+                    $item->targetGrade?->getAttribute('name'), $item->targetSection?->getAttribute('name'), $item->action,
+                ]));
+            }
+            fclose($stream);
+        }, 'promotion-batch-'.$promotionBatch->id.'.csv', ['Content-Type' => 'text/csv']);
+    }
+
+    public function exportPdf(PromotionBatch $promotionBatch): Response
+    {
+        abort_unless($promotionBatch->status === PromotionBatch::STATUS_CONFIRMED, 404);
+        $promotionBatch->load(['sourceAcademicYear', 'targetAcademicYear', 'items.student', 'items.sourceSection.grade', 'items.targetGrade', 'items.targetSection']);
+        $dompdf = new Dompdf;
+        $dompdf->loadHtml(view('promotion-batches.pdf', compact('promotionBatch'))->render());
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        return response($dompdf->output(), 200, ['Content-Type' => 'application/pdf', 'Content-Disposition' => 'attachment; filename="promotion-batch-'.$promotionBatch->id.'.pdf"']);
+    }
+
+    private function csvValue(?string $value): string
+    {
+        $value ??= '';
+
+        return in_array($value[0] ?? '', ['=', '+', '-', '@'], true) ? "'".$value : $value;
     }
 
     public function confirm(

@@ -5,6 +5,7 @@ use App\Models\Family;
 use App\Models\Guardian;
 use App\Models\Role;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
@@ -23,6 +24,20 @@ it('lets an admin add and edit a guardian without granting student visibility', 
     ])->assertRedirect(route('guardians.show', $guardian));
 
     expect($guardian->refresh()->students)->toHaveCount(0);
+});
+
+it('lists matching verified accounts when linking a guardian portal account', function () {
+    $guardian = Guardian::factory()->for(Family::factory())->create([
+        'email' => 'guardian@example.test',
+        'payment_reminder_email_verified_at' => now(),
+    ]);
+    User::factory()->create(['email' => $guardian->email, 'email_verified_at' => now()]);
+
+    $this->actingAs(adminUser())->get(route('guardians.show', $guardian))
+        ->assertOk()
+        ->assertSee('Verified matching user account')
+        ->assertSee($guardian->email)
+        ->assertDontSee('Verified User account ID');
 });
 
 it('links and auditedly unlinks a guardian from a student in the same family', function () {
@@ -62,4 +77,19 @@ it('blocks teachers and accountants from guardian management', function () {
 
     $this->actingAs(userWithRole(Role::TEACHER))->get(route('families.guardians.create', $family))->assertForbidden();
     $this->actingAs(userWithRole(Role::ACCOUNTANT))->post(route('families.guardians.store', $family), [])->assertForbidden();
+});
+
+it('lets an admin record and revoke guardian reminder consent only with evidence', function () {
+    $guardian = Guardian::factory()->for(Family::factory())->create(['email' => 'guardian@example.test']);
+
+    $this->actingAs(adminUser())->post(route('guardians.reminder-consent.grant', $guardian), [])
+        ->assertSessionHasErrors('authorization_record');
+    $this->actingAs(adminUser())->post(route('guardians.reminder-consent.grant', $guardian), ['authorization_record' => 'Signed form REF-1'])
+        ->assertSessionHas('status');
+    expect($guardian->refresh()->payment_reminder_email_opt_in_at)->not->toBeNull();
+    expect($guardian->payment_reminder_email_verified_at)->toBeNull();
+
+    $this->actingAs(adminUser())->delete(route('guardians.reminder-consent.revoke', $guardian))
+        ->assertSessionHas('status');
+    expect($guardian->refresh()->payment_reminder_email_opt_out_at)->not->toBeNull();
 });

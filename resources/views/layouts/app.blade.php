@@ -8,12 +8,27 @@
 </head>
 <body>
 @auth
+    @php
+        $currentUser = auth()->user();
+        $homeRoute = $currentUser->hasRole(\App\Models\Role::ADMIN)
+            ? route('admin.dashboard')
+            : ($currentUser->hasRole(\App\Models\Role::ACCOUNTANT)
+                ? route('payments.collect')
+                : ($currentUser->guardian_id
+                    ? route('guardian.portal')
+                    : route('teacher.portal')));
+        $workspaceLabel = $currentUser->hasRole(\App\Models\Role::ADMIN)
+            ? 'Admin workspace'
+            : ($currentUser->hasRole(\App\Models\Role::ACCOUNTANT)
+                ? 'Finance workspace'
+                : ($currentUser->guardian_id ? 'Guardian portal' : 'Teacher portal'));
+    @endphp
     <input class="sidebar-toggle-control" type="checkbox" id="sidebar-toggle" aria-hidden="true">
     <label class="sidebar-backdrop" for="sidebar-toggle" aria-label="Close navigation"></label>
 
     <div class="app-shell">
         <aside class="sidebar">
-            <a class="sidebar-brand" href="{{ route('admin.dashboard') }}">
+            <a class="sidebar-brand" href="{{ $homeRoute }}">
                 <span class="brand-mark">S</span>
                 <span class="brand-copy">
                     <span class="brand-name">Skooly</span>
@@ -22,6 +37,12 @@
             </a>
 
             <nav class="sidebar-nav" aria-label="Main navigation">
+                @if (auth()->user()->guardian_id)
+                <div><p class="sidebar-section-title">Guardian portal</p><a class="sidebar-link {{ request()->routeIs('guardian.portal') ? 'is-active' : '' }}" href="{{ route('guardian.portal') }}">Dashboard</a><a class="sidebar-link {{ request()->routeIs('guardian.dues') ? 'is-active' : '' }}" href="{{ route('guardian.dues') }}">Fees &amp; Dues</a><a class="sidebar-link {{ request()->routeIs('guardian.payments') ? 'is-active' : '' }}" href="{{ route('guardian.payments') }}">Payment History</a></div>
+                @endif
+                @if (auth()->user()->hasRole(\App\Models\Role::TEACHER))
+                <div><p class="sidebar-section-title">Teacher portal</p><a class="sidebar-link {{ request()->routeIs('teacher.portal') ? 'is-active' : '' }}" href="{{ route('teacher.portal') }}">Dashboard</a><a class="sidebar-link {{ request()->routeIs('teacher.classes') ? 'is-active' : '' }}" href="{{ route('teacher.classes') }}">My Classes</a><a class="sidebar-link {{ request()->routeIs('teacher.subjects') ? 'is-active' : '' }}" href="{{ route('teacher.subjects') }}">My Subjects</a><a class="sidebar-link {{ request()->routeIs('teacher.students.*') ? 'is-active' : '' }}" href="{{ route('teacher.students') }}">My Students</a></div>
+                @endif
                 @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
                 <div>
                     <p class="sidebar-section-title">Overview</p>
@@ -31,8 +52,10 @@
 
                 <div>
                     <p class="sidebar-section-title">Registration</p>
-                    <a class="sidebar-link {{ request()->routeIs('families.*', 'students.*') ? 'is-active' : '' }}"
-                       href="{{ route('families.index') }}">Families &amp; Students</a>
+                    <a class="sidebar-link {{ request()->routeIs('families.*') ? 'is-active' : '' }}"
+                        href="{{ route('families.index') }}">Families</a>
+                    <a class="sidebar-link {{ request()->routeIs('students.*') ? 'is-active' : '' }}"
+                        href="{{ route('students.index') }}">Students</a>
                 </div>
 
                 <div>
@@ -77,7 +100,7 @@
                         href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
                 </div>
                 @endif
-
+                @if ($currentUser->hasAnyRole([\App\Models\Role::ADMIN, \App\Models\Role::ACCOUNTANT]))
                 <div>
                     <p class="sidebar-section-title">Payments</p>
                     <a class="sidebar-link {{ request()->routeIs('payments.collect', 'families.payments.*') ? 'is-active' : '' }}"
@@ -93,6 +116,7 @@
                     <a class="sidebar-link {{ request()->routeIs('payment-reminders.*') ? 'is-active' : '' }}"
                        href="{{ route('payment-reminders.index') }}">Payment Reminders</a>
                 </div>
+                @endif
 
                 @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
                 <div>
@@ -127,7 +151,8 @@
                     @csrf
                     <button type="submit" class="btn btn-secondary btn-small">Sign out</button>
                 </form>
-                <a class="sidebar-link" href="{{ route('two-factor.show') }}">Security</a>
+                <a class="sidebar-link {{ request()->routeIs('profile.*') ? 'is-active' : '' }}" href="{{ route('profile.edit') }}">My profile</a>
+                <a class="sidebar-link {{ request()->routeIs('two-factor.*') ? 'is-active' : '' }}" href="{{ route('two-factor.show') }}">Security</a>
             </div>
         </aside>
 
@@ -137,7 +162,7 @@
                     <label class="menu-toggle" for="sidebar-toggle" aria-label="Open navigation">
                         <span class="menu-toggle-lines"></span>
                     </label>
-                    <p class="topbar-eyebrow">Admin workspace</p>
+                    <p class="topbar-eyebrow">{{ $workspaceLabel }}</p>
                 </div>
                 <span class="topbar-date">{{ now()->format('l, F j') }}</span>
             </header>

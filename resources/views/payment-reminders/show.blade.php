@@ -24,6 +24,9 @@
                 @csrf
                 <button type="submit" class="btn btn-secondary">Cancel reminder</button>
             </form>
+            @if ($isEligible && count($paymentReminder->due_item_ids) === 1)
+                <form method="POST" action="{{ route('payment-reminders.queue', $paymentReminder) }}" data-loading>@csrf<button type="submit" class="btn">Queue email delivery</button></form>
+            @endif
         @endif
     </div>
 
@@ -43,6 +46,9 @@
             <div class="kv-row"><dt>Due item IDs</dt><dd>{{ implode(', ', $paymentReminder->due_item_ids) }}</dd></div>
         </dl>
     </x-card>
+
+    <x-card title="Delivery eligibility"><p>{{ $isEligible && count($paymentReminder->due_item_ids) === 1 ? 'Eligible for one single-student delivery attempt.' : 'Not eligible for delivery. Consent, verification, current obligation status, and safe single-student rendering are required.' }}</p><p class="note">Queued means awaiting a transport handoff. Transport accepted does not confirm inbox delivery. Failed attempts do not change the due item.</p></x-card>
+    <x-card title="Delivery attempt history"><div class="table-wrap"><table class="table"><thead><tr><th>Attempt</th><th>Status</th><th>Timestamp</th><th>Failure</th></tr></thead><tbody>@forelse ($paymentReminder->deliveryAttempts as $attempt)<tr><td>{{ $attempt->attempt_number }}</td><td><x-status-badge :value="$attempt->status" /></td><td>{{ $attempt->transport_accepted_at?->toDateTimeString() ?? $attempt->failed_at?->toDateTimeString() ?? $attempt->created_at?->toDateTimeString() }}</td><td>{{ $attempt->failure_message }}</td></tr>@empty<tr class="table-empty"><td colspan="4">No delivery attempts have been created.</td></tr>@endforelse</tbody></table></div></x-card>
 
     <x-card title="Stored message snapshot">
         <dl class="kv">

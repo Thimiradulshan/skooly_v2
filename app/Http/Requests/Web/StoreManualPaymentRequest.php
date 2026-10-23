@@ -23,6 +23,7 @@ class StoreManualPaymentRequest extends FormRequest
     {
         return [
             'receipt_no' => ['required', 'string', 'max:255', Rule::unique('receipts', 'receipt_no')],
+            'payment_reference' => ['nullable', 'string', 'max:255', Rule::unique('payments', 'payment_reference')],
             'method' => ['required', 'string', 'max:255'],
             'paid_at' => ['required', 'date'],
             'amount' => ['required', 'numeric', 'decimal:0,2', 'min:0.01'],

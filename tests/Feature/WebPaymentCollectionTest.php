@@ -142,6 +142,26 @@ it('shows only outstanding due items for the selected family', function () {
         ->assertDontSee('Other family item');
 });
 
+it('shows a family total and student-level outstanding balances on the collection page', function () {
+    $family = Family::factory()->create(['family_code' => 'FAM-COMBINED', 'combined_billing_enabled' => true]);
+    $firstStudent = Student::factory()->for($family)->create(['name' => 'First child']);
+    $secondStudent = Student::factory()->for($family)->create(['name' => 'Second child']);
+    paymentDueItem($firstStudent, ['balance_amount' => '100.00']);
+    paymentDueItem($secondStudent, ['balance_amount' => '30.00', 'paid_amount' => '70.00', 'status' => StudentDueItem::STATUS_PARTIALLY_PAID]);
+
+    $this->actingAs(adminUser())
+        ->get(route('families.payments.create', $family))
+        ->assertOk()
+        ->assertSee('FAM-COMBINED')
+        ->assertSee('Combined outstanding balance')
+        ->assertSee('130.00')
+        ->assertSee('First child')
+        ->assertSee('Second child')
+        ->assertSee('Total allocated:')
+        ->assertSee('Unallocated payment amount:')
+        ->assertSee('payment-allocation-preview.js');
+});
+
 it('records a manual payment for one due item through the web route', function () {
     $admin = adminUser();
     $family = Family::factory()->create();
@@ -161,6 +181,31 @@ it('records a manual payment for one due item through the web route', function (
     expect(Receipt::where('payment_id', $payment->id)->count())->toBe(1);
     expect(AuditLog::where('action', AuditLog::ACTION_PAYMENT_RECORDED)->count())->toBe(1);
     expect(AuditLog::where('action', AuditLog::ACTION_PAYMENT_ALLOCATION_RECORDED)->count())->toBe(1);
+});
+
+it('records an optional payment reference and rejects a duplicate receipt number', function () {
+    $family = Family::factory()->create();
+    $firstDueItem = paymentDueItem(Student::factory()->for($family)->create());
+    $secondDueItem = paymentDueItem(Student::factory()->for($family)->create());
+
+    $this->actingAs(adminUser())
+        ->post(route('families.payments.store', $family), manualPaymentPayload($firstDueItem, [
+            'receipt_no' => 'RCT-IMMUTABLE-001',
+            'payment_reference' => 'BANK-REFERENCE-001',
+        ]))
+        ->assertRedirect();
+
+    expect(Payment::query()->sole()->payment_reference)->toBe('BANK-REFERENCE-001');
+    expect(Receipt::query()->sole()->receipt_no)->toBe('RCT-IMMUTABLE-001');
+
+    $this->actingAs(adminUser())
+        ->post(route('families.payments.store', $family), manualPaymentPayload($secondDueItem, [
+            'receipt_no' => 'RCT-IMMUTABLE-001',
+        ]))
+        ->assertSessionHasErrors('receipt_no');
+
+    expect(Payment::query()->count())->toBe(1);
+    expect($secondDueItem->refresh()->balance_amount)->toBe('100.00');
 });
 
 it('records a manual payment across multiple due items', function () {
@@ -322,6 +367,34 @@ it('shows payment details with a receipt link', function () {
         ->assertSee('RCT-WEB-SHOW')
         ->assertSee('Test due item')
         ->assertSee('View receipt');
+});
+
+it('shows an admin a read-only allocation-scoped payment history from a student profile', function () {
+    $student = Student::factory()->for(Family::factory())->create(['name' => 'History student']);
+    $dueItem = paymentDueItem($student, ['description' => 'History tuition']);
+    $payment = Payment::recordManual($student->family, 'RCT-STUDENT-HISTORY', 'bank', '100.00', [
+        ['student_due_item_id' => $dueItem->id, 'amount' => '100.00'],
+    ], 'BANK-STUDENT-HISTORY');
+
+    $this->actingAs(adminUser())
+        ->get(route('students.show', $student))
+        ->assertOk()
+        ->assertSee('Payment history');
+
+    $this->actingAs(adminUser())
+        ->get(route('students.payment-history', $student))
+        ->assertOk()
+        ->assertSee('History student')
+        ->assertSee('History tuition')
+        ->assertSee('100.00')
+        ->assertSee('BANK-STUDENT-HISTORY')
+        ->assertSee('RCT-STUDENT-HISTORY');
+
+    $this->actingAs(userWithRole(Role::ACCOUNTANT))
+        ->get(route('students.payment-history', $student))
+        ->assertForbidden();
+
+    expect($payment->receipt->receipt_no)->toBe('RCT-STUDENT-HISTORY');
 });
 
 it('lists payments and receipts with search sorting and pagination', function () {

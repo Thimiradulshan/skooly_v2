@@ -25,6 +25,7 @@ class UpdateSchoolSettingRequest extends FormRequest
     {
         return [
             'active_academic_year_id' => ['required', 'integer', Rule::exists('academic_years', 'id')->where('is_archived', 0)],
+            'acknowledge_incomplete_promotions' => ['nullable', 'boolean'],
         ];
     }
 }

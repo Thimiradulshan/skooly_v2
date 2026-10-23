@@ -34,10 +34,8 @@ class RegisterStudent
         ?User $actor = null,
     ): Student {
         return DB::transaction(function () use ($family, $studentData, $guardianIds, $enrollment, $actor): Student {
-            $status = $studentData['status'] ?? Student::STATUS_PENDING_REGISTRATION;
-
-            if (! in_array($status, self::validStatuses(), true)) {
-                throw new InvalidArgumentException('Unknown Student status.');
+            if (($studentData['status'] ?? Student::STATUS_PENDING_REGISTRATION) !== Student::STATUS_PENDING_REGISTRATION) {
+                throw new InvalidArgumentException('New students must start with pending registration status.');
             }
 
             if (empty($studentData['admission_no'])) {
@@ -57,12 +55,14 @@ class RegisterStudent
 
             $student = Student::query()->create([
                 'family_id' => $family->id,
+                'address_override' => $studentData['address_override'] ?? null,
+                'contact_no_override' => $studentData['contact_no_override'] ?? null,
                 'name' => $studentData['name'],
                 'dob' => $studentData['dob'],
                 'gender' => $studentData['gender'],
                 'admission_no' => $studentData['admission_no'],
                 'photo_path' => $studentData['photo_path'] ?? null,
-                'status' => $status,
+                'status' => Student::STATUS_PENDING_REGISTRATION,
             ]);
 
             foreach ($guardianIds as $guardianId) {
@@ -90,19 +90,5 @@ class RegisterStudent
 
             return $student;
         });
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    private static function validStatuses(): array
-    {
-        return [
-            Student::STATUS_PENDING_REGISTRATION,
-            Student::STATUS_ACTIVE,
-            Student::STATUS_INACTIVE,
-            Student::STATUS_WITHDRAWN,
-            Student::STATUS_GRADUATED,
-        ];
     }
 }

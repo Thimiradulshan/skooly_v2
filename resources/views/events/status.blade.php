@@ -1,0 +1,10 @@
+@extends('layouts.app')
+@section('title', $event->name.' status')
+@section('content')
+    <div class="breadcrumb"><a href="{{ route('events.show', $event) }}">{{ $event->name }}</a><span class="breadcrumb-sep">/</span><span>Status</span></div>
+    <x-page-header :title="$event->name.' participation & payment status'" :subtitle="$event->is_mandatory ? 'Mandatory event: every enrolled student with an applicable charge is eligible.' : 'Optional event: only opted-in students receive a generated due item.'" eyebrow="School life" />
+    <div class="page-actions"><x-button-link :href="route('events.show', $event)" variant="quiet">Back to event</x-button-link></div>
+    <div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>Family</th><th>Grade</th><th>Participation</th><th class="num">Charge</th><th>Generated due</th><th class="num">Paid</th><th class="num">Outstanding</th><th>Status</th></tr></thead><tbody>@forelse($enrollments as $enrollment)@php($dueItem = $dueItemsByStudent->get($enrollment->student_id)?->studentDueItem)@php($participation = $participationByStudent->get($enrollment->student_id))<tr><td>{{ $enrollment->student->name }}</td><td>{{ $enrollment->student->family->family_code }}</td><td>{{ $enrollment->grade->name }}</td><td>{{ $event->is_mandatory ? 'Mandatory' : ($participation?->status ? str($participation->status)->headline() : 'Not opted in') }}</td><td class="num">{{ $charges->get($enrollment->grade_id)?->amount }}</td><td>{{ $dueItem ? $dueItem->description : 'Not generated' }}</td><td class="num">{{ $dueItem?->paid_amount ?? '—' }}</td><td class="num">{{ $dueItem?->balance_amount ?? '—' }}</td><td>@if($dueItem)<x-status-badge :value="$dueItem->status" />@else — @endif</td></tr>@empty<tr class="table-empty"><td colspan="9"><span class="empty-state-title">No applicable enrollments</span>Add an event charge for a Grade with enrolled students.</td></tr>@endforelse</tbody></table></div>
+    <x-pagination :paginator="$enrollments" />
+    <p class="note">This report is read-only and displays stored generated due-item balances. Viewing it never creates charges or due items.</p>
+@endsection

@@ -3,7 +3,10 @@
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\TwoFactorAuthenticationController;
+use App\Http\Controllers\GuardianPortalController;
+use App\Http\Controllers\TeacherPortalController;
 use App\Http\Controllers\Web\AcademicYearController;
 use App\Http\Controllers\Web\AdminDashboardController;
 use App\Http\Controllers\Web\AuditLogController;
@@ -18,6 +21,7 @@ use App\Http\Controllers\Web\FeeCategoryController;
 use App\Http\Controllers\Web\FeeStructureController;
 use App\Http\Controllers\Web\GradeController;
 use App\Http\Controllers\Web\GuardianController;
+use App\Http\Controllers\Web\GuardianEmailVerificationController;
 use App\Http\Controllers\Web\PaymentCollectionController;
 use App\Http\Controllers\Web\PaymentReminderController;
 use App\Http\Controllers\Web\PaymentReversalController;
@@ -72,8 +76,11 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 've
 Route::post('/email/verification-notification', [EmailVerificationController::class, 'send'])
     ->middleware(['auth', 'throttle:6,1'])
     ->name('verification.send');
+Route::get('/guardians/email/verify/{token}', [GuardianEmailVerificationController::class, 'verify'])->name('guardians.email-verification.verify');
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/two-factor-authentication', [TwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
     Route::post('/two-factor-authentication/confirm', [TwoFactorAuthenticationController::class, 'confirm'])
@@ -81,6 +88,15 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::delete('/two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy'])
         ->middleware('throttle:6,1')
         ->name('two-factor.destroy');
+    Route::get('/guardian', [GuardianPortalController::class, 'index'])->name('guardian.portal');
+    Route::get('/guardian/students/{student}', [GuardianPortalController::class, 'showStudent'])->name('guardian.students.show');
+    Route::get('/guardian/dues', [GuardianPortalController::class, 'dues'])->name('guardian.dues');
+    Route::get('/guardian/payments', [GuardianPortalController::class, 'payments'])->name('guardian.payments');
+    Route::get('/teacher', [TeacherPortalController::class, 'index'])->middleware('role:'.Role::TEACHER)->name('teacher.portal');
+    Route::get('/teacher/classes', [TeacherPortalController::class, 'classes'])->middleware('role:'.Role::TEACHER)->name('teacher.classes');
+    Route::get('/teacher/subjects', [TeacherPortalController::class, 'subjects'])->middleware('role:'.Role::TEACHER)->name('teacher.subjects');
+    Route::get('/teacher/students', [TeacherPortalController::class, 'students'])->middleware('role:'.Role::TEACHER)->name('teacher.students');
+    Route::get('/teacher/students/{student}', [TeacherPortalController::class, 'showStudent'])->middleware('role:'.Role::TEACHER)->name('teacher.students.show');
 });
 
 Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN.','.Role::SUPERADMIN])->group(function (): void {
@@ -116,6 +132,8 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
     Route::get('/teacher-assignments/create', [TeacherAssignmentController::class, 'create'])->name('teacher-assignments.create');
     Route::post('/teacher-assignments', [TeacherAssignmentController::class, 'store'])->name('teacher-assignments.store');
     Route::get('/teacher-assignments/{teacherAssignment}', [TeacherAssignmentController::class, 'show'])->name('teacher-assignments.show');
+    Route::get('/teacher-assignments/{teacherAssignment}/edit', [TeacherAssignmentController::class, 'edit'])->name('teacher-assignments.edit');
+    Route::put('/teacher-assignments/{teacherAssignment}', [TeacherAssignmentController::class, 'update'])->name('teacher-assignments.update');
     Route::get('/section-year-assignments', [SectionYearAssignmentController::class, 'index'])->name('section-year-assignments.index');
     Route::get('/section-year-assignments/create', [SectionYearAssignmentController::class, 'create'])->name('section-year-assignments.create');
     Route::post('/section-year-assignments', [SectionYearAssignmentController::class, 'store'])->name('section-year-assignments.store');
@@ -142,6 +160,13 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
     Route::get('/guardians/{guardian}', [GuardianController::class, 'show'])->name('guardians.show');
     Route::get('/guardians/{guardian}/edit', [GuardianController::class, 'edit'])->name('guardians.edit');
     Route::match(['put', 'patch'], '/guardians/{guardian}', [GuardianController::class, 'update'])->name('guardians.update');
+    Route::post('/guardians/{guardian}/reminder-consent', [GuardianController::class, 'grantConsent'])->name('guardians.reminder-consent.grant');
+    Route::delete('/guardians/{guardian}/reminder-consent', [GuardianController::class, 'revokeConsent'])->name('guardians.reminder-consent.revoke');
+    Route::post('/guardians/{guardian}/portal-account', [GuardianController::class, 'linkPortalAccount'])->name('guardians.portal-account.link');
+    Route::post('/guardians/{guardian}/email-verification', [GuardianEmailVerificationController::class, 'store'])->name('guardians.email-verification.store');
+    Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+    Route::get('/students/{student}/payment-history', [StudentController::class, 'paymentHistory'])->name('students.payment-history');
+    Route::get('/students/{student}/photo', [StudentController::class, 'photo'])->name('students.photo');
     Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
     Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
     Route::match(['put', 'patch'], '/students/{student}', [StudentController::class, 'update'])->name('students.update');
@@ -196,6 +221,7 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+    Route::get('/events/{event}/status', [EventController::class, 'status'])->name('events.status');
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
     Route::match(['put', 'patch'], '/events/{event}', [EventController::class, 'update'])->name('events.update');
 
@@ -222,6 +248,8 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
         ->name('payment-reminders.store');
     Route::post('/payment-reminders/{paymentReminder}/cancel', [PaymentReminderController::class, 'cancel'])
         ->name('payment-reminders.cancel');
+    Route::post('/payment-reminders/{paymentReminder}/queue', [PaymentReminderController::class, 'queue'])
+        ->name('payment-reminders.queue');
 
     Route::get('/promotion-batches', [PromotionBatchController::class, 'index'])
         ->name('promotion-batches.index');
@@ -231,6 +259,8 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
         ->name('promotion-batches.store');
     Route::get('/promotion-batches/{promotionBatch}', [PromotionBatchController::class, 'show'])
         ->name('promotion-batches.show');
+    Route::get('/promotion-batches/{promotionBatch}/export/csv', [PromotionBatchController::class, 'exportCsv'])->name('promotion-batches.export.csv');
+    Route::get('/promotion-batches/{promotionBatch}/export/pdf', [PromotionBatchController::class, 'exportPdf'])->name('promotion-batches.export.pdf');
     Route::post('/promotion-batches/{promotionBatch}/confirm', [PromotionBatchController::class, 'confirm'])
         ->name('promotion-batches.confirm');
     Route::post('/promotion-batches/{promotionBatch}/discard', [PromotionBatchController::class, 'discard'])

@@ -30,11 +30,11 @@ it('loads the admin dashboard with stat cards and workflow groups', function () 
         ->assertOk()
         ->assertSee('data-testid="dashboard-metrics"', false)
         ->assertSee('Operations overview')
-        ->assertSee('Registration')
-        ->assertSee('Fees &amp; dues', false)
-        ->assertSee('Payments')
-        ->assertSee('Events &amp; promotion', false)
-        ->assertSee('Reminders');
+        ->assertSee('School overview')
+        ->assertSee('Financial overview')
+        ->assertSee('Requires attention')
+        ->assertSee('Quick actions')
+        ->assertSee('Recent activity');
 });
 
 it('renders the admin shell with sidebar and topbar', function () {

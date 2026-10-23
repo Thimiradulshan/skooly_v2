@@ -31,7 +31,7 @@ it('throttles repeated failed login attempts by normalized email and ip address'
 });
 
 it('clears failed login attempts after a successful login', function () {
-    $user = User::factory()->create();
+    $user = adminUser();
 
     $this->post(route('login.store'), ['email' => $user->email, 'password' => 'incorrect-password'])
         ->assertSessionHasErrors('email');

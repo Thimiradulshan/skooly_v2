@@ -4,7 +4,9 @@ use App\Models\AuditLog;
 use App\Models\Family;
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\DemoDataSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
@@ -25,6 +27,18 @@ it('lets a valid user log in', function () {
 
     $this->assertAuthenticatedAs($admin);
 });
+
+it('redirects each demo account to its authorized workspace after login', function (string $email, string $route): void {
+    $this->seed(DemoDataSeeder::class);
+    RateLimiter::clear(strtolower($email).'|127.0.0.1');
+
+    $this->post(route('login.store'), ['email' => $email, 'password' => 'password'])
+        ->assertRedirect(route($route));
+})->with([
+    ['accountant@skooly.test', 'payments.collect'],
+    ['teacher@skooly.test', 'teacher.portal'],
+    ['alice@skooly.test', 'guardian.portal'],
+]);
 
 it('rejects invalid login credentials', function () {
     $admin = adminUser();
@@ -47,6 +61,26 @@ it('lets an authenticated user log out', function () {
     $this->post(route('logout'))->assertRedirect(route('login'));
 
     $this->assertGuest();
+});
+
+it('lets an authenticated user update their own display name and password without changing email or roles', function () {
+    $teacher = userWithRole(Role::TEACHER);
+
+    $this->actingAs($teacher)->get(route('profile.edit'))
+        ->assertOk()
+        ->assertSee('My profile')
+        ->assertSee(route('two-factor.show', [], false));
+
+    $this->actingAs($teacher)->put(route('profile.update'), [
+        'name' => 'Updated Teacher',
+        'current_password' => 'password',
+        'new_password' => 'new-password',
+        'new_password_confirmation' => 'new-password',
+    ])->assertRedirect(route('profile.edit'));
+
+    expect($teacher->refresh()->name)->toBe('Updated Teacher')
+        ->and($teacher->email)->not->toBeEmpty()
+        ->and($teacher->hasRole(Role::TEACHER))->toBeTrue();
 });
 
 it('redirects a guest to login from the families index', function () {

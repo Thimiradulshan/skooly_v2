@@ -29,6 +29,30 @@ it('enables combined billing by default', function () {
     expect($family->combined_billing_enabled)->toBeTrue();
 });
 
+it('defaults payment reminder email consent timestamps to null and persists them', function () {
+    $guardian = Guardian::factory()->create();
+
+    expect($guardian->payment_reminder_email_opt_in_at)->toBeNull();
+    expect($guardian->payment_reminder_email_verified_at)->toBeNull();
+    expect($guardian->payment_reminder_email_opt_out_at)->toBeNull();
+
+    $optedInAt = now()->startOfSecond();
+    $verifiedAt = $optedInAt->copy()->addMinute();
+    $optedOutAt = $verifiedAt->copy()->addMinute();
+
+    $guardian->forceFill([
+        'payment_reminder_email_opt_in_at' => $optedInAt,
+        'payment_reminder_email_verified_at' => $verifiedAt,
+        'payment_reminder_email_opt_out_at' => $optedOutAt,
+    ])->save();
+
+    $guardian->refresh();
+
+    expect($guardian->payment_reminder_email_opt_in_at)->toEqual($optedInAt);
+    expect($guardian->payment_reminder_email_verified_at)->toEqual($verifiedAt);
+    expect($guardian->payment_reminder_email_opt_out_at)->toEqual($optedOutAt);
+});
+
 it('restricts deleting a family with guardians', function () {
     $family = Family::factory()->create();
     Guardian::factory()->for($family)->create();

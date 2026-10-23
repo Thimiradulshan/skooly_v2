@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web;
 
 use App\Models\PaymentReminder;
+use App\Models\PaymentReminderDeliveryAttempt;
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -32,6 +33,11 @@ class PaymentReminderFilterRequest extends FormRequest
                 PaymentReminder::STATUS_PENDING,
                 PaymentReminder::STATUS_SENT,
                 PaymentReminder::STATUS_CANCELLED,
+            ])],
+            'delivery_status' => ['nullable', Rule::in([
+                PaymentReminderDeliveryAttempt::STATUS_QUEUED,
+                PaymentReminderDeliveryAttempt::STATUS_TRANSPORT_ACCEPTED,
+                PaymentReminderDeliveryAttempt::STATUS_FAILED,
             ])],
         ];
     }

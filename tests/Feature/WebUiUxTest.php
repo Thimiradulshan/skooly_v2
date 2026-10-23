@@ -39,12 +39,11 @@ it('loads the admin dashboard with the workflow groups', function () {
     $this->actingAs(adminUser())
         ->get(route('admin.dashboard'))
         ->assertOk()
-        ->assertSee('Registration')
-        ->assertSee('Fees &amp; dues', false)
-        ->assertSee('Payments')
-        ->assertSee('Events &amp; promotion', false)
-        ->assertSee('Reminders')
-        ->assertSee('Draft promotion batches');
+        ->assertSee('School overview')
+        ->assertSee('Financial overview')
+        ->assertSee('Requires attention')
+        ->assertSee('Quick actions')
+        ->assertSee('Recent activity');
 });
 
 it('shows the main workflow links in the admin navigation', function () {

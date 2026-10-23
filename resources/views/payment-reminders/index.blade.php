@@ -26,6 +26,7 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-field"><label class="form-label" for="delivery_status">Latest delivery</label><select class="form-control" id="delivery_status" name="delivery_status"><option value="">-- all --</option><option value="queued" {{ request('delivery_status') === 'queued' ? 'selected' : '' }}>Queued</option><option value="transport_accepted" {{ request('delivery_status') === 'transport_accepted' ? 'selected' : '' }}>Transport accepted</option><option value="failed" {{ request('delivery_status') === 'failed' ? 'selected' : '' }}>Failed</option></select></div>
 
                 <div class="form-field">
                     <label class="form-label" for="guardian_id">Guardian</label>
@@ -70,7 +71,7 @@
             <thead>
             <tr>
                 <th>Family</th><th>Guardian</th><th>Type</th><th>Status</th>
-                <th class="num">Due items</th><th>Scheduled for</th><th class="actions">Actions</th>
+                <th class="num">Due items</th><th>Latest delivery attempt</th><th>Latest timestamp</th><th class="actions">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -81,14 +82,15 @@
                     <td><x-status-badge :value="$reminder->reminder_type" /></td>
                     <td><x-status-badge :value="$reminder->status" /></td>
                     <td class="num">{{ count($reminder->due_item_ids) }}</td>
-                    <td>{{ $reminder->scheduled_for?->toDateString() }}</td>
+                    <td>@if ($reminder->latestDeliveryAttempt)<x-status-badge :value="$reminder->latestDeliveryAttempt->status" />@else No attempt @endif</td>
+                    <td>{{ $reminder->latestDeliveryAttempt?->transport_accepted_at?->toDateTimeString() ?? $reminder->latestDeliveryAttempt?->failed_at?->toDateTimeString() ?? $reminder->latestDeliveryAttempt?->created_at?->toDateTimeString() }}</td>
                     <td class="actions">
                         <x-button-link :href="route('payment-reminders.show', $reminder)" variant="quiet" size="small">View</x-button-link>
                     </td>
                 </tr>
             @empty
                 <tr class="table-empty">
-                    <td colspan="7">
+                    <td colspan="8">
                         <span class="empty-state-title">No reminder records yet</span>
                         Generate reminders for guardians linked to students with outstanding balances.
                         @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
@@ -104,5 +106,5 @@
     </div>
 
     <x-pagination :paginator="$reminders" />
-    <p class="note">These are internal reminder records only. Nothing is sent by email, SMS, or WhatsApp.</p>
+    <p class="note">Reminder status and delivery-attempt status are separate. Queued is not sent; transport accepted is not inbox delivery; failed does not settle or cancel a due item.</p>
 @endsection
