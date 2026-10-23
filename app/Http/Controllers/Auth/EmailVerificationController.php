@@ -13,8 +13,10 @@ class EmailVerificationController extends Controller
 {
     public function notice(Request $request): View|RedirectResponse
     {
-        if ($request->user()?->hasVerifiedEmail()) {
-            return redirect()->route('families.index');
+        $user = $request->user();
+
+        if ($user instanceof User && $user->hasVerifiedEmail()) {
+            return redirect()->route($user->homeRouteName());
         }
 
         return view('auth.verify-email');
@@ -23,16 +25,23 @@ class EmailVerificationController extends Controller
     public function verify(EmailVerificationRequest $request): RedirectResponse
     {
         $request->fulfill();
+        $user = $request->user();
 
-        return redirect()->route('families.index')->with('status', 'Your email address has been verified.');
+        return redirect()
+            ->route($user instanceof User ? $user->homeRouteName() : 'login')
+            ->with('status', 'Your email address has been verified.');
     }
 
     public function send(Request $request): RedirectResponse
     {
         $user = $request->user();
 
-        if (! $user instanceof User || $user->hasVerifiedEmail()) {
-            return redirect()->route('families.index');
+        if (! $user instanceof User) {
+            return redirect()->route('login');
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->route($user->homeRouteName());
         }
 
         $user->sendEmailVerificationNotification();

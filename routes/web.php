@@ -44,8 +44,10 @@ use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('admin.dashboard')
+    $user = auth()->user();
+
+    return $user !== null
+        ? redirect()->route($user->homeRouteName())
         : redirect()->route('login');
 });
 

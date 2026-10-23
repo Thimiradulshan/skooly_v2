@@ -1,103 +1,123 @@
 # Local Demo Setup
 
-This guide is for **local development and testing only**. The demo seeder refuses to
-run when the application environment is `production`.
+For local development and demonstration only. The demo seeder refuses to run when the
+application environment is `production`.
 
-## Requirements
+Full Windows setup: [Installation Guide](INSTALLATION_GUIDE.md). Role and password
+procedure: [Demo Accounts Setup](DEMO_ACCOUNTS_SETUP.md).
 
-Nothing extra is needed. The project already ships the seeder and all demo data is
-created through the existing models and workflow actions.
+## 1. Set the local demo password
 
-## 1. Reset the database
+Demo accounts are never seeded with a committed password. Add a private value to `.env`:
 
-This drops every table and recreates the schema.
-
-```bash
-php artisan migrate:fresh
+```dotenv
+SKOOLY_DEMO_PASSWORD=choose-a-private-local-password
 ```
 
-## 2. Load the demo data
+Clear cached configuration after changing it:
 
 ```bash
-php artisan db:seed --class=DemoDataSeeder
+php artisan config:clear
 ```
 
-The seeder is safe to run more than once. Every record uses a deterministic key, and
-due items, event dues, and reminders are produced by the existing actions, which
-skip anything they already generated.
+The seeder reads `config/demo.php`. Never commit, print, or reuse this value outside the
+local demonstration database.
 
-You can also seed the roles and a single Admin without the full demo content:
+## 2. Prepare the database
+
+For a disposable demo database only:
 
 ```bash
-php artisan db:seed
+php artisan migrate:fresh --no-interaction
 ```
 
-## 3. Start the server
+For an existing database, preserve the data:
 
 ```bash
+php artisan migrate --no-interaction
+```
+
+## 3. Load demo data
+
+```bash
+php artisan db:seed --class=DemoDataSeeder --no-interaction
+```
+
+The seeder is repeatable. It creates deterministic records and reuses the existing
+workflow actions, so repeated runs do not duplicate students, dues, payments, receipts,
+or assignments. The base seeder creates roles and one Admin only and also requires the
+local demo password:
+
+```bash
+php artisan db:seed --no-interaction
+```
+
+## 4. Build assets and run
+
+```bash
+npm install
+npm run build
 php artisan serve
 ```
 
-The app is then available at <http://127.0.0.1:8000>.
+Open <http://127.0.0.1:8000>.
 
-## Demo login
+## Demo accounts
 
-| Role      | Email                     | Password   |
-| --------- | ------------------------- | ---------- |
-| Admin     | `admin@skooly.test`       | `password` |
-| Accountant| `accountant@skooly.test`  | `password` |
-| Teacher   | `teacher@skooly.test`     | `password` |
-| Guardian  | `alice@skooly.test`       | `password` |
+All five accounts share the single password supplied in `SKOOLY_DEMO_PASSWORD`.
 
-Only Admin can reach the admin pages. Accountant access is limited to finance workflows.
-Teacher and Guardian accounts open their respective read-only portals.
+| Role       | Email                    | Login destination     |
+| ---------- | ------------------------ | --------------------- |
+| Superadmin | `superadmin@skooly.test` | `/users`              |
+| Admin      | `admin@skooly.test`      | `/admin`              |
+| Accountant | `accountant@skooly.test` | `/payments/collect`   |
+| Teacher    | `teacher@skooly.test`    | `/teacher`            |
+| Guardian   | `alice@skooly.test`      | `/guardian`           |
+
+The Guardian account uses the existing verified User-to-Guardian link, not a Guardian
+role. Alice is linked to Chloe and Liam, not to Mia, so Guardian privacy is visible.
 
 ## What the demo data contains
 
-- Two academic years, two grades, two sections, and an active school setting for the
-  year that contains the demo enrollments.
+- Two academic years, two grades, two sections, and an active current year.
 - Two families with three guardians and three students.
-  - Chloe and Liam are active and enrolled in Grade 1.
-  - Mia is `pending_registration` and enrolled in Grade 2.
-  - Alice is linked to Chloe and Liam; Bob is linked only to Liam. Use this to
-    check that a Guardian cannot see the child they are not linked to.
-- Fee categories: Tuition (recurring), Transport (recurring, opt-in), Event Fees.
-- Fee structures for the current academic year, a scholarship discount for Chloe, and
-  an active Transport subscription for Chloe.
-- Recurring due items, one partial payment with receipt `DEMO-REC-001`, and unpaid
-  or partially paid balances for the dashboard.
-- A `Demo Sports Day` event with a charge, one participation record, and its due items.
-- One active Teacher qualification and teaching assignment for Grade 1 A, so the Teacher
-  portal can demonstrate classes, subjects, and authorized students.
-- One verified, explicitly linked Guardian portal account. It has no reminder-email
-  consent, so it cannot cause a delivery attempt.
-- One draft promotion batch, left unconfirmed so you can walk the confirm page.
-- Internal payment reminder records. Nothing is sent anywhere.
+- Tuition, opt-in Transport, and Event Fees categories.
+- Current-year fee structures, a scholarship discount, and a Transport subscription.
+- Recurring dues, one partial payment with receipt `DEMO-REC-001`, and open balances.
+- A `Demo Sports Day` event with a charge, participation, and generated dues.
+- A qualified Teacher assigned to Grade 1 A.
+- One verified, linked Guardian portal account with no reminder consent.
+- One draft promotion batch, left unconfirmed.
+- Internal payment reminder records. No external delivery is performed.
 
-## URLs worth clicking
+## Pages worth opening
 
-| Page                                | URL                                      |
-| ----------------------------------- | ---------------------------------------- |
-| Admin dashboard                     | `/admin`                                 |
-| Families                            | `/families`                              |
-| Fee categories                      | `/fee-categories`                        |
-| Fee structures                      | `/fee-structures`                        |
-| Recurring due generation            | `/due-generation/recurring`              |
-| Event due generation                | `/due-generation/events`                 |
-| Dues dashboard                      | `/dues-dashboard`                        |
-| Payment reminders                   | `/payment-reminders`                     |
-| Events                              | `/events`                                |
-| Promotion batches                   | `/promotion-batches`                     |
-| Guardian portal                     | `/guardian`                              |
-| Teacher portal                      | `/teacher`                               |
-
-Payments are recorded from a family page: open a family and use **Record payment**.
+| Page                     | URL                          |
+| ------------------------ | ---------------------------- |
+| Admin dashboard          | `/admin`                     |
+| Families                 | `/families`                  |
+| Student directory        | `/students`                  |
+| Users                    | `/users`                     |
+| Academic years           | `/academic-years`            |
+| Teaching assignments     | `/teacher-assignments`       |
+| Fee structures           | `/fee-structures`            |
+| Recurring due generation | `/due-generation/recurring`  |
+| Event due generation     | `/due-generation/events`     |
+| Dues dashboard           | `/dues-dashboard`            |
+| Payment history          | `/payments`                  |
+| Receipts                 | `/receipts`                  |
+| Reversals                | `/payment-reversals`         |
+| Payment reminders        | `/payment-reminders`         |
+| Events                   | `/events`                    |
+| Promotion                | `/promotion-batches`         |
+| Audit log                | `/audit-logs`                |
+| Guardian portal          | `/guardian`                  |
+| Teacher portal           | `/teacher`                   |
 
 ## Safety notes
 
-- Demo data is for local and testing environments only. The seeder exits early in
-  production.
-- Change the demo password before deploying anywhere real.
-- The demo seeder does not send email, SMS, or WhatsApp. Reminders are internal
-  outbox records only.
-- Demo data contains no real personal information.
+- Demo data is for local and testing environments only and contains no real people.
+- Do not commit `.env`, the credential sheet, database dumps, or private photos.
+- The seeder sends no email, SMS, or WhatsApp messages.
+- Change or remove demo accounts before deploying anywhere real.
+- Production deployment is outside the local demonstration scope.

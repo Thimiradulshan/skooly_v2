@@ -43,6 +43,21 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the authorized route name that is this account's home workspace.
+     */
+    public function homeRouteName(): string
+    {
+        return match (true) {
+            $this->hasRole(Role::SUPERADMIN) => 'users.index',
+            $this->hasRole(Role::ADMIN) => 'admin.dashboard',
+            $this->hasRole(Role::ACCOUNTANT) => 'payments.collect',
+            $this->guardian_id !== null => 'guardian.portal',
+            $this->hasRole(Role::TEACHER) => 'teacher.portal',
+            default => 'profile.edit',
+        };
+    }
+
+    /**
      * Determine whether the user has at least one of the given roles.
      *
      * @param  array<int, string>  $roles

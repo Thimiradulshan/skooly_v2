@@ -70,7 +70,7 @@ it('requires a second factor after a valid password and regenerates an authentic
     $this->assertGuest();
 
     $this->post(route('two-factor.challenge.store'), ['code' => TOTP::createFromSecret($secret)->now()])
-        ->assertRedirect(route('families.index'));
+        ->assertRedirect(route('admin.dashboard'));
 
     $this->assertAuthenticatedAs($user);
 });
@@ -103,7 +103,7 @@ it('consumes a recovery code when it completes a two-factor challenge', function
 
     $this->post(route('login.store'), ['email' => $user->email, 'password' => 'password']);
     $this->post(route('two-factor.challenge.store'), ['code' => $recoveryCode])
-        ->assertRedirect(route('families.index'));
+        ->assertRedirect(route('admin.dashboard'));
 
     expect($user->refresh()->two_factor_recovery_codes)->toBe([]);
 

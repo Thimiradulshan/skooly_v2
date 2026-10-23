@@ -17,7 +17,7 @@ it('shows the login page with branding and a login card', function () {
     $this->get(route('login'))
         ->assertOk()
         ->assertSee('Skooly')
-        ->assertSee('School Management Admin')
+        ->assertSee('School Management')
         ->assertSee('data-testid="login-card"', false)
         ->assertSee('name="email"', false)
         ->assertSee('name="password"', false)

@@ -50,6 +50,17 @@ it('creates the accountant and teacher demo users for access testing', function 
     expect(User::query()->where('email', 'teacher@skooly.test')->sole()->hasRole(Role::TEACHER))->toBeTrue();
 });
 
+it('creates an active verified Superadmin demo account', function () {
+    seedDemoData($this);
+
+    $superadmin = User::query()->where('email', 'superadmin@skooly.test')->sole();
+
+    expect($superadmin->hasRole(Role::SUPERADMIN))->toBeTrue();
+    expect($superadmin->is_active)->toBeTrue();
+    expect($superadmin->email_verified_at)->not->toBeNull();
+    expect($superadmin->roles()->pluck('name')->all())->toBe([Role::SUPERADMIN]);
+});
+
 it('creates a qualified Teacher assignment for the active demo year', function () {
     seedDemoData($this);
 

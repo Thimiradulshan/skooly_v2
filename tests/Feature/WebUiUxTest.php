@@ -16,7 +16,7 @@ it('renders a login page with Skooly branding', function () {
     $this->get(route('login'))
         ->assertOk()
         ->assertSee('Skooly')
-        ->assertSee('School Management Admin')
+        ->assertSee('School Management')
         ->assertSee('Sign in');
 });
 

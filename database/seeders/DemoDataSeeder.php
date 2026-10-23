@@ -53,6 +53,10 @@ class DemoDataSeeder extends Seeder
             return;
         }
 
+        if (! app()->environment('testing') && blank(config('demo.seed_password'))) {
+            throw new \RuntimeException('Set SKOOLY_DEMO_PASSWORD locally before running the demo seeder.');
+        }
+
         $roles = $this->roles();
         $admin = $this->users($roles);
 
@@ -80,7 +84,7 @@ class DemoDataSeeder extends Seeder
         $this->promotionBatch($currentYear, $nextYear, $sections);
         SchoolSetting::query()->updateOrCreate(['id' => 1], ['active_academic_year_id' => $currentYear->id]);
 
-        $this->command?->info('Demo data ready. Sign in with '.self::ADMIN_EMAIL.' / password');
+        $this->command?->info('Demo data ready. Record the locally supplied demo credentials in the ignored credential sheet.');
     }
 
     /**
@@ -102,21 +106,28 @@ class DemoDataSeeder extends Seeder
      */
     private function users(array $roles): User
     {
+        $password = $this->demoPassword();
+
         $admin = User::query()->updateOrCreate(
             ['email' => self::ADMIN_EMAIL],
-            ['name' => 'Demo Admin', 'password' => 'password', 'email_verified_at' => now(), 'is_active' => true],
+            ['name' => 'Demo Admin', 'password' => $password, 'email_verified_at' => now(), 'is_active' => true],
         );
 
         $admin->roles()->syncWithoutDetaching([$roles[Role::ADMIN]->id]);
 
         User::query()->updateOrCreate(
+            ['email' => 'superadmin@skooly.test'],
+            ['name' => 'Demo Superadmin', 'password' => $password, 'email_verified_at' => now(), 'is_active' => true],
+        )->roles()->syncWithoutDetaching([$roles[Role::SUPERADMIN]->id]);
+
+        User::query()->updateOrCreate(
             ['email' => 'accountant@skooly.test'],
-            ['name' => 'Demo Accountant', 'password' => 'password', 'email_verified_at' => now(), 'is_active' => true],
+            ['name' => 'Demo Accountant', 'password' => $password, 'email_verified_at' => now(), 'is_active' => true],
         )->roles()->syncWithoutDetaching([$roles[Role::ACCOUNTANT]->id]);
 
         User::query()->updateOrCreate(
             ['email' => 'teacher@skooly.test'],
-            ['name' => 'Demo Teacher', 'password' => 'password', 'email_verified_at' => now(), 'is_active' => true],
+            ['name' => 'Demo Teacher', 'password' => $password, 'email_verified_at' => now(), 'is_active' => true],
         )->roles()->syncWithoutDetaching([$roles[Role::TEACHER]->id]);
 
         return $admin;
@@ -193,6 +204,13 @@ class DemoDataSeeder extends Seeder
                 ['is_recurring' => false, 'is_opt_in' => false],
             ),
         ];
+    }
+
+    private function demoPassword(): string
+    {
+        return app()->environment('testing')
+            ? 'password'
+            : (string) config('demo.seed_password');
     }
 
     /**
@@ -333,7 +351,7 @@ class DemoDataSeeder extends Seeder
             ['email' => $guardian->email],
             [
                 'name' => 'Demo Guardian',
-                'password' => 'password',
+                'password' => $this->demoPassword(),
                 'email_verified_at' => now(),
                 'is_active' => true,
                 'guardian_id' => $guardian->id,

@@ -23,7 +23,7 @@ it('lets a valid user log in', function () {
     $this->post(route('login.store'), [
         'email' => $admin->email,
         'password' => 'password',
-    ])->assertRedirect(route('families.index'));
+    ])->assertRedirect(route('admin.dashboard'));
 
     $this->assertAuthenticatedAs($admin);
 });
@@ -35,6 +35,8 @@ it('redirects each demo account to its authorized workspace after login', functi
     $this->post(route('login.store'), ['email' => $email, 'password' => 'password'])
         ->assertRedirect(route($route));
 })->with([
+    ['superadmin@skooly.test', 'users.index'],
+    ['admin@skooly.test', 'admin.dashboard'],
     ['accountant@skooly.test', 'payments.collect'],
     ['teacher@skooly.test', 'teacher.portal'],
     ['alice@skooly.test', 'guardian.portal'],

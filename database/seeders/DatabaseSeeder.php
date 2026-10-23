@@ -24,6 +24,14 @@ class DatabaseSeeder extends Seeder
             return;
         }
 
+        $password = app()->environment('testing')
+            ? 'password'
+            : (string) config('demo.seed_password');
+
+        if (blank($password)) {
+            throw new \RuntimeException('Set SKOOLY_DEMO_PASSWORD locally before seeding the demo Admin account.');
+        }
+
         foreach ([Role::SUPERADMIN, Role::ADMIN, Role::ACCOUNTANT, Role::TEACHER] as $name) {
             Role::query()->firstOrCreate(['name' => $name]);
         }
@@ -32,7 +40,7 @@ class DatabaseSeeder extends Seeder
 
         $admin = User::query()->updateOrCreate(
             ['email' => 'admin@skooly.test'],
-            ['name' => 'Demo Admin', 'password' => 'password', 'email_verified_at' => now()],
+            ['name' => 'Demo Admin', 'password' => $password, 'email_verified_at' => now(), 'is_active' => true],
         );
 
         $admin->roles()->syncWithoutDetaching([$adminRole->id]);

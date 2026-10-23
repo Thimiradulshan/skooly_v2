@@ -10,18 +10,15 @@
 @auth
     @php
         $currentUser = auth()->user();
-        $homeRoute = $currentUser->hasRole(\App\Models\Role::ADMIN)
-            ? route('admin.dashboard')
-            : ($currentUser->hasRole(\App\Models\Role::ACCOUNTANT)
-                ? route('payments.collect')
-                : ($currentUser->guardian_id
-                    ? route('guardian.portal')
-                    : route('teacher.portal')));
-        $workspaceLabel = $currentUser->hasRole(\App\Models\Role::ADMIN)
-            ? 'Admin workspace'
-            : ($currentUser->hasRole(\App\Models\Role::ACCOUNTANT)
-                ? 'Finance workspace'
-                : ($currentUser->guardian_id ? 'Guardian portal' : 'Teacher portal'));
+        $homeRoute = route($currentUser->homeRouteName());
+        $workspaceLabel = match (true) {
+            $currentUser->hasRole(\App\Models\Role::SUPERADMIN) => 'Administration workspace',
+            $currentUser->hasRole(\App\Models\Role::ADMIN) => 'Admin workspace',
+            $currentUser->hasRole(\App\Models\Role::ACCOUNTANT) => 'Finance workspace',
+            $currentUser->guardian_id !== null => 'Guardian portal',
+            $currentUser->hasRole(\App\Models\Role::TEACHER) => 'Teacher portal',
+            default => 'My account',
+        };
     @endphp
     <input class="sidebar-toggle-control" type="checkbox" id="sidebar-toggle" aria-hidden="true">
     <label class="sidebar-backdrop" for="sidebar-toggle" aria-label="Close navigation"></label>
@@ -42,6 +39,13 @@
                 @endif
                 @if (auth()->user()->hasRole(\App\Models\Role::TEACHER))
                 <div><p class="sidebar-section-title">Teacher portal</p><a class="sidebar-link {{ request()->routeIs('teacher.portal') ? 'is-active' : '' }}" href="{{ route('teacher.portal') }}">Dashboard</a><a class="sidebar-link {{ request()->routeIs('teacher.classes') ? 'is-active' : '' }}" href="{{ route('teacher.classes') }}">My Classes</a><a class="sidebar-link {{ request()->routeIs('teacher.subjects') ? 'is-active' : '' }}" href="{{ route('teacher.subjects') }}">My Subjects</a><a class="sidebar-link {{ request()->routeIs('teacher.students.*') ? 'is-active' : '' }}" href="{{ route('teacher.students') }}">My Students</a></div>
+                @endif
+                @if (auth()->user()->hasRole(\App\Models\Role::SUPERADMIN) && ! auth()->user()->hasRole(\App\Models\Role::ADMIN))
+                <div>
+                    <p class="sidebar-section-title">Administration</p>
+                    <a class="sidebar-link {{ request()->routeIs('users.*') ? 'is-active' : '' }}"
+                       href="{{ route('users.index') }}">Users</a>
+                </div>
                 @endif
                 @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
                 <div>

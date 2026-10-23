@@ -36,7 +36,7 @@ it('clears failed login attempts after a successful login', function () {
     $this->post(route('login.store'), ['email' => $user->email, 'password' => 'incorrect-password'])
         ->assertSessionHasErrors('email');
     $this->post(route('login.store'), ['email' => $user->email, 'password' => 'password'])
-        ->assertRedirect(route('families.index'));
+        ->assertRedirect(route('admin.dashboard'));
     $this->post(route('logout'));
 
     foreach (range(1, 4) as $attempt) {
@@ -45,7 +45,7 @@ it('clears failed login attempts after a successful login', function () {
     }
 
     $this->post(route('login.store'), ['email' => $user->email, 'password' => 'password'])
-        ->assertRedirect(route('families.index'));
+        ->assertRedirect(route('admin.dashboard'));
 });
 
 it('returns the same password reset response whether an email exists or not', function () {
@@ -105,7 +105,7 @@ it('verifies an email through a valid signed link', function () {
         'hash' => sha1($user->getEmailForVerification()),
     ]);
 
-    $this->actingAs($user)->get($url)->assertRedirect(route('families.index'));
+    $this->actingAs($user)->get($url)->assertRedirect(route('profile.edit'));
 
     expect($user->refresh()->hasVerifiedEmail())->toBeTrue();
 });

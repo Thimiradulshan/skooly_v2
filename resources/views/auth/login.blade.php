@@ -25,7 +25,7 @@
             <div class="auth-card" data-testid="login-card">
                 <div class="auth-card-head">
                     <h1 class="auth-brand">Welcome back</h1>
-                    <p class="auth-subtitle">Sign in to Skooly School Management Admin.</p>
+                    <p class="auth-subtitle">Sign in to Skooly School Management.</p>
                 </div>
 
                 <form method="POST" action="{{ route('login.store') }}">
@@ -48,7 +48,7 @@
                 </form>
 
                 <p class="auth-note"><a href="{{ route('password.request') }}">Forgot your password?</a></p>
-                <p class="auth-note">Local demo: admin&#64;skooly.test / password</p>
+                <p class="auth-note">Local demonstration accounts are documented in <code>docs/DEMO_ACCOUNTS_SETUP.md</code>. Credentials are supplied privately and are never shown here.</p>
             </div>
         </section>
     </div>

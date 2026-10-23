@@ -1,58 +1,120 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Skooly School Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Skooly is a Laravel 13 application for running the core office workflows of a single
+school: academic setup, family and student registration, teachers, fees and dues, manual
+payment collection, receipts and corrections, events, payment reminders, promotion, and
+audit history.
 
-## About Laravel
+This repository is the **Stage 1 supervisor submission**. It is prepared for a local,
+synthetic-data demonstration, not for production deployment.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Technology
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.4 and Laravel 13
+- MySQL 8 for local use; SQLite for the automated test suite
+- Blade templates, plain CSS/JavaScript, and Vite
+- Pest, PHPStan/Larastan, Laravel Pint, and Composer Audit
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Supported roles
 
-## Learning Laravel
+| Role       | Workspace                                                        |
+| ---------- | ---------------------------------------------------------------- |
+| Superadmin | User-account administration                                      |
+| Admin      | Full academic, registration, fee, event, promotion, and audit UI |
+| Accountant | Exact-family payment collection and finance reporting            |
+| Teacher    | Read-only assigned classes, subjects, and students               |
+| Guardian   | Read-only portal for explicitly linked students                  |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Stage 1 features
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Authentication with login throttling, password reset, email verification, and
+  authenticator-app two-factor authentication.
+- Academic years, terms, grades, sections, subjects, archive/restore, and active-year
+  settings.
+- Staff accounts, fixed roles, Teacher qualifications, teaching assignments, and
+  class-in-charge assignments.
+- Families, Guardians, Students, explicit Guardian-to-Student links, private photo
+  uploads, contact overrides, enrollments, and placement history.
+- Fee categories and structures, discounts, opt-in subscriptions, recurring and event
+  due generation, and stored-balance reporting.
+- Manual family payments with itemized allocations, immutable receipts, PDF receipts, and
+  append-only reversal requests with independent Admin approval.
+- Events, participation and payment-status reporting, promotion drafts and atomic
+  confirmation, CSV/PDF exports, reminder records, and audit-log viewing/export.
+- Admin, Accountant, Teacher, and Guardian workflows with role- and record-scoped access.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Quick local setup
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Requirements: PHP 8.4, Composer, Node.js 22 LTS, npm, MySQL 8, and Git.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/Thimiradulshan/skooly_v2.git
+cd skooly_v2
+composer install
+copy .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Create the MySQL database, then configure `.env` and set a private demo password:
 
-## Contributing
+```dotenv
+DB_DATABASE=skooly
+SKOOLY_DEMO_PASSWORD=choose-a-private-local-password
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Finish the local demonstration setup:
 
-## Code of Conduct
+```bash
+php artisan config:clear
+php artisan migrate --no-interaction
+php artisan db:seed --class=DemoDataSeeder --no-interaction
+npm install
+npm run build
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Open <http://127.0.0.1:8000>. Demo accounts are synthetic and use only the private local
+password above:
 
-## Security Vulnerabilities
+| Role       | Email                    | Landing page        |
+| ---------- | ------------------------ | ------------------- |
+| Superadmin | `superadmin@skooly.test` | `/users`            |
+| Admin      | `admin@skooly.test`      | `/admin`            |
+| Accountant | `accountant@skooly.test` | `/payments/collect` |
+| Teacher    | `teacher@skooly.test`    | `/teacher`          |
+| Guardian   | `alice@skooly.test`      | `/guardian`         |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Never commit `.env`, credentials, database dumps, or student images.
 
-## License
+## Documentation
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- [Installation Guide](docs/INSTALLATION_GUIDE.md) — Windows/WAMP step by step.
+- [User Manual](docs/user-manual/SKOOLY_USER_MANUAL.md) — role-by-role procedures.
+- [Demo Accounts Setup](docs/DEMO_ACCOUNTS_SETUP.md) — safe provisioning and boundaries.
+- [Local Demo Setup](docs/local-demo.md) — quick seeding notes.
+- [Supervisor Handoff](docs/SUPERVISOR_HANDOFF.md) — review checklist and limitations.
+- [SRS Compliance Matrix](docs/audits/SRS_COMPLIANCE_MATRIX.md)
+- [Final Completeness Report](docs/audits/FINAL_COMPLETENESS_REPORT.md)
+
+## Testing and quality
+
+```bash
+php artisan test --compact
+php -d xdebug.mode=off vendor/bin/phpstan analyse --memory-limit=2G
+php vendor/bin/pint --test
+composer audit
+npm run build
+git diff --check
+```
+
+## Safety and limitations
+
+- Demo data is local-only and contains no real personal information.
+- External reminder delivery is not enabled. No email/SMS/WhatsApp is sent.
+- Payment reversals use append-only approval; direct deletion/refund is not available.
+- Promotion is draft-then-confirm; confirmed promotion reversal is not implemented.
+- Recurring dues are generated manually; no scheduler is configured.
+- Combined-payment allocation is manual; sibling discounts are not automated.
+- Registration-fee automation and settlement-driven activation are incomplete.
+- Production deployment, TLS, backups, monitoring, and real-user acceptance are out of scope.
+- Guardian access is strictly through explicit `User`-to-`Guardian` links, never by role.
