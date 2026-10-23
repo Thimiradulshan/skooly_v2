@@ -11,8 +11,8 @@
 (function () {
     'use strict';
 
-    var FOCUSABLE =
-        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    var SUBMIT_SELECTOR = 'button[type="submit"], input[type="submit"]';
+    var NAVIGATION_TIMEOUT_MS = 45000;
 
     function onReady(callback) {
         if (document.readyState !== 'loading') {
@@ -82,18 +82,45 @@
         if (!isError) {
             window.setTimeout(function () {
                 dismissToast(toast);
-            }, 6000);
+            }, 8000);
         }
 
         return toast;
     }
 
+    /**
+     * Move server-rendered flash alerts into the toast stack.
+     *
+     * The server renders a normal, visible alert so feedback survives a JS
+     * failure or a disabled script. When this enhancement runs, the alert is
+     * removed and shown as a toast instead.
+     */
     function migrateFlashMessages() {
         var flashes = document.querySelectorAll('[data-flash-message]');
         Array.prototype.forEach.call(flashes, function (node) {
             createToast(node.getAttribute('data-flash-message'), node.getAttribute('data-flash-tone'));
             node.parentNode.removeChild(node);
         });
+    }
+
+    /* ------------------------------------------------------- announcer -- */
+
+    function ensureAnnouncer() {
+        var region = document.getElementById('skooly-announcer');
+        if (region) {
+            return region;
+        }
+        region = document.createElement('div');
+        region.id = 'skooly-announcer';
+        region.className = 'sr-only';
+        region.setAttribute('role', 'status');
+        region.setAttribute('aria-live', 'polite');
+        document.body.appendChild(region);
+        return region;
+    }
+
+    function announce(message) {
+        ensureAnnouncer().textContent = message;
     }
 
     /* ------------------------------------------------------ confirm modal -- */
@@ -123,6 +150,7 @@
         var tone = options.tone || 'primary';
 
         host.innerHTML = '';
+        host.hidden = false;
 
         var dialog = document.createElement('div');
         dialog.className = 'confirm-dialog';
@@ -164,87 +192,193 @@
         var previouslyFocused = document.activeElement;
         proceed.focus();
 
+        function releaseFocus() {
+            document.removeEventListener('keydown', onKeydown);
+            if (previouslyFocused) {
+                previouslyFocused.focus();
+            }
+        }
+
         function onKeydown(event) {
             if (event.key === 'Escape') {
                 closeConfirm(host);
-                document.removeEventListener('keydown', onKeydown);
-                if (previouslyFocused) {
-                    previouslyFocused.focus();
-                }
+                releaseFocus();
             }
         }
         document.addEventListener('keydown', onKeydown);
 
         cancel.addEventListener('click', function () {
             closeConfirm(host);
-            document.removeEventListener('keydown', onKeydown);
-            if (previouslyFocused) {
-                previouslyFocused.focus();
-            }
+            releaseFocus();
         });
 
         proceed.addEventListener('click', function () {
             closeConfirm(host);
             document.removeEventListener('keydown', onKeydown);
-            setSubmitting(options.form);
+            submitConfirmedForm(options.form);
         });
     }
 
-    function interceptConfirmedForms() {
-        var forms = document.querySelectorAll('form[data-confirm]');
-        var host = getConfirmHost();
+    /**
+     * Submit the form only after the user confirms it.
+     *
+     * requestSubmit() re-fires the submit event, where the confirmed marker
+     * lets the handler continue instead of opening the dialog again. The
+     * marker is removed immediately afterwards, including when native
+     * constraint validation blocks the submission.
+     */
+    function submitConfirmedForm(form) {
+        if (!form) {
+            return;
+        }
 
-        Array.prototype.forEach.call(forms, function (form) {
-            form.addEventListener('submit', function (event) {
-                if (form.dataset.confirmed === 'true') {
-                    return;
+        form.dataset.confirmed = 'true';
+
+        try {
+            if (typeof form.requestSubmit === 'function') {
+                form.requestSubmit();
+            } else {
+                if (form.hasAttribute('data-loading')) {
+                    setSubmitting(form);
                 }
-                event.preventDefault();
-                buildConfirm(host, {
-                    title: form.getAttribute('data-confirm-title') || 'Please confirm',
-                    message: form.getAttribute('data-confirm'),
-                    action: form.getAttribute('data-confirm-action') || 'Confirm',
-                    tone: form.getAttribute('data-confirm-tone') || 'primary',
-                    cancel: form.getAttribute('data-confirm-cancel') || 'Cancel',
-                    form: form
-                });
-            });
-        });
+                form.submit();
+            }
+        } finally {
+            delete form.dataset.confirmed;
+        }
     }
 
     /* ------------------------------------------------- loading behaviour -- */
+
+    function submitControls(form) {
+        var controls = Array.prototype.slice.call(form.querySelectorAll(SUBMIT_SELECTOR));
+
+        // A submit button can live outside the form through the form="id" attribute.
+        if (form.id) {
+            var external = document.querySelectorAll('[form="' + form.id + '"]');
+            Array.prototype.forEach.call(external, function (control) {
+                if (control.type === 'submit' && controls.indexOf(control) === -1) {
+                    controls.push(control);
+                }
+            });
+        }
+
+        return controls;
+    }
 
     function setSubmitting(form) {
         if (!form || form.dataset.submitting === 'true') {
             return;
         }
         form.dataset.submitting = 'true';
+        form.setAttribute('aria-busy', 'true');
 
-        var submit = form.querySelector('button[type="submit"], input[type="submit"]');
-        if (!submit) {
-            return;
-        }
-        submit.dataset.originalLabel = submit.dataset.originalLabel || submit.innerHTML;
-        submit.disabled = true;
-        submit.classList.add('is-loading');
-        submit.setAttribute('aria-busy', 'true');
-        if (submit.tagName === 'BUTTON') {
-            submit.innerHTML = '<span class="btn-spinner" aria-hidden="true"></span> Processing';
-        }
+        var controls = submitControls(form);
+        Array.prototype.forEach.call(controls, function (control) {
+            if (control.dataset.originalLabel === undefined) {
+                control.dataset.originalLabel = control.tagName === 'BUTTON'
+                    ? control.innerHTML
+                    : control.value;
+            }
+            control.disabled = true;
+            control.classList.add('is-loading');
+            control.setAttribute('aria-busy', 'true');
+
+            if (control.tagName === 'BUTTON') {
+                control.innerHTML = '<span class="btn-spinner" aria-hidden="true"></span> Processing';
+            } else {
+                control.value = 'Processing';
+            }
+        });
+
+        announce('Submitting. Please wait.');
+
+        // If the browser never navigates (cancelled navigation, dead network),
+        // put the form back so the user is not trapped on a disabled button.
+        form.dataset.submitTimer = String(window.setTimeout(function () {
+            restoreForm(form);
+            createToast(
+                'No response was received. The action may not have completed. Check the record before trying again.',
+                'error'
+            );
+        }, NAVIGATION_TIMEOUT_MS));
     }
 
-    function interceptLoadingForms() {
-        var forms = document.querySelectorAll('form[data-loading]');
+    function restoreForm(form) {
+        if (!form) {
+            return;
+        }
+
+        if (form.dataset.submitTimer) {
+            window.clearTimeout(Number(form.dataset.submitTimer));
+            delete form.dataset.submitTimer;
+        }
+
+        delete form.dataset.confirmed;
+
+        if (form.dataset.submitting !== 'true') {
+            return;
+        }
+
+        delete form.dataset.submitting;
+        form.removeAttribute('aria-busy');
+
+        var controls = submitControls(form);
+        Array.prototype.forEach.call(controls, function (control) {
+            if (control.dataset.originalLabel !== undefined) {
+                if (control.tagName === 'BUTTON') {
+                    control.innerHTML = control.dataset.originalLabel;
+                } else {
+                    control.value = control.dataset.originalLabel;
+                }
+                delete control.dataset.originalLabel;
+            }
+            control.disabled = false;
+            control.classList.remove('is-loading');
+            control.removeAttribute('aria-busy');
+        });
+    }
+
+    function restoreAllForms() {
+        var forms = document.querySelectorAll('form[data-loading], form[data-confirm]');
+        Array.prototype.forEach.call(forms, restoreForm);
+        announce('');
+    }
+
+    function interceptForms() {
+        var forms = document.querySelectorAll('form[data-confirm], form[data-loading]');
+        var host = getConfirmHost();
+
         Array.prototype.forEach.call(forms, function (form) {
-            form.addEventListener('submit', function () {
-                setSubmitting(form);
+            form.addEventListener('submit', function (event) {
+                if (form.hasAttribute('data-confirm') && form.dataset.confirmed !== 'true') {
+                    event.preventDefault();
+                    buildConfirm(host, {
+                        title: form.getAttribute('data-confirm-title') || 'Please confirm',
+                        message: form.getAttribute('data-confirm'),
+                        action: form.getAttribute('data-confirm-action') || 'Confirm',
+                        tone: form.getAttribute('data-confirm-tone') || 'primary',
+                        cancel: form.getAttribute('data-confirm-cancel') || 'Cancel',
+                        form: form
+                    });
+                    return;
+                }
+
+                if (form.hasAttribute('data-loading')) {
+                    setSubmitting(form);
+                }
             });
         });
     }
 
     onReady(function () {
         migrateFlashMessages();
-        interceptConfirmedForms();
-        interceptLoadingForms();
+        interceptForms();
+    });
+
+    // Restore controls when a page is restored from the back/forward cache,
+    // otherwise a cancelled submit leaves the button stuck on "Processing".
+    window.addEventListener('pageshow', function () {
+        restoreAllForms();
     });
 })();
