@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Skooly isolated UI audit fixture</title>
+<link rel="stylesheet" href="../../../public/css/admin.css">
+<body>
+<p>Synthetic browser fixture. No Laravel session, real records, or network mutation.</p>
+<iframe name="audit-target" hidden></iframe>
+<form id="confirmed" action="about:blank" target="audit-target" data-confirm="Audit confirmation" data-loading>
+    <button type="submit">Archive fixture</button>
+</form>
+<form id="plain" action="about:blank" target="audit-target" data-loading>
+    <input name="name" required value="Synthetic event">
+    <button type="submit">Save fixture</button>
+    <button type="submit" disabled>Originally unavailable</button>
+</form>
+<pre id="results"></pre>
+<script src="../../../public/js/admin-ui.js"></script>
+<script>
+window.addEventListener('load', function () {
+    const results = {};
+    const confirmed = document.getElementById('confirmed');
+    const plain = document.getElementById('plain');
+    let acceptedPlain = 0;
+    let acceptedConfirmed = 0;
+    plain.addEventListener('submit', e => { if (!e.defaultPrevented) acceptedPlain++; });
+    confirmed.addEventListener('submit', e => { if (!e.defaultPrevented) acceptedConfirmed++; });
+    confirmed.requestSubmit();
+    results.confirmVisible = !document.getElementById('skooly-confirm').hidden;
+    results.enabledWhileConfirming = !confirmed.querySelector('button').disabled;
+    document.querySelector('.confirm-actions button:last-child').click();
+    results.confirmedAccepted = acceptedConfirmed;
+    window.dispatchEvent(new PageTransitionEvent('pageshow', {persisted: true}));
+    results.restoredOnPageshow = !confirmed.querySelector('button').disabled;
+    plain.requestSubmit();
+    plain.requestSubmit();
+    results.acceptedPlainSubmissions = acceptedPlain;
+    results.busy = plain.getAttribute('aria-busy');
+    window.dispatchEvent(new PageTransitionEvent('pageshow', {persisted: true}));
+    results.originallyDisabledStillDisabled = plain.querySelectorAll('button')[1].disabled;
+    plain.querySelector('input').value = '';
+    plain.requestSubmit();
+    results.invalidFormNotSubmitted = acceptedPlain === 2;
+    results.invalidFormNotBusy = !plain.hasAttribute('aria-busy');
+    document.getElementById('results').textContent = JSON.stringify(results, null, 2);
+});
+</script>
+</body>
+</html>

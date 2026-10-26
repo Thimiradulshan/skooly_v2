@@ -10,13 +10,24 @@ use InvalidArgumentException;
 
 class ActiveAcademicYear
 {
+    public function configured(): ?AcademicYear
+    {
+        $setting = SchoolSetting::query()->first();
+
+        if ($setting === null) {
+            return null;
+        }
+
+        return AcademicYear::query()
+            ->active()
+            ->find($setting->active_academic_year_id);
+    }
+
     public function current(): AcademicYear
     {
-        $setting = SchoolSetting::query()->firstOrFail();
+        $academicYear = $this->configured();
 
-        $academicYear = AcademicYear::query()->find($setting->active_academic_year_id);
-
-        if ($academicYear === null || $academicYear->is_archived) {
+        if ($academicYear === null) {
             throw new InvalidArgumentException('The configured active academic year must be available.');
         }
 

@@ -2,6 +2,8 @@
 
 Do not invent answers for these.
 
+The 2026-10-25 route/UI repair did not resolve or alter any business decision in this file. CA-14 was a setup-path defect, not a new active-year policy decision.
+
 ## Global Unresolved Decisions
 - Default payment allocation strategy remains unresolved.
 - Default sibling discount percentage/rule remains unresolved.

@@ -6,7 +6,7 @@
     <div class="auth-layout">
         <section class="auth-story">
             <div class="auth-story-brand">
-                <span class="brand-mark">S</span>
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span></span>
                 <span>Skooly</span>
             </div>
 

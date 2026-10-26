@@ -21,6 +21,7 @@
                             </option>
                         @endforeach
                     </select>
+                    <x-field-error name="fee_category_id" />
                 </div>
 
                 <div class="form-field">
@@ -33,6 +34,7 @@
                             </option>
                         @endforeach
                     </select>
+                    <x-field-error name="grade_id" />
                 </div>
 
                 <div class="form-field">
@@ -45,18 +47,21 @@
                             </option>
                         @endforeach
                     </select>
+                    <x-field-error name="academic_year_id" />
                 </div>
 
                 <div class="form-field">
                     <label class="form-label" for="frequency">Frequency <span class="req">*</span></label>
                     <input class="form-control" type="text" id="frequency" name="frequency"
                            value="{{ old('frequency') }}" required placeholder="monthly, termly, yearly">
+                    <x-field-error name="frequency" />
                 </div>
 
                 <div class="form-field">
                     <label class="form-label" for="amount">Amount <span class="req">*</span></label>
                     <input class="form-control" type="number" min="0" step="0.01" id="amount" name="amount"
                            value="{{ old('amount') }}" required>
+                    <x-field-error name="amount" />
                 </div>
             </div>
 

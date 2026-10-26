@@ -58,8 +58,16 @@ class TeacherAssignmentController extends Controller
 
     public function create(ActiveAcademicYear $activeAcademicYear)
     {
+        $academicYear = $activeAcademicYear->configured();
+
+        if ($academicYear === null) {
+            return redirect()
+                ->route('school-settings.edit')
+                ->with('error', 'Choose an active academic year before creating a teaching assignment.');
+        }
+
         return view('teacher-assignments.create', [
-            'academicYears' => collect([$activeAcademicYear->current()]),
+            'academicYears' => collect([$academicYear]),
             'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
             'teachers' => $this->teachers()->get(),
             'subjects' => Subject::query()->orderBy('code')->get(),

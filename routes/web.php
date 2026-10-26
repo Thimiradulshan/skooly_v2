@@ -114,7 +114,9 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
     Route::get('/audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('audit-logs.show');
 
     Route::resource('academic-years', AcademicYearController::class)->except('destroy');
-    Route::resource('terms', TermController::class)->except('destroy');
+    Route::resource('terms', TermController::class)
+        ->except('destroy')
+        ->middlewareFor(['create', 'store'], 'active-academic-year');
     Route::resource('grades', GradeController::class)->except('destroy');
     Route::resource('sections', SectionController::class)->except('destroy');
     Route::post('/academic-years/{academicYear}/archive', [AcademicYearController::class, 'archive'])->name('academic-years.archive');
@@ -131,14 +133,14 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
     Route::post('/teacher-qualifications', [TeacherQualificationController::class, 'store'])->name('teacher-qualifications.store');
     Route::get('/teacher-qualifications/{teacher}', [TeacherQualificationController::class, 'show'])->name('teacher-qualifications.show');
     Route::get('/teacher-assignments', [TeacherAssignmentController::class, 'index'])->name('teacher-assignments.index');
-    Route::get('/teacher-assignments/create', [TeacherAssignmentController::class, 'create'])->name('teacher-assignments.create');
-    Route::post('/teacher-assignments', [TeacherAssignmentController::class, 'store'])->name('teacher-assignments.store');
+    Route::get('/teacher-assignments/create', [TeacherAssignmentController::class, 'create'])->middleware('active-academic-year')->name('teacher-assignments.create');
+    Route::post('/teacher-assignments', [TeacherAssignmentController::class, 'store'])->middleware('active-academic-year')->name('teacher-assignments.store');
     Route::get('/teacher-assignments/{teacherAssignment}', [TeacherAssignmentController::class, 'show'])->name('teacher-assignments.show');
-    Route::get('/teacher-assignments/{teacherAssignment}/edit', [TeacherAssignmentController::class, 'edit'])->name('teacher-assignments.edit');
-    Route::put('/teacher-assignments/{teacherAssignment}', [TeacherAssignmentController::class, 'update'])->name('teacher-assignments.update');
+    Route::get('/teacher-assignments/{teacherAssignment}/edit', [TeacherAssignmentController::class, 'edit'])->middleware('active-academic-year')->name('teacher-assignments.edit');
+    Route::put('/teacher-assignments/{teacherAssignment}', [TeacherAssignmentController::class, 'update'])->middleware('active-academic-year')->name('teacher-assignments.update');
     Route::get('/section-year-assignments', [SectionYearAssignmentController::class, 'index'])->name('section-year-assignments.index');
-    Route::get('/section-year-assignments/create', [SectionYearAssignmentController::class, 'create'])->name('section-year-assignments.create');
-    Route::post('/section-year-assignments', [SectionYearAssignmentController::class, 'store'])->name('section-year-assignments.store');
+    Route::get('/section-year-assignments/create', [SectionYearAssignmentController::class, 'create'])->middleware('active-academic-year')->name('section-year-assignments.create');
+    Route::post('/section-year-assignments', [SectionYearAssignmentController::class, 'store'])->middleware('active-academic-year')->name('section-year-assignments.store');
     Route::get('/section-year-assignments/{sectionYearAssignment}', [SectionYearAssignmentController::class, 'show'])->name('section-year-assignments.show');
     Route::get('/school-settings', [SchoolSettingController::class, 'edit'])->name('school-settings.edit');
     Route::match(['put', 'patch'], '/school-settings', [SchoolSettingController::class, 'update'])
@@ -152,8 +154,10 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
     Route::match(['put', 'patch'], '/families/{family}', [FamilyController::class, 'update'])->name('families.update');
 
     Route::get('/families/{family}/students/create', [StudentRegistrationController::class, 'create'])
+        ->middleware('active-academic-year')
         ->name('families.students.create');
     Route::post('/families/{family}/students', [StudentRegistrationController::class, 'store'])
+        ->middleware('active-academic-year')
         ->name('families.students.store');
     Route::get('/families/{family}/guardians/create', [GuardianController::class, 'create'])
         ->name('families.guardians.create');
@@ -186,8 +190,8 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
         ->name('fee-categories.update');
 
     Route::get('/fee-structures', [FeeStructureController::class, 'index'])->name('fee-structures.index');
-    Route::get('/fee-structures/create', [FeeStructureController::class, 'create'])->name('fee-structures.create');
-    Route::post('/fee-structures', [FeeStructureController::class, 'store'])->name('fee-structures.store');
+    Route::get('/fee-structures/create', [FeeStructureController::class, 'create'])->middleware('active-academic-year')->name('fee-structures.create');
+    Route::post('/fee-structures', [FeeStructureController::class, 'store'])->middleware('active-academic-year')->name('fee-structures.store');
     Route::get('/fee-structures/{feeStructure}/edit', [FeeStructureController::class, 'edit'])->name('fee-structures.edit');
     Route::match(['put', 'patch'], '/fee-structures/{feeStructure}', [FeeStructureController::class, 'update'])
         ->name('fee-structures.update');
@@ -202,34 +206,42 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
         ->name('discounts.deactivate');
 
     Route::get('/students/{student}/fee-subscriptions/create', [StudentFeeSubscriptionController::class, 'create'])
+        ->middleware('active-academic-year')
         ->name('students.fee-subscriptions.create');
     Route::get('/students/{student}/fee-subscriptions', [StudentFeeSubscriptionController::class, 'index'])
         ->name('students.fee-subscriptions.index');
     Route::post('/students/{student}/fee-subscriptions', [StudentFeeSubscriptionController::class, 'store'])
+        ->middleware('active-academic-year')
         ->name('students.fee-subscriptions.store');
     Route::post('/student-fee-subscriptions/{studentFeeSubscription}/end', [StudentFeeSubscriptionController::class, 'end'])
         ->name('student-fee-subscriptions.end');
 
     Route::get('/due-generation/recurring', [DueGenerationController::class, 'recurringCreate'])
+        ->middleware('active-academic-year')
         ->name('due-generation.recurring.create');
     Route::post('/due-generation/recurring', [DueGenerationController::class, 'recurringStore'])
+        ->middleware('active-academic-year')
         ->name('due-generation.recurring.store');
     Route::get('/due-generation/events', [DueGenerationController::class, 'eventCreate'])
+        ->middleware('active-academic-year')
         ->name('due-generation.events.create');
     Route::post('/due-generation/events', [DueGenerationController::class, 'eventStore'])
+        ->middleware('active-academic-year')
         ->name('due-generation.events.store');
 
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
-    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
-    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::get('/events/create', [EventController::class, 'create'])->middleware('active-academic-year')->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->middleware('active-academic-year')->name('events.store');
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
     Route::get('/events/{event}/status', [EventController::class, 'status'])->name('events.status');
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
     Route::match(['put', 'patch'], '/events/{event}', [EventController::class, 'update'])->name('events.update');
 
     Route::get('/events/{event}/charges/create', [EventChargeController::class, 'create'])
+        ->middleware('active-academic-year')
         ->name('events.charges.create');
     Route::post('/events/{event}/charges', [EventChargeController::class, 'store'])
+        ->middleware('active-academic-year')
         ->name('events.charges.store');
     Route::get('/events/{event}/charges/{charge}/edit', [EventChargeController::class, 'edit'])
         ->scopeBindings()
@@ -239,14 +251,18 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
         ->name('events.charges.update');
 
     Route::get('/events/{event}/participation/create', [EventParticipationController::class, 'create'])
+        ->middleware('active-academic-year')
         ->name('events.participation.create');
     Route::post('/events/{event}/participation', [EventParticipationController::class, 'store'])
+        ->middleware('active-academic-year')
         ->name('events.participation.store');
 
     Route::get('/receipts/{receipt}/pdf', [ReceiptController::class, 'downloadPdf'])->name('receipts.pdf');
     Route::get('/payment-reminders/generate', [PaymentReminderController::class, 'create'])
+        ->middleware('active-academic-year')
         ->name('payment-reminders.create');
     Route::post('/payment-reminders/generate', [PaymentReminderController::class, 'store'])
+        ->middleware('active-academic-year')
         ->name('payment-reminders.store');
     Route::post('/payment-reminders/{paymentReminder}/cancel', [PaymentReminderController::class, 'cancel'])
         ->name('payment-reminders.cancel');
@@ -256,8 +272,10 @@ Route::middleware(['auth', 'verified', 'role:'.Role::ADMIN])->group(function ():
     Route::get('/promotion-batches', [PromotionBatchController::class, 'index'])
         ->name('promotion-batches.index');
     Route::get('/promotion-batches/create', [PromotionBatchController::class, 'create'])
+        ->middleware('active-academic-year')
         ->name('promotion-batches.create');
     Route::post('/promotion-batches', [PromotionBatchController::class, 'store'])
+        ->middleware('active-academic-year')
         ->name('promotion-batches.store');
     Route::get('/promotion-batches/{promotionBatch}', [PromotionBatchController::class, 'show'])
         ->name('promotion-batches.show');

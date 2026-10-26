@@ -54,8 +54,16 @@ class SectionYearAssignmentController extends Controller
 
     public function create(ActiveAcademicYear $activeAcademicYear)
     {
+        $academicYear = $activeAcademicYear->configured();
+
+        if ($academicYear === null) {
+            return redirect()
+                ->route('school-settings.edit')
+                ->with('error', 'Choose an active academic year before assigning a class-in-charge.');
+        }
+
         return view('section-year-assignments.create', [
-            'academicYears' => collect([$activeAcademicYear->current()]),
+            'academicYears' => collect([$academicYear]),
             'sections' => Section::query()->active()->with('grade')->orderBy('grade_id')->orderBy('name')->get(),
             'teachers' => $this->teachers()->get(),
         ]);

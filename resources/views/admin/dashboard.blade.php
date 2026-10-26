@@ -3,26 +3,75 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <x-page-header title="Operations overview"
-                   :subtitle="$currentAcademicYear ? 'Current academic year: '.$currentAcademicYear->name : 'Set an active academic year to view year-specific operational balances.'"
-                   eyebrow="Today" />
+    <section class="dashboard-hero">
+        <div>
+            <p class="dashboard-hero-eyebrow">{{ $currentAcademicYear?->name ?? 'Not configured' }}</p>
+            <h1>Dashboard</h1>
+            <p>Welcome back. Here is the current operational view of Skooly.</p>
+        </div>
+        <x-button-link :href="route('payments.collect')" class="dashboard-payment-action">Collect payment</x-button-link>
+    </section>
 
-    <h2 class="section-heading">School overview</h2>
-    <div class="card-grid" data-testid="dashboard-metrics">
-        <x-stat-card label="Families" :value="$familyCount" hint="Registered households" />
-        <x-stat-card label="Registered students" :value="$studentCount" hint="All student profiles" />
-        <x-stat-card label="Active students" :value="$activeStudentCount" hint="Current student status" />
-        <x-stat-card label="Active teachers" :value="$teacherCount" hint="Teacher accounts enabled" />
-        <x-stat-card label="Current academic year" :value="$currentAcademicYear?->name ?? 'Not configured'" hint="Operational year" />
-    </div>
+    <section aria-labelledby="school-overview-heading">
+        <div class="dashboard-section-heading">
+            <div><p class="section-kicker">Overview</p><h2 id="school-overview-heading">School at a glance</h2></div>
+            <p>{{ $currentAcademicYear ? 'Current academic year: '.$currentAcademicYear->name : 'Not configured — set an active academic year to view year-scoped balances.' }}</p>
+        </div>
+        <div class="ui-kpi-grid" data-testid="dashboard-metrics">
+            <x-ui.kpi-card title="Registered students" :value="$studentCount" hint="All student profiles" icon="users" accent="primary" />
+            <x-ui.kpi-card title="Families" :value="$familyCount" hint="Registered households" icon="family" accent="success" />
+            <x-ui.kpi-card title="Active teachers" :value="$teacherCount" hint="Teacher accounts enabled" icon="staff" accent="warning" />
+            <x-ui.kpi-card title="Outstanding dues" :value="$outstandingBalance" :hint="'Outstanding fees for '.$studentsWithOutstandingBalance.' student(s)'" icon="dues" accent="surface" />
+        </div>
+    </section>
 
-    <h2 class="section-heading">Financial overview</h2>
-    <div class="card-grid">
-        <x-stat-card label="Outstanding fees" :value="$outstandingBalance" :hint="$currentAcademicYear ? $currentAcademicYear->name.' balance' : 'No active academic year'" />
+    <section class="dashboard-secondary-grid" aria-label="Financial and operational indicators">
         <x-stat-card label="Overdue balances" :value="$overdueBalance" :hint="$overdueDueItemCount.' overdue due item(s)'" />
         <x-stat-card label="Collected this month" :value="$paymentsCollectedThisMonth" hint="Recorded payments by paid date" />
-        <x-stat-card label="Students with balances" :value="$studentsWithOutstandingBalance" hint="Current academic year" />
-    </div>
+        <x-stat-card label="Active students" :value="$activeStudentCount" hint="Current student status" />
+    </section>
+
+    <section class="dashboard-transactions" aria-labelledby="recent-transactions-heading">
+        <x-card>
+            <div class="dashboard-card-heading">
+                <div><p class="section-kicker">Finance</p><h2 id="recent-transactions-heading">Recent transactions</h2></div>
+                <x-button-link :href="route('payments.index')" variant="quiet">View all payments</x-button-link>
+            </div>
+            <div class="table-wrap">
+                <table class="table table--transactions">
+                    <thead><tr><th>Paid</th><th>Family</th><th>Reference</th><th>Receipt</th><th>Status</th><th class="num">Amount</th></tr></thead>
+                    <tbody>
+                    @forelse ($recentPayments as $payment)
+                        <tr>
+                            <td class="transaction-date">{{ $payment->paid_at->format('M j, Y') }}</td>
+                            <td><a href="{{ route('families.show', $payment->family) }}">{{ $payment->family->family_code }}</a></td>
+                            <td><a href="{{ route('payments.show', $payment) }}">{{ $payment->payment_reference ?: 'Payment '.$payment->id }}</a></td>
+                            <td>
+                                @if ($payment->receipt)
+                                    <a href="{{ route('receipts.show', $payment->receipt) }}">{{ $payment->receipt->receipt_no }}</a>
+                                @else
+                                    Not issued
+                                @endif
+                            </td>
+                            <td><x-status-badge :value="$payment->receipt ? 'paid' : 'pending'" /></td>
+                            <td class="num">{{ $payment->amount }}</td>
+                        </tr>
+                    @empty
+                        <tr class="table-empty">
+                            <td colspan="6">
+                                <span class="empty-state-title">No transactions yet</span>
+                                Recorded payments will appear here once finance collects one.
+                                <div class="empty-actions">
+                                    <x-button-link :href="route('payments.collect')" variant="secondary" size="small">Collect payment</x-button-link>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </x-card>
+    </section>
 
     <h2 class="section-heading">Requires attention</h2>
     <div class="card-grid">
@@ -98,11 +147,15 @@
         </a>
     </div>
 
-    <h2 class="section-heading">Recent activity</h2>
+    <section class="dashboard-activity" aria-labelledby="recent-activity-heading">
     <x-card>
+        <div class="dashboard-card-heading">
+            <div><p class="section-kicker">Audit trail</p><h2 id="recent-activity-heading">Recent activity</h2></div>
+            <x-button-link :href="route('audit-logs.index')" variant="quiet">View audit log</x-button-link>
+        </div>
         <div class="table-wrap">
-            <table class="table">
-                <thead><tr><th>Occurred at</th><th>Action</th><th>Actor</th><th>Record</th></tr></thead>
+            <table class="table table--activity">
+                <thead><tr><th>Recorded</th><th>Activity</th><th>Performed by</th><th>Record</th></tr></thead>
                 <tbody>
                 @forelse ($recentAuditLogs as $auditLog)
                     <tr>
@@ -117,6 +170,6 @@
                 </tbody>
             </table>
         </div>
-        <div class="page-actions"><x-button-link :href="route('audit-logs.index')" variant="secondary">View audit log</x-button-link></div>
     </x-card>
+    </section>
 @endsection

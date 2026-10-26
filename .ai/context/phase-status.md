@@ -1,7 +1,7 @@
 ﻿# Phase Status
 
 ## Current Phase
-Roadmap Step 2 Security Hardening
+System-wide 404 repair and commercial UI/navigation transformation — implementation and automated verification complete; browser/MySQL acceptance pending
 
 ## Completed Phases
 - Phase 1: Academic Foundation - complete
@@ -53,6 +53,8 @@ Roadmap Step 2 Security Hardening
 - Roadmap Step 2: Security Hardening - complete / pending commit
 
 ## Current Status
+On 2026-10-25, the four reported 404 workflows were repaired through an explicit first-run SchoolSetting flow and active-year route middleware. The shared navigation is now role-specific, categorized, collapsible on desktop, and an accessible mobile drawer. Required audit reports are under `docs/audits`. Automated verification passes, but real-browser acceptance is not verified because local MySQL refused connections. `npm audit` still reports four development dependency advisories (CA-22).
+
 User-approved Accountant payment collection is implemented. An Accountant starts at a finance-only exact family-code lookup, sees only the selected Family's student due-item allocation data, and records the existing manual payment transaction. Family browsing, reversal approval, reminder mutation, and all non-finance pages remain denied. Refunds remain deferred.
 
 Roadmap Step 2 adds login throttling, Laravel password reset, email verification, `verified` route protection, production secure-cookie documentation, MySQL StudentDueItem money CHECK constraints, and authenticator-app TOTP two-factor authentication.
@@ -415,7 +417,7 @@ Previously passed on 2026-09-30:
 None.
 
 ## Next Exact Step
-1. Choose a two-factor authentication method before implementing 2FA.
-2. Review and commit pending work if approved.
-3. Do not implement report exports, dashboard charts, or reports without their outstanding product decisions.
-4. Refunds remain deferred.
+1. Start local MySQL and complete `docs/audits/FRONTEND_BACKEND_ACCEPTANCE.md` at 1440, 1024, 768, 375, and 320px.
+2. Review and explicitly approve dependency upgrades for CA-22 before running `npm audit fix`; do not change dependencies implicitly.
+3. Review the preserved pre-existing uncommitted documentation deletions and `docs/commercial-audit` additions separately.
+4. Do not implement report exports, dashboard charts, refunds, or unresolved business decisions speculatively.

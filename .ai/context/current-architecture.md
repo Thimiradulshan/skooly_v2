@@ -300,3 +300,11 @@ Laravel modular monolith.
 - docs/backend-frontend-feature-parity.md, docs/crud-coverage-matrix.md, docs/frontend-missing-feature-backlog.md,
   and docs/destructive-action-policy-draft.md are the planning record for what to build next.
 - Known parity rule: money and history are never deleted; configuration is archived.
+
+## 2026-10-25 Route and Navigation Repair
+- `SchoolSettingController` supports explicit first-run creation of singleton row ID 1 after Admin validation; it never auto-selects an academic year.
+- `ActiveAcademicYear::configured()` provides a nullable prerequisite check while `current()` remains strict for domain operations.
+- `EnsureActiveAcademicYearIsConfigured` guards new year-scoped Admin create/store routes and redirects authorized Admins to School Settings with feedback. Historical reads and existing configuration history remain available.
+- The shared sidebar is composed by `resources/views/partials/navigation.blade.php` with role-specific native collapsible groups.
+- `public/js/admin-ui.js` adds mobile drawer and desktop-collapse behavior without changing form submission or authorization.
+- Breadcrumb and field-error Blade components were added; existing cards, stats, search, pagination, badges, alerts, buttons, confirmations, and loading states remain the shared design primitives.

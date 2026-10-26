@@ -10,6 +10,17 @@ git diff --check
 git status
 
 ## Latest Known Good
+System-wide 404 and navigation/UI repair passed on 2026-10-25:
+- `php artisan test --compact`: 655 tests / 3235 assertions passed (10 warnings without details).
+- `php -d xdebug.mode=off vendor/bin/phpstan analyse --memory-limit=2G --no-progress --debug`: 0 errors.
+- `php vendor/bin/pint --dirty --format agent`: passed.
+- `composer audit`: no security vulnerability advisories.
+- `npm run build`: passed; optional Fontaine fallback warning only.
+- `node --check public/js/admin-ui.js`: passed.
+- `git diff --check`: passed; line-ending normalization warning only.
+- Additional `npm audit`: failed with 4 existing development dependency advisories (2 high, 2 critical); CA-22 remains open.
+- Browser/MySQL acceptance: not verified because MySQL at 127.0.0.1:3306 refused connections and no browser automation was available.
+
 Authenticator-app TOTP two-factor authentication passed on 2026-10-08:
 - `php artisan test tests/Feature/TwoFactorAuthenticationTest.php --compact`: 7 tests / 53 assertions passed.
 - `php artisan migrate:fresh --no-interaction` passed.

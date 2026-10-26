@@ -13,21 +13,24 @@ class SchoolSettingController extends Controller
 {
     public function edit()
     {
-        $schoolSetting = SchoolSetting::query()->firstOrFail();
+        $schoolSetting = SchoolSetting::query()->first();
 
         return view('school-settings.edit', [
             'schoolSetting' => $schoolSetting,
             'academicYears' => AcademicYear::query()->active()->orderByDesc('start_date')->get(),
-            'incompletePromotionBatchCount' => $this->incompletePromotionBatchCount($schoolSetting),
+            'incompletePromotionBatchCount' => $schoolSetting === null
+                ? 0
+                : $this->incompletePromotionBatchCount($schoolSetting),
         ]);
     }
 
     public function update(UpdateSchoolSettingRequest $request)
     {
-        $schoolSetting = SchoolSetting::query()->firstOrFail();
+        $schoolSetting = SchoolSetting::query()->first();
 
         if (
-            $request->integer('active_academic_year_id') !== $schoolSetting->active_academic_year_id
+            $schoolSetting !== null
+            && $request->integer('active_academic_year_id') !== $schoolSetting->active_academic_year_id
             && $this->incompletePromotionBatchCount($schoolSetting) > 0
             && ! $request->boolean('acknowledge_incomplete_promotions')
         ) {
@@ -36,7 +39,10 @@ class SchoolSettingController extends Controller
             ]);
         }
 
-        $schoolSetting->update($request->safe()->only(['active_academic_year_id']));
+        SchoolSetting::query()->updateOrCreate(
+            ['id' => 1],
+            $request->safe()->only(['active_academic_year_id']),
+        );
 
         return redirect()->route('school-settings.edit')->with('status', 'School settings updated.');
     }

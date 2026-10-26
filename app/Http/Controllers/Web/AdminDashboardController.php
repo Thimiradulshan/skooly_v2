@@ -58,6 +58,12 @@ class AdminDashboardController extends Controller
                 ->latest('id')
                 ->limit(8)
                 ->get(),
+            'recentPayments' => Payment::query()
+                ->with(['family', 'receipt'])
+                ->latest('paid_at')
+                ->latest('id')
+                ->limit(6)
+                ->get(),
         ]);
     }
 

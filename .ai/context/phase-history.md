@@ -1,5 +1,22 @@
 ﻿# Phase History
 
+## System-wide 404 Repair and Commercial UI/Navigation Transformation
+Status: implementation and automated verification complete on 2026-10-25; browser/MySQL acceptance pending.
+
+Implemented:
+- Repaired the four reported route failures by replacing the impossible first-run SchoolSetting `firstOrFail` path with explicit validated singleton setup.
+- Added active-year prerequisite middleware for new year-scoped Admin workflows without weakening role, verification, archive, or historical-read rules.
+- Audited 189 runtime routes and 383 literal Blade route references; no missing named route reference was found.
+- Rebuilt shared role navigation into categorized native collapsible groups with desktop collapse, mobile drawer semantics, focus treatment, and active-state ARIA.
+- Added breadcrumb and field-error components and targeted form improvements.
+- Added four required reports under `docs/audits` and updated CA-14 compliance/defect records.
+
+Verification:
+- 655 tests / 3235 assertions passed.
+- PHPStan 0 errors; Pint, Composer audit, Vite build, JS syntax, and diff check passed.
+- `npm audit` still reports CA-22 advisories.
+- Real-browser and live MySQL coverage not verified.
+
 ## Phase 1: Academic Foundation
 Status: complete.
 

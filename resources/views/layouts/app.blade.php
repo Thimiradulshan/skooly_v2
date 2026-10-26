@@ -20,13 +20,12 @@
             default => 'My account',
         };
     @endphp
-    <input class="sidebar-toggle-control" type="checkbox" id="sidebar-toggle" aria-hidden="true">
-    <label class="sidebar-backdrop" for="sidebar-toggle" aria-label="Close navigation"></label>
+    <button class="sidebar-backdrop" type="button" data-sidebar-close aria-label="Close navigation" tabindex="-1"></button>
 
     <div class="app-shell">
-        <aside class="sidebar">
+        <aside class="sidebar" id="primary-navigation" aria-label="Workspace navigation">
             <a class="sidebar-brand" href="{{ $homeRoute }}">
-                <span class="brand-mark">S</span>
+                    <span class="brand-mark" aria-hidden="true"><span></span><span></span></span>
                 <span class="brand-copy">
                     <span class="brand-name">Skooly</span>
                     <span class="sidebar-tagline">School Management</span>
@@ -34,113 +33,7 @@
             </a>
 
             <nav class="sidebar-nav" aria-label="Main navigation">
-                @if (auth()->user()->guardian_id)
-                <div><p class="sidebar-section-title">Guardian portal</p><a class="sidebar-link {{ request()->routeIs('guardian.portal') ? 'is-active' : '' }}" href="{{ route('guardian.portal') }}">Dashboard</a><a class="sidebar-link {{ request()->routeIs('guardian.dues') ? 'is-active' : '' }}" href="{{ route('guardian.dues') }}">Fees &amp; Dues</a><a class="sidebar-link {{ request()->routeIs('guardian.payments') ? 'is-active' : '' }}" href="{{ route('guardian.payments') }}">Payment History</a></div>
-                @endif
-                @if (auth()->user()->hasRole(\App\Models\Role::TEACHER))
-                <div><p class="sidebar-section-title">Teacher portal</p><a class="sidebar-link {{ request()->routeIs('teacher.portal') ? 'is-active' : '' }}" href="{{ route('teacher.portal') }}">Dashboard</a><a class="sidebar-link {{ request()->routeIs('teacher.classes') ? 'is-active' : '' }}" href="{{ route('teacher.classes') }}">My Classes</a><a class="sidebar-link {{ request()->routeIs('teacher.subjects') ? 'is-active' : '' }}" href="{{ route('teacher.subjects') }}">My Subjects</a><a class="sidebar-link {{ request()->routeIs('teacher.students.*') ? 'is-active' : '' }}" href="{{ route('teacher.students') }}">My Students</a></div>
-                @endif
-                @if (auth()->user()->hasRole(\App\Models\Role::SUPERADMIN) && ! auth()->user()->hasRole(\App\Models\Role::ADMIN))
-                <div>
-                    <p class="sidebar-section-title">Administration</p>
-                    <a class="sidebar-link {{ request()->routeIs('users.*') ? 'is-active' : '' }}"
-                       href="{{ route('users.index') }}">Users</a>
-                </div>
-                @endif
-                @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
-                <div>
-                    <p class="sidebar-section-title">Overview</p>
-                    <a class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'is-active' : '' }}"
-                       href="{{ route('admin.dashboard') }}">Dashboard</a>
-                </div>
-
-                <div>
-                    <p class="sidebar-section-title">Registration</p>
-                    <a class="sidebar-link {{ request()->routeIs('families.*') ? 'is-active' : '' }}"
-                        href="{{ route('families.index') }}">Families</a>
-                    <a class="sidebar-link {{ request()->routeIs('students.*') ? 'is-active' : '' }}"
-                        href="{{ route('students.index') }}">Students</a>
-                </div>
-
-                <div>
-                    <p class="sidebar-section-title">Staff</p>
-                    <a class="sidebar-link {{ request()->routeIs('users.*') ? 'is-active' : '' }}"
-                       href="{{ route('users.index') }}">Users</a>
-                </div>
-
-                <div>
-                    <p class="sidebar-section-title">Academic Setup</p>
-                    <a class="sidebar-link {{ request()->routeIs('academic-years.*') ? 'is-active' : '' }}"
-                       href="{{ route('academic-years.index') }}">Academic Years</a>
-                    <a class="sidebar-link {{ request()->routeIs('terms.*') ? 'is-active' : '' }}"
-                       href="{{ route('terms.index') }}">Terms</a>
-                    <a class="sidebar-link {{ request()->routeIs('grades.*') ? 'is-active' : '' }}"
-                       href="{{ route('grades.index') }}">Grades</a>
-                    <a class="sidebar-link {{ request()->routeIs('sections.*') ? 'is-active' : '' }}"
-                       href="{{ route('sections.index') }}">Sections</a>
-                    <a class="sidebar-link {{ request()->routeIs('school-settings.*') ? 'is-active' : '' }}"
-                       href="{{ route('school-settings.edit') }}">School Settings</a>
-                    <a class="sidebar-link {{ request()->routeIs('subjects.*') ? 'is-active' : '' }}"
-                       href="{{ route('subjects.index') }}">Subjects</a>
-                    <a class="sidebar-link {{ request()->routeIs('teacher-qualifications.*') ? 'is-active' : '' }}"
-                       href="{{ route('teacher-qualifications.index') }}">Teacher Qualifications</a>
-                    <a class="sidebar-link {{ request()->routeIs('teacher-assignments.*') ? 'is-active' : '' }}"
-                       href="{{ route('teacher-assignments.index') }}">Teaching Assignments</a>
-                    <a class="sidebar-link {{ request()->routeIs('section-year-assignments.*') ? 'is-active' : '' }}"
-                       href="{{ route('section-year-assignments.index') }}">Class In Charge</a>
-                </div>
-
-                <div>
-                    <p class="sidebar-section-title">Fees &amp; Dues</p>
-                    <a class="sidebar-link {{ request()->routeIs('fee-categories.*') ? 'is-active' : '' }}"
-                       href="{{ route('fee-categories.index') }}">Fee Categories</a>
-                    <a class="sidebar-link {{ request()->routeIs('fee-structures.*') ? 'is-active' : '' }}"
-                       href="{{ route('fee-structures.index') }}">Fee Structures</a>
-                    <a class="sidebar-link {{ request()->routeIs('due-generation.recurring.*') ? 'is-active' : '' }}"
-                       href="{{ route('due-generation.recurring.create') }}">Recurring Generation</a>
-                    <a class="sidebar-link {{ request()->routeIs('due-generation.events.*') ? 'is-active' : '' }}"
-                       href="{{ route('due-generation.events.create') }}">Event Generation</a>
-                    <a class="sidebar-link {{ request()->routeIs('dues-dashboard.*') ? 'is-active' : '' }}"
-                        href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
-                </div>
-                @endif
-                @if ($currentUser->hasAnyRole([\App\Models\Role::ADMIN, \App\Models\Role::ACCOUNTANT]))
-                <div>
-                    <p class="sidebar-section-title">Payments</p>
-                    <a class="sidebar-link {{ request()->routeIs('payments.collect', 'families.payments.*') ? 'is-active' : '' }}"
-                       href="{{ route('payments.collect') }}">Collect Payment</a>
-                    <a class="sidebar-link {{ request()->routeIs('payments.*') ? 'is-active' : '' }}"
-                       href="{{ route('payments.index') }}">Payment History</a>
-                    <a class="sidebar-link {{ request()->routeIs('receipts.*') ? 'is-active' : '' }}"
-                        href="{{ route('receipts.index') }}">Receipts</a>
-                    <a class="sidebar-link {{ request()->routeIs('payment-reversals.*') ? 'is-active' : '' }}"
-                        href="{{ route('payment-reversals.index') }}">Reversals</a>
-                    <a class="sidebar-link {{ request()->routeIs('dues-dashboard.*') ? 'is-active' : '' }}"
-                       href="{{ route('dues-dashboard.index') }}">Dues Dashboard</a>
-                    <a class="sidebar-link {{ request()->routeIs('payment-reminders.*') ? 'is-active' : '' }}"
-                       href="{{ route('payment-reminders.index') }}">Payment Reminders</a>
-                </div>
-                @endif
-
-                @if (auth()->user()->hasRole(\App\Models\Role::ADMIN))
-                <div>
-                    <p class="sidebar-section-title">School Life</p>
-                    <a class="sidebar-link {{ request()->routeIs('events.*') ? 'is-active' : '' }}"
-                       href="{{ route('events.index') }}">Events</a>
-                    <a class="sidebar-link {{ request()->routeIs('promotion-batches.*') ? 'is-active' : '' }}"
-                       href="{{ route('promotion-batches.index') }}">Promotion</a>
-                </div>
-
-                <div>
-                    <p class="sidebar-section-title">Communication</p>
-                </div>
-
-                <div>
-                    <p class="sidebar-section-title">Governance</p>
-                    <a class="sidebar-link {{ request()->routeIs('audit-logs.*') ? 'is-active' : '' }}"
-                        href="{{ route('audit-logs.index') }}">Audit Log</a>
-                </div>
-                @endif
+                @include('partials.navigation', ['currentUser' => $currentUser])
             </nav>
 
             <div class="sidebar-footer">
@@ -163,12 +56,22 @@
         <div class="app-main">
             <header class="topbar">
                 <div class="topbar-context">
-                    <label class="menu-toggle" for="sidebar-toggle" aria-label="Open navigation">
+                    <button class="menu-toggle" type="button" data-sidebar-open aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation">
                         <span class="menu-toggle-lines"></span>
-                    </label>
-                    <p class="topbar-eyebrow">{{ $workspaceLabel }}</p>
+                    </button>
+                    <button class="sidebar-collapse" type="button" data-sidebar-collapse aria-controls="primary-navigation" aria-expanded="true" aria-label="Collapse navigation">‹</button>
+                    <nav class="topbar-breadcrumb" aria-label="Page context"><span>{{ $workspaceLabel }}</span><span aria-hidden="true">/</span><strong>@yield('title', 'Dashboard')</strong></nav>
                 </div>
-                <span class="topbar-date">{{ now()->format('l, F j') }}</span>
+                <div class="topbar-account">
+                    <span class="topbar-date">{{ now()->format('l, F j') }}</span>
+                    <a class="topbar-profile" href="{{ route('profile.edit') }}" aria-label="Open profile for {{ $currentUser->name }}">
+                        <span class="topbar-profile-avatar">{{ substr((string) $currentUser->name, 0, 1) }}</span>
+                        <span class="topbar-profile-copy">
+                            <span class="topbar-profile-name">{{ $currentUser->name }}</span>
+                            <span class="topbar-profile-role">{{ $workspaceLabel }}</span>
+                        </span>
+                    </a>
+                </div>
             </header>
 
             <main class="app-content">

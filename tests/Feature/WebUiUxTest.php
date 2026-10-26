@@ -39,8 +39,8 @@ it('loads the admin dashboard with the workflow groups', function () {
     $this->actingAs(adminUser())
         ->get(route('admin.dashboard'))
         ->assertOk()
-        ->assertSee('School overview')
-        ->assertSee('Financial overview')
+        ->assertSee('School at a glance')
+        ->assertSee('Outstanding dues')
         ->assertSee('Requires attention')
         ->assertSee('Quick actions')
         ->assertSee('Recent activity');

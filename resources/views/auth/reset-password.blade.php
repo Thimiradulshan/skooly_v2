@@ -5,7 +5,7 @@
 @section('content')
     <div class="auth-layout">
         <section class="auth-story">
-            <div class="auth-story-brand"><span class="brand-mark">S</span><span>Skooly</span></div>
+            <div class="auth-story-brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span></span><span>Skooly</span></div>
             <div class="auth-story-copy">
                 <span class="auth-kicker">Account recovery</span>
                 <h1 class="auth-story-title">Choose a new password.</h1>

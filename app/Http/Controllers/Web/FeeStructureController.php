@@ -52,10 +52,18 @@ class FeeStructureController extends Controller
 
     public function create(ActiveAcademicYear $activeAcademicYear)
     {
+        $academicYear = $activeAcademicYear->configured();
+
+        if ($academicYear === null) {
+            return redirect()
+                ->route('school-settings.edit')
+                ->with('error', 'Choose an active academic year before creating a fee structure.');
+        }
+
         return view('fee-structures.create', [
             'feeCategories' => FeeCategory::query()->orderBy('name')->get(),
             'grades' => Grade::query()->active()->orderBy('sequence_order')->get(),
-            'academicYears' => collect([$activeAcademicYear->current()]),
+            'academicYears' => collect([$academicYear]),
         ]);
     }
 

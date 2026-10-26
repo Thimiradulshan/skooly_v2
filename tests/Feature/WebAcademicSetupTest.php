@@ -189,12 +189,13 @@ it('prevents archiving the active academic year and excludes archived years from
         ->assertSessionHasErrors('active_academic_year_id');
 });
 
-it('excludes archived records from new configuration selectors', function () {
+it('excludes archived records from new configuration selectors while retaining promotion history sources', function () {
+    setActiveAcademicYear(AcademicYear::factory()->create());
     $academicYear = AcademicYear::factory()->create(['is_archived' => true, 'name' => 'Archived year']);
     $grade = Grade::factory()->create(['is_archived' => true, 'name' => 'Archived grade']);
     $section = Section::factory()->for($grade)->create(['is_archived' => true, 'name' => 'Archived section']);
 
     $this->actingAs(adminUser())->get(route('terms.create'))->assertDontSee('Archived year');
     $this->actingAs(adminUser())->get(route('sections.create'))->assertDontSee('Archived grade');
-    $this->actingAs(adminUser())->get(route('promotion-batches.create'))->assertDontSee('Archived year')->assertDontSee('Archived section');
+    $this->actingAs(adminUser())->get(route('promotion-batches.create'))->assertSee('Archived year')->assertSee('Archived section');
 });
